@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -59,6 +61,16 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.navigation:navigation-compose:2.8.7")
+    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.room:room-compiler:2.5.0")
+    ksp("com.google.dagger:dagger-compiler:2.48")
+    ksp("com.google.dagger:hilt-compiler:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("io.coil-kt:coil-compose:2.5.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,4 +78,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
