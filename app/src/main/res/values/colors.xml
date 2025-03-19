@@ -7,4 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    // Mi paleta de colores
+    <color name="color1">#E7F2FF</color>
+    <color name="color2">#B2D9FF</color>
+    <color name="color3">#3DB7FF</color>
+    <color name="color4">#0090CF</color>
+    <color name="color5">#006A9A</color>
+    <color name="color6">#004768</color>
+    <color name="color7">#00263B</color>
+
 </resources>
