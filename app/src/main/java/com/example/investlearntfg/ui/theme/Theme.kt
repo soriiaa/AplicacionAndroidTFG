@@ -42,7 +42,7 @@ fun InvestLearnTFGTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = InterTypography,
         content = content
     )
 }
