@@ -2,7 +2,6 @@ package com.example.investlearntfg.ui.screens.pantallaLogin
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,11 +28,18 @@ fun LoginScreen(navController: NavController) {
                 .padding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(46.dp))
             Text(
                 text = stringResource(R.string.nombreApp),
                 style = TextStyle(
-                    fontSize = 24.sp
+                    fontSize = 44.sp
+                )
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = stringResource(R.string.apartado_login),
+                style = TextStyle(
+                    fontSize = 20.sp
                 )
             )
         }

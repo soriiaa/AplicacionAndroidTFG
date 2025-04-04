@@ -1,6 +1,5 @@
 package com.example.investlearntfg.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -11,22 +10,26 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = color3,
+    secondary = color2,
+    background = color1,
+    surface = color5
+)
+private val DarkColorScheme = darkColorScheme(
+    primary = color4,
+    onPrimary = color1,
+    secondary = color3,
+    onSecondary = color1,
+    background = backgroundColor,
+    onBackground = color1,
+    surface = color6,
+    onSurface = color1
 )
 
 @Composable
 fun InvestLearnTFGTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    darkTheme: Boolean = true,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -35,7 +38,6 @@ fun InvestLearnTFGTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

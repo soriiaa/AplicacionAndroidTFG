@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">InvestLearnTFG</string>
     <string name="nombreApp">InvestLearn</string>
+    <string name="apartado_login">Login</string>
 </resources>
