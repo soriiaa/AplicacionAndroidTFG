@@ -3,20 +3,31 @@ package com.example.investlearntfg.ui.screens.pantallaLogin
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -32,6 +43,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -63,11 +75,22 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TitulosLogin()
+            Spacer(modifier = Modifier.height(45.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp),
+                thickness = 1.5.dp,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.height(45.dp))
             TextFieldUsuario(textoUsuarioIntroducido)
             Spacer(modifier = Modifier.height(50.dp))
             TextFieldContrasena(textoContrasenaIntroducido)
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             BotonInicioSesionLogin(textoUsuarioIntroducido, textoContrasenaIntroducido)
+            Spacer(modifier = Modifier.height(50.dp))
+            Registro()
         }
     }
 }
@@ -81,16 +104,14 @@ fun TitulosLogin() {
             fontSize = 50.sp
         )
     )
-    Spacer(modifier = Modifier.height(75.dp))
+    Spacer(modifier = Modifier.height(45.dp))
     Text(
         text = stringResource(R.string.apartado_login),
         style = TextStyle(
             fontSize = 30.sp
         )
     )
-    Spacer(modifier = Modifier.height(90.dp))
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,7 +129,10 @@ fun TextFieldUsuario(textoUsuarioIntroducido: MutableState<TextFieldValue>) {
             unfocusedIndicatorColor = Color.Transparent
         ),
         modifier = Modifier
-            .background(colorResource(id = R.color.color1), shape = RoundedCornerShape(5.dp)) // Color de fondo azul
+            .background(
+                colorResource(id = R.color.color1),
+                shape = RoundedCornerShape(5.dp)
+            ) // Color de fondo azul
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true
 
@@ -131,7 +155,10 @@ fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>
             unfocusedIndicatorColor = Color.Transparent
         ),
         modifier = Modifier
-            .background(colorResource(id = R.color.color1), shape = RoundedCornerShape(5.dp)) // Fondo
+            .background(
+                colorResource(id = R.color.color1),
+                shape = RoundedCornerShape(5.dp)
+            ) // Fondo
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(), // Ocultar/Mostrar contraseña
@@ -148,7 +175,46 @@ fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>
 
 @Composable
 fun BotonInicioSesionLogin(textoUsuarioIntroducido: MutableState<TextFieldValue>, textoContrasenaIntroducido: MutableState<TextFieldValue>) {
-    
+    Button(
+        onClick = { /* TODO Comprobar que los dos campos contengan texto y hacer el inicio de sesión */ },
+        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.color4)),
+        modifier = Modifier
+            .height(50.dp)
+            .width(150.dp)
+    ) {
+        Text(
+            stringResource(R.string.texto_iniciar_sesion),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp
+        )
+    }
+}
+
+@Composable
+fun Registro() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.texto_registro))
+            TextButton(
+                onClick = { /* TODO Redirigir al usuario a la web para que se registre */ },
+                colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.color3)),
+                modifier = Modifier.padding(0.dp).wrapContentSize()
+            ) {
+                Text(
+                    stringResource(R.string.texto_registro2),
+                    fontSize = 16.sp
+                )
+            }
+        }
+    }
+
 }
 
 @Preview(showBackground = true)
