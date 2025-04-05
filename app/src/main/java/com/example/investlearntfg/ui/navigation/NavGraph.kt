@@ -8,6 +8,7 @@ import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
 
 @Composable
 fun NavGraph(navController: NavHostController){
+
     NavHost(
         navController = navController,
         startDestination = Destinations.LOGIN_SCREEN
@@ -16,4 +17,5 @@ fun NavGraph(navController: NavHostController){
             LoginScreen(navController)
         }
     }
+
 }

@@ -66,15 +66,14 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.hilt.navigation.compose)
-
     implementation(platform(libs.androidx.compose.bom.v150))
     implementation(libs.ui)
     implementation(libs.material3)
     implementation(libs.androidx.activity.compose.v150)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.animation.core.lint)
+    implementation(libs.androidx.navigation.compose.v250rc01)
     ksp(libs.androidx.room.compiler)
     ksp(libs.dagger.compiler)
     ksp(libs.hilt.compiler)

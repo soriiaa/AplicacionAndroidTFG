@@ -76,6 +76,8 @@ fun LoginScreen(navController: NavController) {
         ) {
             TitulosLogin()
             Spacer(modifier = Modifier.height(45.dp))
+
+            /*
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,6 +85,7 @@ fun LoginScreen(navController: NavController) {
                 thickness = 1.5.dp,
                 color = Color.White
             )
+             */
             Spacer(modifier = Modifier.height(45.dp))
             TextFieldUsuario(textoUsuarioIntroducido)
             Spacer(modifier = Modifier.height(50.dp))
@@ -105,12 +108,17 @@ fun TitulosLogin() {
         )
     )
     Spacer(modifier = Modifier.height(45.dp))
+
+    /*
+
     Text(
         text = stringResource(R.string.apartado_login),
         style = TextStyle(
             fontSize = 30.sp
         )
     )
+
+     */
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
