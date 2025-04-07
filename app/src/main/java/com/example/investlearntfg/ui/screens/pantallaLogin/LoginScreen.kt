@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,9 +19,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -53,6 +50,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
+import com.example.investlearntfg.ui.components.TitulosInvestLearn
+import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 
 @Composable
@@ -63,6 +62,7 @@ fun LoginScreen(navController: NavController) {
     val textoContrasenaIntroducido = remember { mutableStateOf(TextFieldValue()) }
 
     InvestLearnTFGTheme {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -74,51 +74,18 @@ fun LoginScreen(navController: NavController) {
                 },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TitulosLogin()
-            Spacer(modifier = Modifier.height(45.dp))
-
-            /*
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 40.dp),
-                thickness = 1.5.dp,
-                color = Color.White
-            )
-             */
-            Spacer(modifier = Modifier.height(45.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            TitulosInvestLearn()
+            Spacer(modifier = Modifier.height(90.dp))
             TextFieldUsuario(textoUsuarioIntroducido)
             Spacer(modifier = Modifier.height(50.dp))
             TextFieldContrasena(textoContrasenaIntroducido)
             Spacer(modifier = Modifier.height(50.dp))
             BotonInicioSesionLogin(textoUsuarioIntroducido, textoContrasenaIntroducido)
             Spacer(modifier = Modifier.height(50.dp))
-            Registro()
+            Registro(navController)
         }
     }
-}
-
-@Composable
-fun TitulosLogin() {
-    Spacer(modifier = Modifier.height(90.dp))
-    Text(
-        text = stringResource(R.string.nombreApp),
-        style = TextStyle(
-            fontSize = 50.sp
-        )
-    )
-    Spacer(modifier = Modifier.height(45.dp))
-
-    /*
-
-    Text(
-        text = stringResource(R.string.apartado_login),
-        style = TextStyle(
-            fontSize = 30.sp
-        )
-    )
-
-     */
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,7 +107,7 @@ fun TextFieldUsuario(textoUsuarioIntroducido: MutableState<TextFieldValue>) {
             .background(
                 colorResource(id = R.color.color1),
                 shape = RoundedCornerShape(5.dp)
-            ) // Color de fondo azul
+            )
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true
 
@@ -183,6 +150,7 @@ fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>
 
 @Composable
 fun BotonInicioSesionLogin(textoUsuarioIntroducido: MutableState<TextFieldValue>, textoContrasenaIntroducido: MutableState<TextFieldValue>) {
+
     Button(
         onClick = { /* TODO Comprobar que los dos campos contengan texto y hacer el inicio de sesión */ },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.color4)),
@@ -200,7 +168,7 @@ fun BotonInicioSesionLogin(textoUsuarioIntroducido: MutableState<TextFieldValue>
 }
 
 @Composable
-fun Registro() {
+fun Registro(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -211,7 +179,7 @@ fun Registro() {
         ) {
             Text(text = stringResource(R.string.texto_registro))
             TextButton(
-                onClick = { /* TODO Redirigir al usuario a la web para que se registre */ },
+                onClick = { navController.navigate(Destinations.SINGUP_SCREEN) },
                 colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.color3)),
                 modifier = Modifier.padding(0.dp).wrapContentSize()
             ) {
@@ -222,7 +190,6 @@ fun Registro() {
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
