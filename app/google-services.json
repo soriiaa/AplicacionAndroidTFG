@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "501786644372",
+    "project_id": "investlearntfg",
+    "storage_bucket": "investlearntfg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501786644372:android:0469206845b02c63fc0981",
+        "android_client_info": {
+          "package_name": "com.example.investlearntfg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB815ctWgLTKw4Nj0IvPkWfj9crYyxH2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

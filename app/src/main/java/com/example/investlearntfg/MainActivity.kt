@@ -28,6 +28,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.navigation.NavGraph
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,6 +38,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // INICIAR FIREBASE
+        FirebaseApp.initializeApp(this)
+        val db = FirebaseFirestore.getInstance()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

@@ -6,6 +6,7 @@ composeBomVersion = "1.5.0"
 converterGson = "2.11.0"
 coreSplashscreen = "1.0.1"
 daggerCompiler = "2.48"
+firebaseBom = "33.12.0"
 hiltAndroid = "2.55"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
@@ -22,6 +23,7 @@ navigationCompose = "2.8.9"
 navigationComposeVersion = "2.5.0-rc01"
 retrofit = "2.11.0"
 roomCompiler = "2.6.1"
+firebaseAuthKtx = "23.2.0"
 
 [libraries]
 androidx-activity-compose-v150 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -37,6 +39,9 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "daggerCompiler" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "daggerCompiler" }
@@ -57,6 +62,7 @@ androidx-animation-core-lint = { group = "androidx.compose.animation", name = "a
 material3 = { module = "androidx.compose.material3:material3" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 ui = { module = "androidx.compose.ui:ui" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
