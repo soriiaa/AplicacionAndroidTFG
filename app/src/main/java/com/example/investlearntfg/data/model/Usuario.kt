@@ -8,7 +8,7 @@ data class Usuario(
     val correoElectronico: String,
     val contrasena: String,
     val monedaPrincipal: String,
-    val fechaCreacion: String,
+    val fechaCreacion: Long,
     val dineroEnCuenta: Double,
     val gananciasTotales: Double,
     val valoresEnPropiedad: Int,
