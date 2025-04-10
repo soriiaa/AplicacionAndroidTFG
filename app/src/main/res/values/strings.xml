@@ -5,4 +5,6 @@
     <string name="texto_iniciar_sesion">Iniciar Sesión</string>
     <string name="texto_registro">¿No tienes cuenta?</string>
     <string name="texto_registro2">Regístrate</string>
+    <string name="texto_registro3">Registro</string>
+    <string name="texto_registro4">Registrarse</string>
 </resources>

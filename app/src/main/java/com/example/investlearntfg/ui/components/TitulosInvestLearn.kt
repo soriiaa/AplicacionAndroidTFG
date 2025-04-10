@@ -15,7 +15,7 @@ import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 @Composable
 fun TitulosInvestLearn() {
     InvestLearnTFGTheme {
-        Spacer(modifier = Modifier.height(70.dp))
+        Spacer(modifier = Modifier.height(50.dp))
         Text(
             text = stringResource(R.string.nombreApp),
             style = TextStyle(

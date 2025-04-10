@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -63,27 +64,38 @@ fun LoginScreen(navController: NavController) {
 
     InvestLearnTFGTheme {
 
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .padding()
                 .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
-                },
-            horizontalAlignment = Alignment.CenterHorizontally
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            TitulosInvestLearn()
-            Spacer(modifier = Modifier.height(90.dp))
-            TextFieldUsuario(textoUsuarioIntroducido)
-            Spacer(modifier = Modifier.height(50.dp))
-            TextFieldContrasena(textoContrasenaIntroducido)
-            Spacer(modifier = Modifier.height(50.dp))
-            BotonInicioSesionLogin(textoUsuarioIntroducido, textoContrasenaIntroducido)
-            Spacer(modifier = Modifier.height(50.dp))
-            Registro(navController)
+            val screenHeight = maxHeight
+            val screenWidth = maxWidth
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding()
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(83.dp))
+                TitulosInvestLearn()
+                Spacer(modifier = Modifier.height(47.dp))
+                TextFieldUsuario(textoUsuarioIntroducido)
+                Spacer(modifier = Modifier.height(50.dp))
+                TextFieldContrasena(textoContrasenaIntroducido)
+                Spacer(modifier = Modifier.height(50.dp))
+                BotonInicioSesionLogin(textoUsuarioIntroducido, textoContrasenaIntroducido)
+                Spacer(modifier = Modifier.height(50.dp))
+                Registro(navController)
+            }
         }
     }
 }
@@ -91,7 +103,7 @@ fun LoginScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldUsuario(textoUsuarioIntroducido: MutableState<TextFieldValue>) {
-    OutlinedTextField (
+    OutlinedTextField(
         value = textoUsuarioIntroducido.value,
         onValueChange = { textoIntroducido ->
             textoUsuarioIntroducido.value = textoIntroducido
@@ -117,7 +129,8 @@ fun TextFieldUsuario(textoUsuarioIntroducido: MutableState<TextFieldValue>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>) {
-    var passwordVisible by remember { mutableStateOf(false) }  // Estado para controlar la visibilidad de la contraseña
+
+    var passwordVisible by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = textoContrasenaIntroducido.value,
@@ -133,12 +146,13 @@ fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>
             .background(
                 colorResource(id = R.color.color1),
                 shape = RoundedCornerShape(5.dp)
-            ) // Fondo
+            )
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(), // Ocultar/Mostrar contraseña
-        trailingIcon = {  // Icono para alternar la visibilidad
-            val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+        trailingIcon = {
+            val image =
+                if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
             val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
 
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -149,7 +163,10 @@ fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>
 }
 
 @Composable
-fun BotonInicioSesionLogin(textoUsuarioIntroducido: MutableState<TextFieldValue>, textoContrasenaIntroducido: MutableState<TextFieldValue>) {
+fun BotonInicioSesionLogin(
+    textoUsuarioIntroducido: MutableState<TextFieldValue>,
+    textoContrasenaIntroducido: MutableState<TextFieldValue>
+) {
 
     Button(
         onClick = { /* TODO Comprobar que los dos campos contengan texto y hacer el inicio de sesión */ },
@@ -181,7 +198,9 @@ fun Registro(navController: NavController) {
             TextButton(
                 onClick = { navController.navigate(Destinations.SINGUP_SCREEN) },
                 colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.color3)),
-                modifier = Modifier.padding(0.dp).wrapContentSize()
+                modifier = Modifier
+                    .padding(0.dp)
+                    .wrapContentSize()
             ) {
                 Text(
                     stringResource(R.string.texto_registro2),
