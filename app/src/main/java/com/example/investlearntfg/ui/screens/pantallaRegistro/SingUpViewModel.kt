@@ -24,12 +24,9 @@ class SignUpViewModel : ViewModel() {
 
     ) {
 
-
-
         auth.createUserWithEmailAndPassword(emailIntroducido, contrasenaIntroducida)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Crear el usuario en Firestore
                     val usuario = Usuario(
                         nombre = nombreIntroducido,
                         apellidos = apellidosIntroducidos,
@@ -38,12 +35,11 @@ class SignUpViewModel : ViewModel() {
                         contrasena = contrasenaIntroducida,
                         monedaPrincipal = monedaIntroducida,
                         fechaCreacion = System.currentTimeMillis(),
-                        dineroEnCuenta = 5000.0, // Dinero inicial
-                        totalGains = 0.0,
-                        propertiesValue = 0,
-                        purchasesMade = 0,
-                        salesMade = 0,
-                        userId = task.result?.user?.uid ?: ""
+                        dineroEnCuenta = 5000.0,
+                        gananciasTotales = 0.0,
+                        valoresEnPropiedad = 0,
+                        comprasRealizadas = 0,
+                        ventasRealizadas = 0
                     )
 
                     db.collection("users").document(usuario.userId)

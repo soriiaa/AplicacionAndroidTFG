@@ -1,7 +1,6 @@
 package com.example.investlearntfg.data.model
 
 data class Usuario(
-    val id: String,
     val nombre: String,
     val apellidos: String,
     val nickname: String,
