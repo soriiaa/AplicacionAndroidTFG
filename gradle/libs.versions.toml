@@ -1,29 +1,33 @@
 [versions]
-activityComposeVersion = "1.5.0"
-agp = "8.6.0"
-coilCompose = "2.6.0"
-composeBomVersion = "1.5.0"
-converterGson = "2.11.0"
-coreSplashscreen = "1.0.1"
-daggerCompiler = "2.48"
-firebaseBom = "33.12.0"
-hiltAndroid = "2.55"
-hiltNavigationCompose = "1.2.0"
-kotlin = "1.9.0"
-coreKtx = "1.15.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.10.1"
-composeBom = "2024.04.01"
-animationCoreLint = "1.8.0-rc02"
-materialIconsExtended = "1.7.8"
-navigationCompose = "2.8.9"
-navigationComposeVersion = "2.5.0-rc01"
-retrofit = "2.11.0"
-roomCompiler = "2.6.1"
-firebaseAuthKtx = "23.2.0"
+activityComposeVersion = "1.10.1"         # androidx.activity:activity-compose → 1.10.1 :contentReference[oaicite:0]{index=0}
+agp = "8.7.3"                            # Android Gradle Plugin → 8.7.3 :contentReference[oaicite:1]{index=1}
+coilCompose = "2.7.0"                    # io.coil-kt:coil-compose → 2.7.0 :contentReference[oaicite:2]{index=2}
+composeBomVersion = "2025.04.00"         # androidx.compose:compose-bom → 2025.04.00 :contentReference[oaicite:3]{index=3}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+converterGson = "2.11.0"                 # com.squareup.retrofit2:converter-gson → 2.11.0 :contentReference[oaicite:4]{index=4}
+coreSplashscreen = "1.0.1"               # androidx.core:core-splashscreen → 1.0.1 :contentReference[oaicite:5]{index=5}
+daggerCompiler = "2.56.2"                # com.google.dagger:dagger-compiler → 2.56.2 :contentReference[oaicite:6]{index=6}
+firebaseBom = "33.12.0"                  # com.google.firebase:firebase-bom → 33.12.0 :contentReference[oaicite:7]{index=7}
+hiltAndroid = "2.56.2"                   # com.google.dagger:hilt-android → 2.56.2 :contentReference[oaicite:8]{index=8}
+hiltNavigationCompose = "1.2.0"          # androidx.hilt:hilt-navigation-compose → 1.2.0 :contentReference[oaicite:9]{index=9}
+kotlin = "2.1.20"                        # Kotlin Gradle Plugin → 2.1.20 :contentReference[oaicite:10]{index=10}
+coreKtx = "1.16.0"                       # androidx.core:core-ktx → 1.16.0 :contentReference[oaicite:11]{index=11}
+junit = "4.13.2"                         # junit:junit → 4.13.2
+junitVersion = "1.1.5"                   # androidx.test.ext:junit → 1.1.5 :contentReference[oaicite:12]{index=12}
+espressoCore = "3.6.1"                   # androidx.test.espresso:espresso-core → 3.6.1 :contentReference[oaicite:13]{index=13}
+kotlinReflectVersion = "2.1.20"          # org.jetbrains.kotlin:kotlin-reflect → 2.1.20 :contentReference[oaicite:14]{index=14}
+kotlinStdlib = "2.1.20"                  # org.jetbrains.kotlin:kotlin-stdlib → 2.1.20 :contentReference[oaicite:15]{index=15}
+lifecycleRuntimeKtx = "2.8.7"            # androidx.lifecycle:lifecycle-runtime-ktx → 2.8.7 :contentReference[oaicite:16]{index=16}
+activityCompose = "1.10.1"               # (repetido de activityComposeVersion)
+composeBom = "2025.04.00"                # (repetido de composeBomVersion)
+animationCoreLint = "1.8.0-rc03"         # androidx.compose.animation:animation-core-lint → 1.8.0-rc03 :contentReference[oaicite:17]{index=17}
+materialIconsExtended = "1.7.8"          # androidx.compose.material:material-icons-extended → 1.7.8 :contentReference[oaicite:18]{index=18}
+navigationCompose = "2.8.0"              # androidx.navigation:navigation-compose → 2.8.0 :contentReference[oaicite:19]{index=19}
+navigationComposeVersion = "2.8.0"       # (idéntico a navigationCompose)
+retrofit = "2.11.0"                      # com.squareup.retrofit2:retrofit → 2.11.0 :contentReference[oaicite:20]{index=20}
+roomCompiler = "2.7.0"                   # androidx.room:room-compiler → 2.7.0 :contentReference[oaicite:21]{index=21}
+firebaseAuthKtx = "23.2.0"               # com.google.firebase:firebase-auth-ktx → 23.2.0 :contentReference[oaicite:22]{index=22}
+
 
 [libraries]
 androidx-activity-compose-v150 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -45,6 +49,7 @@ firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx"
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "daggerCompiler" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "daggerCompiler" }
+jetbrains-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflectVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -59,12 +64,13 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-animation-core-lint = { group = "androidx.compose.animation", name = "animation-core-lint", version.ref = "animationCoreLint" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
 material3 = { module = "androidx.compose.material3:material3" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 ui = { module = "androidx.compose.ui:ui" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-

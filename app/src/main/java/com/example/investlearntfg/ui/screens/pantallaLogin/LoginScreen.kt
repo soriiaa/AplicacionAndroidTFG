@@ -110,10 +110,13 @@ fun TextFieldUsuario(textoUsuarioIntroducido: MutableState<TextFieldValue>) {
         },
         placeholder = { Text("Usuario", color = Color.Black) },
         textStyle = TextStyle(color = Color.Black, fontSize = 17.sp),
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = colorResource(id = R.color.color1),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = colorResource(id = R.color.color1),
+            unfocusedContainerColor = colorResource(id = R.color.color1),
+            disabledContainerColor = colorResource(id = R.color.color1),
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
         ),
         modifier = Modifier
             .background(
@@ -137,10 +140,13 @@ fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>
         onValueChange = { nuevaContrasena -> textoContrasenaIntroducido.value = nuevaContrasena },
         placeholder = { Text("Contraseña", color = Color.Black) },
         textStyle = TextStyle(color = Color.Black, fontSize = 17.sp),
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = colorResource(id = R.color.color1),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = colorResource(id = R.color.color1),
+            unfocusedContainerColor = colorResource(id = R.color.color1),
+            disabledContainerColor = colorResource(id = R.color.color1),
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
         ),
         modifier = Modifier
             .background(

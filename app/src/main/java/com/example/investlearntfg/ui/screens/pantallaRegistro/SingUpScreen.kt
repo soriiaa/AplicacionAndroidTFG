@@ -96,8 +96,7 @@ fun SingUpScreen(navController: NavController) {
                 item {
                     TitulosInvestLearn()
                     TextoRegistro()
-                    Spacer(modifier = Modifier.height(15.dp))
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(45.dp))
                     TextFieldPredeterminado("Nombre", textoNombre)
                     Spacer(modifier = Modifier.height(30.dp))
                     TextFieldPredeterminado("Apellidos", textoApellido)

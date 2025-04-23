@@ -1,9 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
+
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.10"
+    id("com.google.devtools.ksp") version "2.1.20-1.0.31"
+    id("com.google.dagger.hilt.android") version "2.48"
+    id("com.google.gms.google-services") version "4.4.2"
 }
 
 android {
@@ -33,17 +35,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17 // Actualizado a Java 17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17" // Actualizado a jvmTarget 17
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.0"
     }
     packaging {
         resources {
@@ -53,43 +55,56 @@ android {
 }
 
 dependencies {
-
+    // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.jetbrains.kotlin.reflect)
+
+    // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
+
+    // Compose Core
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.material.icons.extended)
+
+    // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.dagger.compiler)
+
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(platform(libs.androidx.compose.bom.v150))
-    implementation(libs.ui)
-    implementation(libs.material3)
-    implementation(libs.androidx.activity.compose.v150)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.animation.core.lint)
-    implementation(libs.androidx.navigation.compose.v250rc01)
+
+    // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.auth.ktx)
+
+    // Room
     ksp(libs.androidx.room.compiler)
-    ksp(libs.dagger.compiler)
-    ksp(libs.hilt.compiler)
-    ksp(libs.hilt.android.compiler)
+
+    // Otros
     implementation(libs.coil.compose)
-    implementation(libs.androidx.material.icons.extended)
+
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

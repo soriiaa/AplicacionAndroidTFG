@@ -62,8 +62,10 @@ fun SelectorDesplegable(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = colorResource(id = R.color.color1),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = colorResource(id = R.color.color1),
+                    unfocusedContainerColor = colorResource(id = R.color.color1),
+                    disabledContainerColor = colorResource(id = R.color.color1),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
