@@ -96,6 +96,7 @@ dependencies {
 
     // Otros
     implementation(libs.coil.compose)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Test
     testImplementation(libs.junit)

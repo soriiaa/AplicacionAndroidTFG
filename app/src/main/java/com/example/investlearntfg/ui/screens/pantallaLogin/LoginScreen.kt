@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
+import com.example.investlearntfg.ui.components.TextFieldContrasena
 import com.example.investlearntfg.ui.components.TitulosInvestLearn
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
@@ -90,7 +91,7 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(47.dp))
                 TextFieldUsuario(textoUsuarioIntroducido)
                 Spacer(modifier = Modifier.height(50.dp))
-                TextFieldContrasena(textoContrasenaIntroducido)
+                TextFieldContrasena("Contraseña", textoContrasenaIntroducido)
                 Spacer(modifier = Modifier.height(50.dp))
                 BotonInicioSesionLogin(textoUsuarioIntroducido, textoContrasenaIntroducido)
                 Spacer(modifier = Modifier.height(50.dp))
@@ -126,45 +127,6 @@ fun TextFieldUsuario(textoUsuarioIntroducido: MutableState<TextFieldValue>) {
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true
 
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TextFieldContrasena(textoContrasenaIntroducido: MutableState<TextFieldValue>) {
-
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    OutlinedTextField(
-        value = textoContrasenaIntroducido.value,
-        onValueChange = { nuevaContrasena -> textoContrasenaIntroducido.value = nuevaContrasena },
-        placeholder = { Text("Contraseña", color = Color.Black) },
-        textStyle = TextStyle(color = Color.Black, fontSize = 17.sp),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = colorResource(id = R.color.color1),
-            unfocusedContainerColor = colorResource(id = R.color.color1),
-            disabledContainerColor = colorResource(id = R.color.color1),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        ),
-        modifier = Modifier
-            .background(
-                colorResource(id = R.color.color1),
-                shape = RoundedCornerShape(5.dp)
-            )
-            .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
-        singleLine = true,
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(), // Ocultar/Mostrar contraseña
-        trailingIcon = {
-            val image =
-                if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-            val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                Icon(imageVector = image, contentDescription = description, tint = Color.Black)
-            }
-        }
     )
 }
 

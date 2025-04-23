@@ -17,6 +17,7 @@ junitVersion = "1.1.5"                   # androidx.test.ext:junit → 1.1.5 :co
 espressoCore = "3.6.1"                   # androidx.test.espresso:espresso-core → 3.6.1 :contentReference[oaicite:13]{index=13}
 kotlinReflectVersion = "2.1.20"          # org.jetbrains.kotlin:kotlin-reflect → 2.1.20 :contentReference[oaicite:14]{index=14}
 kotlinStdlib = "2.1.20"                  # org.jetbrains.kotlin:kotlin-stdlib → 2.1.20 :contentReference[oaicite:15]{index=15}
+kotlinxCoroutinesPlayServices = "1.8.1"
 lifecycleRuntimeKtx = "2.8.7"            # androidx.lifecycle:lifecycle-runtime-ktx → 2.8.7 :contentReference[oaicite:16]{index=16}
 activityCompose = "1.10.1"               # (repetido de activityComposeVersion)
 composeBom = "2025.04.00"                # (repetido de composeBomVersion)
@@ -65,6 +66,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-animation-core-lint = { group = "androidx.compose.animation", name = "animation-core-lint", version.ref = "animationCoreLint" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 material3 = { module = "androidx.compose.material3:material3" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 ui = { module = "androidx.compose.ui:ui" }

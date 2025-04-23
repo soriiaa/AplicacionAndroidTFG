@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,17 +37,27 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.SelectorDesplegable
+import com.example.investlearntfg.ui.components.TextFieldContrasena
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado
 import com.example.investlearntfg.ui.components.TitulosInvestLearn
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SingUpScreen(navController: NavController) {
+
+    val viewModel: SignUpViewModel = hiltViewModel()
+    val scope = rememberCoroutineScope()
+    val textoError = remember { mutableStateOf(TextFieldValue()) }
+    val habilitarTextoError = remember { mutableStateOf(false) }
+    val mostrarDialogo = remember { mutableStateOf(false) }
 
     val opcionesMoneda = listOf(
         "Dólar estadounidense - $ - USD",
@@ -105,9 +117,9 @@ fun SingUpScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(30.dp))
                     TextFieldPredeterminado("Correo", textoCorreo)
                     Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldPredeterminado("Contraseña", textoContrasena)
+                    TextFieldContrasena(stringResource(R.string.contrasena), textoContrasena)
                     Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldPredeterminado("Confirmar Contraseña", textoConfirmarContrasena)
+                    TextFieldContrasena("Confirmar Contraseña", textoConfirmarContrasena)
                     Spacer(modifier = Modifier.height(30.dp))
                     SelectorDesplegable(
                         opcionesMoneda,
@@ -117,7 +129,14 @@ fun SingUpScreen(navController: NavController) {
                         }
                     )
                     Spacer(modifier = Modifier.height(30.dp))
+                    MensajesErrores(textoError, habilitarTextoError)
                     BotonRegistroSingIn(
+                        navController,
+                        mostrarDialogo,
+                        viewModel,
+                        scope,
+                        textoError,
+                        habilitarTextoError,
                         textoNombre,
                         textoApellido,
                         textoNickname,
@@ -171,8 +190,31 @@ fun BotonInicioSesionSingIn(navController: NavController) {
 }
 
 @Composable
+fun MensajesErrores(
+    textoError: MutableState<TextFieldValue>,
+    habilitarTextoError: MutableState<Boolean>
+) {
+
+    if (habilitarTextoError.value) {
+        Text(
+            text = textoError.value.text,
+            color = Color.Red,
+            fontSize = 14.sp
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+    }
+
+}
+
+@Composable
 fun BotonRegistroSingIn(
 
+    navController: NavController,
+    mostrarDialogo: MutableState<Boolean>,
+    viewModel: SignUpViewModel,
+    scope: CoroutineScope,
+    textoError: MutableState<TextFieldValue>,
+    habilitarTextoError: MutableState<Boolean>,
     textoNombreIntroducido: MutableState<TextFieldValue>,
     textoApellidoIntroducido: MutableState<TextFieldValue>,
     textoNicknameIntroducido: MutableState<TextFieldValue>,
@@ -183,12 +225,49 @@ fun BotonRegistroSingIn(
 
 ) {
 
+    val todosLosCamposValidos = textoNombreIntroducido.value.text.isNotBlank() &&
+            textoApellidoIntroducido.value.text.isNotBlank() &&
+            textoNicknameIntroducido.value.text.isNotBlank() &&
+            textoCorreoIntroducido.value.text.isNotBlank() &&
+            textoContrasenaIntroducido.value.text.isNotBlank() &&
+            textoConfirmarContrasenaIntroducido.value.text.isNotBlank() &&
+            textoMonedaIntroducido != "Elegir moneda" &&
+            textoContrasenaIntroducido.value.text == textoConfirmarContrasenaIntroducido.value.text &&
+            esCorreoValido(textoCorreoIntroducido.value.text) &&
+            textoContrasenaIntroducido.value.text.length >= 6 &&
+            textoConfirmarContrasenaIntroducido.value.text.length >= 6
+
     Button(
-        onClick = { /* TODO Comprobar que los campos estén rellenos y hacer el registro */ },
+        onClick = {
+
+            scope.launch {
+
+                val emailExiste =
+                    viewModel.verificarCorreoExistente(textoCorreoIntroducido.value.text)
+
+                if (emailExiste) {
+                    textoError.value = TextFieldValue("El email introducido ya está registrado")
+                    habilitarTextoError.value = true
+                } else {
+                    habilitarTextoError.value = false
+                    mostrarDialogo.value = viewModel.registrarUsuario(
+                        textoNombreIntroducido.value.text,
+                        textoApellidoIntroducido.value.text,
+                        textoNicknameIntroducido.value.text,
+                        textoCorreoIntroducido.value.text,
+                        textoContrasenaIntroducido.value.text,
+                        textoMonedaIntroducido
+                    )
+
+                }
+            }
+
+        },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.color4)),
         modifier = Modifier
             .height(50.dp)
-            .width(150.dp)
+            .width(150.dp),
+        enabled = todosLosCamposValidos
     ) {
         Text(
             stringResource(R.string.texto_registro4),
@@ -197,6 +276,34 @@ fun BotonRegistroSingIn(
             fontSize = 15.sp
         )
     }
+
+    if (mostrarDialogo.value) {
+        AlertDialog(
+            onDismissRequest = {
+                mostrarDialogo.value = false
+                navController.popBackStack()
+                navController.navigate(Destinations.LOGIN_SCREEN)
+                navController.popBackStack()
+            },
+            title = { Text("Registro exitoso") },
+            text = { Text("Tu cuenta ha sido creada correctamente.") },
+            confirmButton = {
+                Button(onClick = {
+                    mostrarDialogo.value = false
+                    navController.popBackStack()
+                    navController.navigate(Destinations.LOGIN_SCREEN)
+                    navController.popBackStack()
+                }) {
+                    Text("Continuar")
+                }
+            }
+        )
+    }
+}
+
+fun esCorreoValido(correo: String): Boolean {
+    val regex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}\$")
+    return correo.matches(regex)
 }
 
 @Preview(showBackground = true)
