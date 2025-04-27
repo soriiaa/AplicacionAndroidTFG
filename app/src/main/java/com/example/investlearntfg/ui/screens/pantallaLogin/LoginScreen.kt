@@ -94,8 +94,11 @@ fun LoginScreen(navController: NavController) {
                 TextFieldContrasena("Contraseña", textoContrasenaIntroducido)
                 Spacer(modifier = Modifier.height(50.dp))
                 BotonInicioSesionLogin(textoUsuarioIntroducido, textoContrasenaIntroducido)
+                Spacer(modifier = Modifier.height((15.dp)))
+                OlvidoContrasena()
                 Spacer(modifier = Modifier.height(50.dp))
                 Registro(navController)
+
             }
         }
     }
@@ -177,6 +180,24 @@ fun Registro(navController: NavController) {
             }
         }
     }
+}
+
+@Composable
+fun OlvidoContrasena() {
+
+        TextButton(
+            onClick = {  },
+            colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.color3)),
+            modifier = Modifier
+                .padding(0.dp)
+                .wrapContentSize()
+        ) {
+            Text(
+                stringResource(R.string.olvido_contrasena),
+                fontSize = 16.sp
+            )
+        }
+
 }
 
 @Preview(showBackground = true)
