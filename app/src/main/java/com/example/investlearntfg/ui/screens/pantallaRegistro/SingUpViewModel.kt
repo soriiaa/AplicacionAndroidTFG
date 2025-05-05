@@ -51,7 +51,6 @@ class SignUpViewModel @Inject constructor(
                     "apellidos" to apellidos,
                     "nickname" to nickname,
                     "email" to correo,
-                    "contrasena" to contrasena,
                     "moneda_principal" to moneda,
                     "compras_realizadas" to 0,
                     "ventas_realizadas" to 0,

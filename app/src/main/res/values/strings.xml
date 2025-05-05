@@ -7,6 +7,8 @@
     <string name="texto_registro2">Regístrate</string>
     <string name="texto_registro3">Registro</string>
     <string name="texto_registro4">Registrarse</string>
+    <string name="texto_correo">Correo</string>
     <string name="contrasena">Contraseña</string>
+    <string name="contrasena_longitud">Contraseña (+6 dígitos)</string>
     <string name="olvido_contrasena">¿Has olvidado tu contraseña?</string>
 </resources>

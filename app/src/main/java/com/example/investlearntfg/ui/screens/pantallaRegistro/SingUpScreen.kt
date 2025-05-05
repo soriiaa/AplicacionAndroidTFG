@@ -117,7 +117,7 @@ fun SingUpScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(30.dp))
                     TextFieldPredeterminado("Correo", textoCorreo)
                     Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldContrasena(stringResource(R.string.contrasena), textoContrasena)
+                    TextFieldContrasena(stringResource(R.string.contrasena_longitud), textoContrasena)
                     Spacer(modifier = Modifier.height(30.dp))
                     TextFieldContrasena("Confirmar Contraseña", textoConfirmarContrasena)
                     Spacer(modifier = Modifier.height(30.dp))
