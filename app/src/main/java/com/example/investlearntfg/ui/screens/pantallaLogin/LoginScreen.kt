@@ -55,7 +55,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.TitulosInvestLearn
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
