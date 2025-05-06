@@ -53,4 +53,15 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun enviarCorreoRecuperacion(email: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onFailure(task.exception ?: Exception("Error desconocido"))
+                }
+            }
+    }
+
 }

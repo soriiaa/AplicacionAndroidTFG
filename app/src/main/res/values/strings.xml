@@ -8,7 +8,10 @@
     <string name="texto_registro3">Registro</string>
     <string name="texto_registro4">Registrarse</string>
     <string name="texto_correo">Correo</string>
+    <string name="texto_correo2">Correo Electrónico</string>
     <string name="contrasena">Contraseña</string>
     <string name="contrasena_longitud">Contraseña (+6 dígitos)</string>
     <string name="olvido_contrasena">¿Has olvidado tu contraseña?</string>
+    <string name="recuperacion_contrasena">Recuperar Contraseña</string>
+    <string name="texto_instrucciones_recuperacion_contrasena">Introduce tu correo electrónico y confirma. Se te enviará un correo para restablecer tu contraseña.</string>
 </resources>

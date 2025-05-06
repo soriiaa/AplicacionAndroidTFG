@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
 import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
+import com.example.investlearntfg.ui.screens.pantallaRecuperarContrasena.RecuperarContrasenaScreen
 import com.example.investlearntfg.ui.screens.pantallaRegistro.SingUpScreen
 
 @Composable
@@ -25,6 +26,10 @@ fun NavGraph(navController: NavHostController, startDestination: String) {
 
         composable(Destinations.PANTALLA_INICIAL_SCREEN) {
             PantallaInicialScreen(navController)
+        }
+
+        composable(Destinations.RECUPERAR_CONTRASENA_SCREEN) {
+            RecuperarContrasenaScreen(navController)
         }
     }
 

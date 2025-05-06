@@ -110,7 +110,7 @@ fun LoginScreen(
                     navController
                 )
                 Spacer(modifier = Modifier.height((15.dp)))
-                OlvidoContrasena()
+                OlvidoContrasena(navController)
                 Spacer(modifier = Modifier.height(50.dp))
                 Registro(navController)
 
@@ -281,10 +281,10 @@ fun Registro(navController: NavController) {
 }
 
 @Composable
-fun OlvidoContrasena() {
+fun OlvidoContrasena(navController: NavController) {
 
     TextButton(
-        onClick = { },
+        onClick = { navController.navigate(Destinations.RECUPERAR_CONTRASENA_SCREEN) },
         colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.color3)),
         modifier = Modifier
             .padding(0.dp)
