@@ -98,7 +98,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(83.dp))
                 TitulosInvestLearn()
                 Spacer(modifier = Modifier.height(47.dp))
-                TextFieldUsuario(textoCorreoIntroducido, viewModel)
+                TextFieldCorreo(textoCorreoIntroducido, viewModel)
                 Spacer(modifier = Modifier.height(50.dp))
                 TextFieldContrasenaLogin("Contraseña", textoContrasenaIntroducido, viewModel)
                 Spacer(modifier = Modifier.height(50.dp))
@@ -120,9 +120,9 @@ fun LoginScreen(
 }
 
 @Composable
-fun TextFieldUsuario(textoUsuarioIntroducido: TextFieldValue, viewModel: LoginViewModel) {
+fun TextFieldCorreo(textoCorreoIntroducido: TextFieldValue, viewModel: LoginViewModel) {
     OutlinedTextField(
-        value = textoUsuarioIntroducido,
+        value = textoCorreoIntroducido,
         onValueChange = {
             viewModel.onCorreoChange(it)
         },
@@ -210,6 +210,7 @@ fun BotonInicioSesionLogin(
                 } else {
                     viewModel.iniciarSesion(
                         onExito = {
+                            navController.popBackStack()
                             navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN)
                         },
                         onError = {

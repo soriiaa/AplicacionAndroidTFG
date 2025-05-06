@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.navigation.NavGraph
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
+import com.example.investlearntfg.utils.hayUsuarioLogeado
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,7 +75,16 @@ fun App() {
     val navController = rememberNavController()
     val currentRoute = remember { mutableStateOf(Destinations.LOGIN_SCREEN) }
 
+    val startDestination = remember {
+        if (hayUsuarioLogeado()) {
+            Destinations.PANTALLA_INICIAL_SCREEN
+        } else {
+            Destinations.LOGIN_SCREEN
+        }
+    }
+
     LaunchedEffect(navController) {
+
         navController.addOnDestinationChangedListener{ _, destination, _ ->
             currentRoute.value = destination.route ?: Destinations.LOGIN_SCREEN
         }
@@ -83,7 +93,7 @@ fun App() {
     Scaffold(
         content = { padding ->
             Box(modifier = Modifier.padding(padding)) {
-                NavGraph(navController)
+                NavGraph(navController, startDestination = startDestination)
             }
 
         },

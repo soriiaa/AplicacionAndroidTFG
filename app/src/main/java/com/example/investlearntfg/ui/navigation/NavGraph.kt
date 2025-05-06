@@ -9,11 +9,11 @@ import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
 import com.example.investlearntfg.ui.screens.pantallaRegistro.SingUpScreen
 
 @Composable
-fun NavGraph(navController: NavHostController){
+fun NavGraph(navController: NavHostController, startDestination: String) {
 
     NavHost(
         navController = navController,
-        startDestination = Destinations.LOGIN_SCREEN
+        startDestination = startDestination
     ) {
         composable(Destinations.LOGIN_SCREEN) {
             LoginScreen(navController)
