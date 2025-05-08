@@ -41,6 +41,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
+import com.example.investlearntfg.ui.components.CardAccionPredeterminado
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 
@@ -112,35 +113,7 @@ fun PantallaBuscarScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(empresas) { empresa ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            elevation = CardDefaults.cardElevation(4.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = colorResource(id = R.color.color6)
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(empresa.logo),
-                                    contentDescription = "${empresa.nombre} logo",
-                                    modifier = Modifier.size(48.dp)
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column {
-                                    Text(
-                                        text = empresa.nombre,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 18.sp
-                                    )
-                                    Text(text = "Precio: ${empresa.precio} $")
-                                }
-                            }
-                        }
+                        CardAccionPredeterminado(empresa)
                     }
                 }
             } else {
