@@ -27,6 +27,7 @@ import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminad
 import com.example.investlearntfg.ui.components.CardAccionPredeterminado
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
+import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
 
 @Composable
 fun PantallaBuscarScreen(
@@ -72,7 +73,7 @@ fun PantallaBuscarScreen(
             contentAlignment = Alignment.Center
         ) {
 
-            TextFieldPredeterminado2(
+            TextFieldPredeterminado2Redondeado(
                 textoInicial = stringResource(R.string.texto_buscador),
                 textoEscrito = textoBuscador,
                 onValueChange = { nuevoTexto ->
