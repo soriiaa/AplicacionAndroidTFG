@@ -15,6 +15,7 @@
     <string name="recuperacion_contrasena">Recuperar Contraseña</string>
     <string name="texto_instrucciones_recuperacion_contrasena">Introduce tu correo electrónico y confirma. Se te enviará un correo para restablecer tu contraseña.</string>
     <string name="texto_buscador">"Buscar valor..."</string>
+    <string name="texto_editar_perfil">Editar</string>
 
 
 </resources>

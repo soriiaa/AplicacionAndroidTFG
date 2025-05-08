@@ -55,7 +55,7 @@ fun PantallaAccionScreen(navController: NavController) {
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(start = 5.dp)
+                    .padding(end = 5.dp)
             ) {
 
                 // TODO ESTO
