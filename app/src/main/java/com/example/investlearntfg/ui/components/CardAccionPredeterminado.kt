@@ -31,15 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.investlearntfg.R
-import com.example.investlearntfg.data.model.EmpresasPreview
+import com.example.investlearntfg.data.model.EmpresaPreview
 
 @Composable
 fun CardAccionPredeterminado(
-    empresa: EmpresasPreview,
-    activarSeleccionFavorito: Boolean
+    empresa: EmpresaPreview,
+    esFavorita: Boolean,
+    onClickFavorito: () -> Unit
 ) {
-    var esFavorita by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,14 +75,12 @@ fun CardAccionPredeterminado(
                 }
             }
 
-            if (activarSeleccionFavorito) {
-                IconButton(onClick = { esFavorita = !esFavorita }) {
-                    Icon(
-                        imageVector = if (esFavorita) Icons.Default.Star else Icons.Default.StarBorder,
-                        contentDescription = if (esFavorita) "Quitar de favoritos" else "Marcar como favorito",
-                        tint = if (esFavorita) colorResource(R.color.colorEstrellas) else Color.Gray
-                    )
-                }
+            IconButton(onClick = onClickFavorito) {
+                Icon(
+                    imageVector = if (esFavorita) Icons.Default.Star else Icons.Default.StarBorder,
+                    contentDescription = if (esFavorita) "Quitar de favoritos" else "Marcar como favorito",
+                    tint = if (esFavorita) colorResource(R.color.colorEstrellas) else Color.Gray
+                )
             }
         }
     }

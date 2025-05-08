@@ -3,8 +3,11 @@ package com.example.investlearntfg.ui.screens.pantallaBuscar
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.investlearntfg.data.model.EmpresasPreview
+import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.repository.FavoritosRepository
 import com.example.investlearntfg.data.repository.PostRepository
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +19,8 @@ class PantallaBuscarViewModel @Inject constructor(
     private val postRepository: PostRepository
 ) : ViewModel() {
 
-    private val _empresas = MutableStateFlow<List<EmpresasPreview>>(emptyList())
-    val empresas: StateFlow<List<EmpresasPreview>> = _empresas
+    private val _empresas = MutableStateFlow<List<EmpresaPreview>>(emptyList())
+    val empresas: StateFlow<List<EmpresaPreview>> = _empresas
 
     private val _textoBuscador = MutableStateFlow(TextFieldValue(""))
     val textoBuscador: StateFlow<TextFieldValue> = _textoBuscador
@@ -25,12 +28,18 @@ class PantallaBuscarViewModel @Inject constructor(
     val _cargando = MutableStateFlow(false)
     val cargando: StateFlow<Boolean> = _cargando
 
+    private val _empresasFavoritas = MutableStateFlow<Set<String>>(emptySet())
+    val empresasFavoritas: StateFlow<Set<String>> = _empresasFavoritas
+
     fun onTextoBuscadorChange(nuevoTexto: TextFieldValue) {
         _textoBuscador.value = nuevoTexto
     }
 
+    private val userId = Firebase.auth.currentUser?.uid ?: ""
+
     init {
         cargarEmpresasDestacadas()
+        cargarFavoritos()
     }
 
     fun cargarEmpresasDestacadas() {
@@ -41,7 +50,7 @@ class PantallaBuscarViewModel @Inject constructor(
 
             try {
 
-                val empresasDestacadas = listOf("AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "BLK", "NVDA", "REP.MC", "BBVA")
+                val empresasDestacadas = listOf("AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "BLK", "NVDA", "BBVA")
 
                 val empresasPreview = empresasDestacadas.mapNotNull { simbolo ->
                     try {
@@ -49,7 +58,7 @@ class PantallaBuscarViewModel @Inject constructor(
                         val precio = postRepository.getPrecioEmpresaPostRepository(simbolo)
 
                         val moneda = perfil.currency
-                        val simbolo = when (moneda) {
+                        val simboloMonetario = when (moneda) {
                             "USD" -> "$"
                             "EUR" -> "€"
                             "GBP" -> "£"
@@ -73,11 +82,12 @@ class PantallaBuscarViewModel @Inject constructor(
                             else -> "?"
                         }
 
-                        EmpresasPreview(
+                        EmpresaPreview(
+                            ticker = simbolo,
                             nombre = perfil.name,
                             logo = perfil.logo,
                             precio = precio.c,
-                            simboloMoneda = simbolo
+                            simboloMoneda = simboloMonetario
                         )
 
                     } catch (e: Exception) {
@@ -94,6 +104,24 @@ class PantallaBuscarViewModel @Inject constructor(
             } finally {
                 _cargando.value = false
             }
+        }
+    }
+
+    fun cargarFavoritos() {
+        FavoritosRepository.obtenerFavoritas(userId) { favoritos ->
+            _empresasFavoritas.value = favoritos.toSet()
+        }
+    }
+
+    fun alternarFavorito(empresa: EmpresaPreview) {
+        val esFavorita = _empresasFavoritas.value.contains(empresa.ticker)
+
+        if (esFavorita) {
+            FavoritosRepository.eliminarFavorita(userId, empresa.ticker)
+            _empresasFavoritas.value -= empresa.ticker
+        } else {
+            FavoritosRepository.marcarComoFavorita(userId, empresa)
+            _empresasFavoritas.value += empresa.ticker
         }
     }
 

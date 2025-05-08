@@ -39,6 +39,9 @@ fun PantallaBuscarScreen(
 
     val focusManager = LocalFocusManager.current
     val textoBuscador by viewModel.textoBuscador.collectAsState()
+    val empresas by viewModel.empresas.collectAsState()
+    val cargando by viewModel.cargando.collectAsState()
+    val empresasFavoritas by viewModel.empresasFavoritas.collectAsState()
 
     Column(
         modifier = Modifier
@@ -104,9 +107,6 @@ fun PantallaBuscarScreen(
             contentAlignment = Alignment.TopCenter
         ) {
 
-            val empresas by viewModel.empresas.collectAsState()
-            val cargando by viewModel.cargando.collectAsState()
-
             if (empresas.isNotEmpty() && !cargando) {
                 LazyColumn(
                     modifier = Modifier
@@ -115,7 +115,12 @@ fun PantallaBuscarScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(empresas) { empresa ->
-                        CardAccionPredeterminado(empresa, true)
+                        CardAccionPredeterminado(
+                            empresa = empresa,
+                            esFavorita = empresasFavoritas.contains(empresa.ticker),
+                            onClickFavorito = { viewModel.alternarFavorito(empresa) }
+                        )
+
                     }
                 }
             } else {
