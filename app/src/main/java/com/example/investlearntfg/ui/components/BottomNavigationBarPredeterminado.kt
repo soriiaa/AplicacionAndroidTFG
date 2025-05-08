@@ -33,7 +33,15 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
             label = { Text("Inicio") },
             selected = currentRoute == Destinations.PANTALLA_INICIAL_SCREEN,
-            onClick = { navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) },
+            onClick = {
+                navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,         // color del ícono seleccionado
                 unselectedIconColor = colorNoSeleccionado,
@@ -46,7 +54,15 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             icon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
             label = { Text("Buscar") },
             selected = currentRoute == Destinations.PANTALLA_BUSCAR_SCREEN,
-            onClick = { navController.navigate(Destinations.PANTALLA_BUSCAR_SCREEN) },
+            onClick = {
+                navController.navigate(Destinations.PANTALLA_BUSCAR_SCREEN) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 unselectedIconColor = colorNoSeleccionado,
@@ -59,7 +75,15 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
             label = { Text("Perfil") },
             selected = currentRoute == Destinations.PANTALLA_PERFIL_SCREEN,
-            onClick = { navController.navigate(Destinations.PANTALLA_PERFIL_SCREEN) },
+            onClick = {
+                navController.navigate(Destinations.PANTALLA_PERFIL_SCREEN) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 unselectedIconColor = colorNoSeleccionado,

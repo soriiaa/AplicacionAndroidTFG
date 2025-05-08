@@ -25,31 +25,36 @@ import com.example.investlearntfg.data.model.EmpresasPreview
 @Composable
 fun CardAccionPredeterminado(empresa: EmpresasPreview) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(id = R.color.color6)
+            containerColor = colorResource(id = R.color.color7)
         )
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(12.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = rememberAsyncImagePainter(empresa.logo),
                 contentDescription = "${empresa.nombre} logo",
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(40.dp)
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
                     text = empresa.nombre,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    fontSize = 14.sp
                 )
-                Text(text = "Precio: ${empresa.precio} $")
+                Text(
+                    text = "${empresa.precio} $",
+                    fontSize = 12.sp
+                )
             }
         }
     }

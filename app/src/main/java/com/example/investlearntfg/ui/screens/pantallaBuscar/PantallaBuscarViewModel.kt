@@ -1,5 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaBuscar
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.EmpresasPreview
@@ -18,13 +19,26 @@ class PantallaBuscarViewModel @Inject constructor(
     private val _empresas = MutableStateFlow<List<EmpresasPreview>>(emptyList())
     val empresas: StateFlow<List<EmpresasPreview>> = _empresas
 
+    private val _textoBuscador = MutableStateFlow(TextFieldValue(""))
+    val textoBuscador: StateFlow<TextFieldValue> = _textoBuscador
+
+    val _cargando = MutableStateFlow(false)
+    val cargando: StateFlow<Boolean> = _cargando
+
+    fun onTextoBuscadorChange(nuevoTexto: TextFieldValue) {
+        _textoBuscador.value = nuevoTexto
+    }
+
     init {
         cargarEmpresasDestacadas()
     }
 
-    private fun cargarEmpresasDestacadas() {
+    fun cargarEmpresasDestacadas() {
 
         viewModelScope.launch {
+
+            _cargando.value = true
+
             try {
 
                 val empresasDestacadas = listOf("AAPL", "GOOGL", "MSFT", "AMZN", "TSLA")
@@ -50,6 +64,8 @@ class PantallaBuscarViewModel @Inject constructor(
             } catch (e: Exception) {
                 println("Error general al cargar empresas destacadas: ${e.message}")
                 _empresas.value = emptyList()
+            } finally {
+                _cargando.value = false
             }
         }
     }
