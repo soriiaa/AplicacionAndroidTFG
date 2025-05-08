@@ -297,11 +297,3 @@ fun OlvidoContrasena(navController: NavController) {
     }
 
 }
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    InvestLearnTFGTheme {
-        LoginScreen(navController = rememberNavController())
-    }
-}

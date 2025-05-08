@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -128,8 +127,6 @@ fun RecuperarContrasenaScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-
-
                 is EstadoRecuperacion.Exito -> {
                     AlertDialog(
                         onDismissRequest = {
@@ -174,7 +171,6 @@ fun RecuperarContrasenaScreen(
         ) {
             BotonEnviarEmailRecuperarContrasenaScreen(
                 viewModel,
-                tamanoFuenteTexto,
                 screenWidthDp
             )
         }
@@ -185,8 +181,7 @@ fun RecuperarContrasenaScreen(
 @Composable
 fun BotonEnviarEmailRecuperarContrasenaScreen(
     viewModel: RecuperarContrasenaViewModel,
-    tamanoFuenteTexto: TextUnit,
-    screenWidthDp: Int,
+    screenWidthDp: Int
 ) {
 
     val tamanoBoton = (screenWidthDp * 0.14).roundToInt().dp
@@ -210,12 +205,4 @@ fun BotonEnviarEmailRecuperarContrasenaScreen(
         )
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    InvestLearnTFGTheme {
-        RecuperarContrasenaScreen(navController = rememberNavController())
-    }
 }

@@ -11,6 +11,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.example.investlearntfg.ui.navigation.Destinations
 
 @Composable
 fun BottomNavigationBarPredeterminado(navController: NavController) {
@@ -21,19 +22,19 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
             label = { Text("Inicio") },
             selected = false,
-            onClick = { /* Navegar a Inicio */ }
+            onClick = { navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.Search, contentDescription = "Búsqueda") },
             label = { Text("Buscar") },
             selected = false,
-            onClick = { /* Navegar a Buscar */ }
+            onClick = { navController.navigate(Destinations.PANTALLA_BUSCAR_SCREEN) }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
             label = { Text("Perfil") },
             selected = false,
-            onClick = { /* Navegar a Perfil */ }
+            onClick = { navController.navigate(Destinations.PANTALLA_PERFIL_SCREEN) }
         )
     }
 }

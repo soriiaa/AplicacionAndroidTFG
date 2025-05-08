@@ -75,17 +75,17 @@ fun App() {
     val navController = rememberNavController()
     val currentRoute = remember { mutableStateOf(Destinations.LOGIN_SCREEN) }
 
-    val startDestination = remember {
+    val startDestination =
         if (hayUsuarioLogeado()) {
             Destinations.PANTALLA_INICIAL_SCREEN
         } else {
             Destinations.LOGIN_SCREEN
         }
-    }
+
 
     LaunchedEffect(navController) {
 
-        navController.addOnDestinationChangedListener{ _, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             currentRoute.value = destination.route ?: Destinations.LOGIN_SCREEN
         }
     }

@@ -305,9 +305,3 @@ fun esCorreoValido(correo: String): Boolean {
     val regex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}\$")
     return correo.matches(regex)
 }
-
-@Preview(showBackground = true)
-@Composable
-fun SingUpScreenPreview() {
-    SingUpScreen(navController = rememberNavController())
-}

@@ -11,10 +11,6 @@ class PantallaInicialViewModel @Inject constructor(
     private val postRepository: PostRepository
 ) : ViewModel() {
 
-
-
-
-
     fun recargarPantalla() {
         // Aquí recargas los datos o estado necesario
     }

@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
 import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
+import com.example.investlearntfg.ui.screens.pantallaPerfil.PantallaPerfilScreen
 import com.example.investlearntfg.ui.screens.pantallaRecuperarContrasena.RecuperarContrasenaScreen
 import com.example.investlearntfg.ui.screens.pantallaRegistro.SingUpScreen
 
@@ -24,13 +26,22 @@ fun NavGraph(navController: NavHostController, startDestination: String) {
             SingUpScreen(navController)
         }
 
+        composable(Destinations.RECUPERAR_CONTRASENA_SCREEN) {
+            RecuperarContrasenaScreen(navController)
+        }
+
         composable(Destinations.PANTALLA_INICIAL_SCREEN) {
             PantallaInicialScreen(navController)
         }
 
-        composable(Destinations.RECUPERAR_CONTRASENA_SCREEN) {
-            RecuperarContrasenaScreen(navController)
+        composable(Destinations.PANTALLA_BUSCAR_SCREEN) {
+            PantallaBuscarScreen(navController)
         }
+
+        composable(Destinations.PANTALLA_PERFIL_SCREEN) {
+            PantallaPerfilScreen(navController)
+        }
+
     }
 
 }
