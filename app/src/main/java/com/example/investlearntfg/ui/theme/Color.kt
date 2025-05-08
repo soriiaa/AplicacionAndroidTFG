@@ -11,4 +11,8 @@ val color6 = Color(0xFF004768)
 val color7 = Color(0xFF003A54)
 val backgroundColor = Color(0xFF00263B)
 
+// Otros colores
+
+val colorEstrellas = Color(0xFFD0C800)
+
 //val backgroundColor = Color(0xFF000000)

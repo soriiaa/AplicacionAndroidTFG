@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -84,6 +86,19 @@ fun PantallaBuscarScreen(
 
         Box(
             modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(start = 40.dp),
+            contentAlignment = Alignment.BottomStart
+        ) {
+            Text(
+                text = "Acciones destacadas",
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Box(
+            modifier = Modifier
                 .weight(10f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.TopCenter
@@ -100,7 +115,7 @@ fun PantallaBuscarScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(empresas) { empresa ->
-                        CardAccionPredeterminado(empresa)
+                        CardAccionPredeterminado(empresa, true)
                     }
                 }
             } else {

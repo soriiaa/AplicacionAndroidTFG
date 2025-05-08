@@ -24,7 +24,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
     // Define aquí tu color de indicador (el contorno o background pill)
     val colorIndicador = colorResource(R.color.color6)
     // Color para los íconos/texto cuando NO están seleccionados
-    val colorNoSeleccionado = Color.Gray
+    val colorNoSeleccionado = Color.White
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.background

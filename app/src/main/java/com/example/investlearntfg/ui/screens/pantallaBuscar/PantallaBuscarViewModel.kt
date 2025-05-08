@@ -41,18 +41,45 @@ class PantallaBuscarViewModel @Inject constructor(
 
             try {
 
-                val empresasDestacadas = listOf("AAPL", "GOOGL", "MSFT", "AMZN", "TSLA")
+                val empresasDestacadas = listOf("AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "BLK", "NVDA", "REP.MC", "BBVA")
 
                 val empresasPreview = empresasDestacadas.mapNotNull { simbolo ->
                     try {
                         val perfil = postRepository.getPerfilEmpresaPostRepository(simbolo)
                         val precio = postRepository.getPrecioEmpresaPostRepository(simbolo)
 
+                        val moneda = perfil.currency
+                        val simbolo = when (moneda) {
+                            "USD" -> "$"
+                            "EUR" -> "€"
+                            "GBP" -> "£"
+                            "JPY" -> "¥"
+                            "CHF" -> "CHF"
+                            "CAD" -> "C$"
+                            "AUD" -> "A$"
+                            "CNY" -> "¥"
+                            "SEK" -> "kr"
+                            "NOK" -> "kr"
+                            "KRW" -> "₩"
+                            "INR" -> "₹"
+                            "BRL" -> "R$"
+                            "MXN" -> "$"
+                            "RUB" -> "₽"
+                            "HKD" -> "HK$"
+                            "NZD" -> "NZ$"
+                            "TRY" -> "₺"
+                            "IDR" -> "Rp"
+                            "ZAR" -> "R"
+                            else -> "?"
+                        }
+
                         EmpresasPreview(
                             nombre = perfil.name,
                             logo = perfil.logo,
-                            precio = precio.c
+                            precio = precio.c,
+                            simboloMoneda = simbolo
                         )
+
                     } catch (e: Exception) {
                         println("Error al cargar datos de $simbolo: ${e.message}")
                         null

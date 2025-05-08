@@ -28,7 +28,7 @@ fun TextFieldPredeterminado2Redondeado(
         onValueChange = { textoIntroducido -> onValueChange(textoIntroducido) },
         placeholder = { Text(textoInicial, color = Color.Black) },
         textStyle = TextStyle(color = Color.Black, fontSize = 17.sp),
-        shape = RoundedCornerShape(40.dp),
+        shape = RoundedCornerShape(45.dp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = colorResource(id = R.color.color1),
             unfocusedContainerColor = colorResource(id = R.color.color1),
@@ -40,7 +40,30 @@ fun TextFieldPredeterminado2Redondeado(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 28.dp),
         singleLine = true
     )
 }
+
+/* PREVIEW -- PARA EDITARLO BIEN
+
+@Composable
+fun TextFieldPredeterminado2RedondeadoPreview() {
+    InvestLearnTFGTheme {
+        Surface(modifier = Modifier.padding(16.dp)) {
+            TextFieldPredeterminado2Redondeado(
+                textoInicial = "Buscar empresa",
+                textoEscrito = TextFieldValue(""),
+                onValueChange = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    TextFieldPredeterminado2RedondeadoPreview()
+}
+
+ */
