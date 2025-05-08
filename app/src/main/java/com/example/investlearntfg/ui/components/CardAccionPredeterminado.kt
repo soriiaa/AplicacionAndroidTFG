@@ -1,6 +1,7 @@
 package com.example.investlearntfg.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,42 +10,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.investlearntfg.R
 import com.example.investlearntfg.data.model.EmpresaPreview
-import kotlinx.coroutines.channels.ticker
 
 @Composable
 fun CardAccionPredeterminado(
     empresa: EmpresaPreview,
     esFavorita: Boolean,
-    onClickFavorito: () -> Unit
+    onClickFavorito: () -> Unit,
+    onClickCard: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 12.dp)
+            .clickable(onClick = onClickCard),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.color7)
@@ -86,13 +77,10 @@ fun CardAccionPredeterminado(
                 }
             }
 
-            IconButton(onClick = onClickFavorito) {
-                Icon(
-                    imageVector = if (esFavorita) Icons.Default.Star else Icons.Default.StarBorder,
-                    contentDescription = if (esFavorita) "Quitar de favoritos" else "Marcar como favorito",
-                    tint = if (esFavorita) colorResource(R.color.colorEstrellas) else Color.Gray
-                )
-            }
+            BotonAnadirFavoritoPredeterminado(
+                esFavorita,
+                onClickFavorito
+            )
         }
     }
 }

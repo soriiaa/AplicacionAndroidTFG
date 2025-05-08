@@ -30,6 +30,7 @@ import com.example.investlearntfg.ui.components.CardAccionPredeterminado
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
+import com.example.investlearntfg.ui.navigation.Destinations
 
 @Composable
 fun PantallaBuscarScreen(
@@ -118,7 +119,8 @@ fun PantallaBuscarScreen(
                         CardAccionPredeterminado(
                             empresa = empresa,
                             esFavorita = empresasFavoritas.contains(empresa.ticker),
-                            onClickFavorito = { viewModel.alternarFavorito(empresa) }
+                            onClickFavorito = { viewModel.alternarFavorito(empresa) },
+                            onClickCard = { navController.navigate(Destinations.PANTALLA_ACCION_SCREEN) }
                         )
 
                     }

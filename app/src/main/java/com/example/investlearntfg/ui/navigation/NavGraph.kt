@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
 import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
@@ -40,6 +41,10 @@ fun NavGraph(navController: NavHostController, startDestination: String) {
 
         composable(Destinations.PANTALLA_PERFIL_SCREEN) {
             PantallaPerfilScreen(navController)
+        }
+
+        composable(Destinations.PANTALLA_ACCION_SCREEN) {
+            PantallaAccionScreen(navController)
         }
 
     }
