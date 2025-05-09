@@ -76,7 +76,6 @@ fun CardAccionPredeterminado(
                     )
                 }
             }
-
             BotonAnadirFavoritoPredeterminado(
                 esFavorita,
                 onClickFavorito

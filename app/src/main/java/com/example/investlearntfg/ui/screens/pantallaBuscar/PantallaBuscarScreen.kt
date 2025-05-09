@@ -1,5 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaBuscar
 
+import android.net.Uri
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
 import com.example.investlearntfg.ui.navigation.Destinations
+import com.google.gson.Gson
 
 @Composable
 fun PantallaBuscarScreen(
@@ -116,13 +118,15 @@ fun PantallaBuscarScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(empresas) { empresa ->
+
+                        val empresaJson = Uri.encode(Gson().toJson(empresa))
+
                         CardAccionPredeterminado(
                             empresa = empresa,
                             esFavorita = empresasFavoritas.contains(empresa.ticker),
                             onClickFavorito = { viewModel.alternarFavorito(empresa) },
-                            onClickCard = { navController.navigate(Destinations.PANTALLA_ACCION_SCREEN) }
+                            onClickCard = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") }
                         )
-
                     }
                 }
             } else {

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
@@ -11,6 +12,7 @@ import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
 import com.example.investlearntfg.ui.screens.pantallaPerfil.PantallaPerfilScreen
 import com.example.investlearntfg.ui.screens.pantallaRecuperarContrasena.RecuperarContrasenaScreen
 import com.example.investlearntfg.ui.screens.pantallaRegistro.SingUpScreen
+import com.google.gson.Gson
 
 @Composable
 fun NavGraph(navController: NavHostController, startDestination: String) {
@@ -43,8 +45,10 @@ fun NavGraph(navController: NavHostController, startDestination: String) {
             PantallaPerfilScreen(navController)
         }
 
-        composable(Destinations.PANTALLA_ACCION_SCREEN) {
-            PantallaAccionScreen(navController)
+        composable("${Destinations.PANTALLA_ACCION_SCREEN}/{empresaJson}") { backStackEntry ->
+            val empresaJson = backStackEntry.arguments?.getString("empresaJson")
+            val empresa = Gson().fromJson(empresaJson, EmpresaPreview::class.java)
+            PantallaAccionScreen(navController, empresa)
         }
 
     }

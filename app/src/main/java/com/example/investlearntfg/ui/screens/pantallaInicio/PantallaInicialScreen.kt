@@ -39,7 +39,10 @@ fun PantallaInicialScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             LogoAplicacionPulsable {
-
+                viewModel.cerrarSesion()
+                navController.navigate(Destinations.LOGIN_SCREEN) {
+                    popUpTo(0) { inclusive = true }
+                }
             }
         }
 
