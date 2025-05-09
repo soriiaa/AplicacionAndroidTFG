@@ -62,6 +62,7 @@ fun PantallaBuscarScreen(
         ) {
             LogoAplicacionPulsable {
                 viewModel.cargarEmpresasDestacadas()
+                viewModel.cargarFavoritos()
             }
         }
 

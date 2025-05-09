@@ -35,11 +35,18 @@ class PantallaBuscarViewModel @Inject constructor(
         _textoBuscador.value = nuevoTexto
     }
 
-    private val userId = Firebase.auth.currentUser?.uid ?: ""
+    private var userId = Firebase.auth.currentUser?.uid ?: ""
 
     init {
         cargarEmpresasDestacadas()
         cargarFavoritos()
+    }
+
+    fun limpiarDatos() {
+        _empresas.value = emptyList()
+        _textoBuscador.value = TextFieldValue("")
+        _empresasFavoritas.value = emptySet()
+        userId = ""
     }
 
     fun cargarEmpresasDestacadas() {
@@ -123,6 +130,13 @@ class PantallaBuscarViewModel @Inject constructor(
             FavoritosRepository.marcarComoFavorita(userId, empresa)
             _empresasFavoritas.value += empresa.ticker
         }
+    }
+
+    fun limpiarEstado() {
+        _empresas.value = emptyList()
+        _textoBuscador.value = TextFieldValue("")
+        _cargando.value = false
+        _empresasFavoritas.value = emptySet()
     }
 
 }

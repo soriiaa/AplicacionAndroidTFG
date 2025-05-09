@@ -40,8 +40,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // INICIAR FIREBASE
-        FirebaseApp.initializeApp(this)
         val db = FirebaseFirestore.getInstance()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
