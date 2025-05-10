@@ -239,7 +239,6 @@ fun BotonRegistroSingIn(
 
     Button(
         onClick = {
-
             scope.launch {
 
                 val emailExiste =
@@ -258,10 +257,8 @@ fun BotonRegistroSingIn(
                         textoContrasenaIntroducido.value.text,
                         textoMonedaIntroducido
                     )
-
                 }
             }
-
         },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.color4)),
         modifier = Modifier

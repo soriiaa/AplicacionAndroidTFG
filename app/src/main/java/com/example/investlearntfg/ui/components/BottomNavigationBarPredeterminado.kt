@@ -19,11 +19,9 @@ import com.example.investlearntfg.ui.navigation.Destinations
 
 @Composable
 fun BottomNavigationBarPredeterminado(navController: NavController) {
-    val currentRoute = navController.currentDestination?.route
 
-    // Define aquí tu color de indicador (el contorno o background pill)
+    val currentRoute = navController.currentDestination?.route
     val colorIndicador = colorResource(R.color.color6)
-    // Color para los íconos/texto cuando NO están seleccionados
     val colorNoSeleccionado = Color.White
 
     NavigationBar(
@@ -35,19 +33,16 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_INICIAL_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { }
                     launchSingleTop = true
-                    restoreState = true
                 }
             },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,         // color del ícono seleccionado
+                selectedIconColor = Color.White,
                 unselectedIconColor = colorNoSeleccionado,
-                selectedTextColor = Color.White,         // color del texto seleccionado
+                selectedTextColor = Color.White,
                 unselectedTextColor = colorNoSeleccionado,
-                indicatorColor = colorIndicador          // **este** es el color del contorno/pill
+                indicatorColor = colorIndicador
             )
         )
         NavigationBarItem(
@@ -56,11 +51,8 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_BUSCAR_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_BUSCAR_SCREEN) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { }
                     launchSingleTop = true
-                    restoreState = true
                 }
             },
             colors = NavigationBarItemDefaults.colors(
@@ -77,11 +69,8 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_PERFIL_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_PERFIL_SCREEN) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { }
                     launchSingleTop = true
-                    restoreState = true
                 }
             },
             colors = NavigationBarItemDefaults.colors(

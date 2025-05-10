@@ -210,8 +210,10 @@ fun BotonInicioSesionLogin(
                 } else {
                     viewModel.iniciarSesion(
                         onExito = {
-                            navController.popBackStack()
-                            navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN)
+                            navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) {
+                                popUpTo(0) { inclusive = true }
+                                launchSingleTop = true
+                            }
                         },
                         onError = {
                             mostrarDialogo.value = true

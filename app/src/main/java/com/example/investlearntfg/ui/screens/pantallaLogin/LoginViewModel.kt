@@ -39,7 +39,6 @@ class LoginViewModel @Inject constructor(
         onExito: () -> Unit,
         onError: (String) -> Unit
     ) {
-
         val email = _correo.value.text.trim()
         val password = _contrasena.value.text
 
@@ -52,16 +51,4 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-
-    fun enviarCorreoRecuperacion(email: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onFailure(task.exception ?: Exception("Error desconocido"))
-                }
-            }
-    }
-
 }

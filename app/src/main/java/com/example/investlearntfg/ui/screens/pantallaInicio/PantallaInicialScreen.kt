@@ -1,6 +1,5 @@
 package com.example.investlearntfg.ui.screens.pantallaInicio
 
-import android.content.Intent
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,26 +10,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.investlearntfg.MainActivity
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarViewModel
 
 @Composable
 fun PantallaInicialScreen(
     navController: NavHostController,
-    viewModel: PantallaInicialViewModel = hiltViewModel(),
-    viewModelPantallaBuscar: PantallaBuscarViewModel = hiltViewModel()
+    viewModel: PantallaInicialViewModel = hiltViewModel()
 ) {
 
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
@@ -46,7 +42,7 @@ fun PantallaInicialScreen(
             LogoAplicacionPulsable {
                 viewModel.cerrarSesion()
                 navController.navigate(Destinations.LOGIN_SCREEN) {
-                    navController.popBackStack()
+                    popUpTo(0) { inclusive = true }
                 }
             }
         }

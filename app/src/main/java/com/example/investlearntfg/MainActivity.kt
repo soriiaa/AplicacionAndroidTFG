@@ -29,7 +29,6 @@ import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.navigation.NavGraph
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 import com.example.investlearntfg.utils.hayUsuarioLogeado
-import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
