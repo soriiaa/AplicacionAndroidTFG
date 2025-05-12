@@ -14,5 +14,3 @@ val backgroundColor = Color(0xFF00263B)
 // Otros colores
 
 val colorEstrellas = Color(0xFFD0C800)
-
-//val backgroundColor = Color(0xFF000000)

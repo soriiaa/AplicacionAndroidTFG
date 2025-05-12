@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.ui.navigation.AuthNavGraph
-import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.navigation.MainAppNavGraph
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 import com.example.investlearntfg.utils.hayUsuarioLogeado
@@ -35,11 +34,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val db = FirebaseFirestore.getInstance()
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            InvestLearnTFGTheme {
+            InvestLearnTFGTheme(dynamicColor = true, darkTheme = true) {
 
                 SetSystemNavBarColor(colorResource(id = R.color.backgroundColor), darkIcons = false)
 
@@ -63,30 +61,23 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App() {
-    InvestLearnTFGTheme {
-        val isLoggedIn = remember { mutableStateOf(hayUsuarioLogeado()) }
+    val isLoggedIn = remember { mutableStateOf(hayUsuarioLogeado()) }
+    val navController = rememberNavController()
 
-        val navController = rememberNavController()
-
-        if (isLoggedIn.value) {
-            InvestLearnTFGTheme {
-                MainAppNavGraph(
-                    navController = navController,
-                    onLogout = {
-                        isLoggedIn.value = false
-                    }
-                )
+    if (isLoggedIn.value) {
+        MainAppNavGraph(
+            navController = navController,
+            onLogout = {
+                isLoggedIn.value = false
             }
-        } else {
-            InvestLearnTFGTheme {
-                AuthNavGraph(
-                    navController = navController,
-                    onLoginSuccess = {
-                        isLoggedIn.value = true
-                    }
-                )
+        )
+    } else {
+        AuthNavGraph(
+            navController = navController,
+            onLoginSuccess = {
+                isLoggedIn.value = true
             }
-        }
+        )
     }
 }
 

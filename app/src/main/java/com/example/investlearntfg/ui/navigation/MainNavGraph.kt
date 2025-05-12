@@ -9,6 +9,7 @@ import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
 import com.example.investlearntfg.ui.screens.pantallaPerfil.PantallaPerfilScreen
+import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 import com.google.gson.Gson
 
 @Composable
@@ -20,7 +21,6 @@ fun MainAppNavGraph(
         navController = navController,
         startDestination = Destinations.PANTALLA_INICIAL_SCREEN
     ) {
-
         composable(Destinations.PANTALLA_INICIAL_SCREEN) {
             PantallaInicialScreen(navController, onLogout = onLogout)
         }
