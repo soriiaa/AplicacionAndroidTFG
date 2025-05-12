@@ -8,16 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -25,8 +19,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.example.investlearntfg.ui.navigation.AuthNavGraph
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.navigation.NavGraph
+import com.example.investlearntfg.ui.navigation.MainAppNavGraph
 import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 import com.example.investlearntfg.utils.hayUsuarioLogeado
 import com.google.firebase.firestore.FirebaseFirestore
@@ -68,34 +63,31 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App() {
+    InvestLearnTFGTheme {
+        val isLoggedIn = remember { mutableStateOf(hayUsuarioLogeado()) }
 
-    val navController = rememberNavController()
-    val currentRoute = remember { mutableStateOf(Destinations.LOGIN_SCREEN) }
+        val navController = rememberNavController()
 
-    val startDestination =
-        if (hayUsuarioLogeado()) {
-            Destinations.PANTALLA_INICIAL_SCREEN
+        if (isLoggedIn.value) {
+            InvestLearnTFGTheme {
+                MainAppNavGraph(
+                    navController = navController,
+                    onLogout = {
+                        isLoggedIn.value = false
+                    }
+                )
+            }
         } else {
-            Destinations.LOGIN_SCREEN
-        }
-
-
-    LaunchedEffect(navController) {
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            currentRoute.value = destination.route ?: Destinations.LOGIN_SCREEN
+            InvestLearnTFGTheme {
+                AuthNavGraph(
+                    navController = navController,
+                    onLoginSuccess = {
+                        isLoggedIn.value = true
+                    }
+                )
+            }
         }
     }
-
-    Scaffold(
-        content = { padding ->
-            Box(modifier = Modifier.padding(padding)) {
-                NavGraph(navController, startDestination = startDestination)
-            }
-
-        },
-        modifier = Modifier.fillMaxSize()
-    )
 }
 
 @Composable

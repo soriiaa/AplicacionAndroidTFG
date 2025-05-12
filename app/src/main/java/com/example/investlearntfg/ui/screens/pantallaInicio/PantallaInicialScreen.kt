@@ -19,7 +19,8 @@ import com.example.investlearntfg.ui.navigation.Destinations
 @Composable
 fun PantallaInicialScreen(
     navController: NavHostController,
-    viewModel: PantallaInicialViewModel = hiltViewModel()
+    viewModel: PantallaInicialViewModel = hiltViewModel(),
+    onLogout: () -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -41,9 +42,7 @@ fun PantallaInicialScreen(
         ) {
             LogoAplicacionPulsable {
                 viewModel.cerrarSesion()
-                navController.navigate(Destinations.LOGIN_SCREEN) {
-                    popUpTo(0) { inclusive = true }
-                }
+                onLogout()
             }
         }
 

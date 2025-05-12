@@ -46,12 +46,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.TitulosInvestLearn
 import com.example.investlearntfg.ui.navigation.Destinations
@@ -62,7 +60,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    onLoginSuccess: () -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -107,7 +106,7 @@ fun LoginScreen(
                     textoContrasenaIntroducido,
                     botonHabilitado,
                     viewModel,
-                    navController
+                    onLoginSuccess
                 )
                 Spacer(modifier = Modifier.height((15.dp)))
                 OlvidoContrasena(navController)
@@ -195,7 +194,7 @@ fun BotonInicioSesionLogin(
     textoContrasenaIntroducido: TextFieldValue,
     botonHabilitado: Boolean,
     viewModel: LoginViewModel,
-    navController: NavController
+    onLoginSuccess: () -> Unit
 ) {
 
     val mostrarDialogo = remember { mutableStateOf(false) }
@@ -210,10 +209,7 @@ fun BotonInicioSesionLogin(
                 } else {
                     viewModel.iniciarSesion(
                         onExito = {
-                            navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) {
-                                popUpTo(0) { inclusive = true }
-                                launchSingleTop = true
-                            }
+                            onLoginSuccess()
                         },
                         onError = {
                             mostrarDialogo.value = true

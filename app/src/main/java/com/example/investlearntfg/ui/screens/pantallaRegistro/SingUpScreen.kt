@@ -34,12 +34,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.SelectorDesplegable
 import com.example.investlearntfg.ui.components.TextFieldContrasena
@@ -51,7 +49,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun SingUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController) {
 
     val viewModel: SignUpViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()

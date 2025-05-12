@@ -8,33 +8,21 @@ import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
-import com.example.investlearntfg.ui.screens.pantallaLogin.LoginScreen
 import com.example.investlearntfg.ui.screens.pantallaPerfil.PantallaPerfilScreen
-import com.example.investlearntfg.ui.screens.pantallaRecuperarContrasena.RecuperarContrasenaScreen
-import com.example.investlearntfg.ui.screens.pantallaRegistro.SingUpScreen
 import com.google.gson.Gson
 
 @Composable
-fun NavGraph(navController: NavHostController, startDestination: String) {
-
+fun MainAppNavGraph(
+    navController: NavHostController,
+    onLogout: () -> Unit
+) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Destinations.PANTALLA_INICIAL_SCREEN
     ) {
-        composable(Destinations.LOGIN_SCREEN) {
-            LoginScreen(navController)
-        }
-
-        composable(Destinations.SINGUP_SCREEN) {
-            SingUpScreen(navController)
-        }
-
-        composable(Destinations.RECUPERAR_CONTRASENA_SCREEN) {
-            RecuperarContrasenaScreen(navController)
-        }
 
         composable(Destinations.PANTALLA_INICIAL_SCREEN) {
-            PantallaInicialScreen(navController)
+            PantallaInicialScreen(navController, onLogout = onLogout)
         }
 
         composable(Destinations.PANTALLA_BUSCAR_SCREEN) {
@@ -50,7 +38,5 @@ fun NavGraph(navController: NavHostController, startDestination: String) {
             val empresa = Gson().fromJson(empresaJson, EmpresaPreview::class.java)
             PantallaAccionScreen(navController, empresa)
         }
-
     }
-
 }
