@@ -33,8 +33,11 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_INICIAL_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_INICIAL_SCREEN) {
-                    popUpTo(navController.graph.startDestinationId) { }
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
                     launchSingleTop = true
+                    restoreState = true
                 }
             },
             colors = NavigationBarItemDefaults.colors(
@@ -51,8 +54,11 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_BUSCAR_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_BUSCAR_SCREEN) {
-                    popUpTo(navController.graph.startDestinationId) { }
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
                     launchSingleTop = true
+                    restoreState = true
                 }
             },
             colors = NavigationBarItemDefaults.colors(
@@ -69,8 +75,11 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_PERFIL_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_PERFIL_SCREEN) {
-                    popUpTo(navController.graph.startDestinationId) { }
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
                     launchSingleTop = true
+                    restoreState = true
                 }
             },
             colors = NavigationBarItemDefaults.colors(
