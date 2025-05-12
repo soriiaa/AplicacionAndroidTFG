@@ -19,8 +19,13 @@ class PantallaBuscarViewModel @Inject constructor(
     private val postRepository: PostRepository
 ) : ViewModel() {
 
+    // Para las empresas destacadas
     private val _empresas = MutableStateFlow<List<EmpresaPreview>>(emptyList())
     val empresas: StateFlow<List<EmpresaPreview>> = _empresas
+
+    // Para las empresas del cuadro de búsqueda
+    private val _empresasBusqueda = MutableStateFlow<List<EmpresaPreview>>(emptyList())
+    val empresasBusqueda: StateFlow<List<EmpresaPreview>> = _empresasBusqueda
 
     private val _textoBuscador = MutableStateFlow(TextFieldValue(""))
     val textoBuscador: StateFlow<TextFieldValue> = _textoBuscador
@@ -33,6 +38,7 @@ class PantallaBuscarViewModel @Inject constructor(
 
     fun onTextoBuscadorChange(nuevoTexto: TextFieldValue) {
         _textoBuscador.value = nuevoTexto
+        cargarResultadosBusqueda()
     }
 
     private var userId = Firebase.auth.currentUser?.uid ?: ""
@@ -42,11 +48,33 @@ class PantallaBuscarViewModel @Inject constructor(
         cargarFavoritos()
     }
 
-    fun limpiarDatos() {
-        _empresas.value = emptyList()
-        _textoBuscador.value = TextFieldValue("")
-        _empresasFavoritas.value = emptySet()
-        userId = ""
+    private fun cargarResultadosBusqueda() {
+
+        if (_textoBuscador.value.text.isNotEmpty()) {
+            viewModelScope.launch {
+                val listaAccionesBuscadas = postRepository.buscarEmpresasPorNombre(_textoBuscador.value.text)
+
+                val listaEmpresasBusquedaPreview = listaAccionesBuscadas.result.mapNotNull { empresaIndividual ->
+
+                    val simboloEmpresa = empresaIndividual.symbol
+
+                    val perfil = postRepository.getPerfilEmpresaPostRepository(simboloEmpresa)
+                    val precio = postRepository.getPrecioEmpresaPostRepository(simboloEmpresa)
+
+                    val moneda = perfil.currency
+                    val simboloMonetario = establecerSimboloMoneda(moneda)
+
+                    EmpresaPreview(
+                        ticker = simboloEmpresa,
+                        nombre = perfil.name,
+                        logo = perfil.logo,
+                        precio = precio.c,
+                        simboloMoneda = simboloMonetario
+                    )
+                }
+                _empresasBusqueda.value = listaEmpresasBusquedaPreview
+            }
+        }
     }
 
     fun cargarEmpresasDestacadas() {
@@ -65,29 +93,7 @@ class PantallaBuscarViewModel @Inject constructor(
                         val precio = postRepository.getPrecioEmpresaPostRepository(simbolo)
 
                         val moneda = perfil.currency
-                        val simboloMonetario = when (moneda) {
-                            "USD" -> "$"
-                            "EUR" -> "€"
-                            "GBP" -> "£"
-                            "JPY" -> "¥"
-                            "CHF" -> "CHF"
-                            "CAD" -> "C$"
-                            "AUD" -> "A$"
-                            "CNY" -> "¥"
-                            "SEK" -> "kr"
-                            "NOK" -> "kr"
-                            "KRW" -> "₩"
-                            "INR" -> "₹"
-                            "BRL" -> "R$"
-                            "MXN" -> "$"
-                            "RUB" -> "₽"
-                            "HKD" -> "HK$"
-                            "NZD" -> "NZ$"
-                            "TRY" -> "₺"
-                            "IDR" -> "Rp"
-                            "ZAR" -> "R"
-                            else -> "?"
-                        }
+                        val simboloMonetario = establecerSimboloMoneda(moneda)
 
                         EmpresaPreview(
                             ticker = simbolo,
@@ -132,11 +138,32 @@ class PantallaBuscarViewModel @Inject constructor(
         }
     }
 
-    fun limpiarEstado() {
-        _empresas.value = emptyList()
-        _textoBuscador.value = TextFieldValue("")
-        _cargando.value = false
-        _empresasFavoritas.value = emptySet()
+    // Método que pasa de la moneda al simbolo
+    fun establecerSimboloMoneda(moneda: String): String {
+        val simboloMonetario = when (moneda) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "GBP" -> "£"
+            "JPY" -> "¥"
+            "CHF" -> "CHF"
+            "CAD" -> "C$"
+            "AUD" -> "A$"
+            "CNY" -> "¥"
+            "SEK" -> "kr"
+            "NOK" -> "kr"
+            "KRW" -> "₩"
+            "INR" -> "₹"
+            "BRL" -> "R$"
+            "MXN" -> "$"
+            "RUB" -> "₽"
+            "HKD" -> "HK$"
+            "NZD" -> "NZ$"
+            "TRY" -> "₺"
+            "IDR" -> "Rp"
+            "ZAR" -> "R"
+            else -> "?"
+        }
+        return simboloMonetario
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.investlearntfg.data.remote
 
 import com.example.investlearntfg.data.model.DatosPerfilCompania
+import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,5 +23,11 @@ interface FinnHubApiService {
         @Query("symbol") simbolo: String,
         @Query("token") apiKey: String
     ): PrecioCompania
+
+    @GET("search")
+    suspend fun getListaEmpresasBusquedaNombre(
+        @Query("q") query: String,
+        @Query("token") apiKey: String
+    ): ListaEmpresasBusqueda
 
 }
