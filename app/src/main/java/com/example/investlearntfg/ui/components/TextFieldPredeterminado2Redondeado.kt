@@ -21,7 +21,8 @@ import com.example.investlearntfg.R
 fun TextFieldPredeterminado2Redondeado(
     textoInicial: String,
     textoEscrito: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit
+    onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier
 ) {
     OutlinedTextField(
         value = textoEscrito,
@@ -37,33 +38,10 @@ fun TextFieldPredeterminado2Redondeado(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .padding(horizontal = 28.dp),
         singleLine = true
     )
 }
-
-/* PREVIEW -- PARA EDITARLO BIEN
-
-@Composable
-fun TextFieldPredeterminado2RedondeadoPreview() {
-    InvestLearnTFGTheme {
-        Surface(modifier = Modifier.padding(16.dp)) {
-            TextFieldPredeterminado2Redondeado(
-                textoInicial = "Buscar empresa",
-                textoEscrito = TextFieldValue(""),
-                onValueChange = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TextFieldPredeterminado2RedondeadoPreview()
-}
-
- */

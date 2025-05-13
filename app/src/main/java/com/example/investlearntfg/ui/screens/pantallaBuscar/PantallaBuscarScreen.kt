@@ -15,8 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -29,7 +33,6 @@ import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.components.CardAccionPredeterminado
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
-import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.google.gson.Gson
@@ -45,6 +48,7 @@ fun PantallaBuscarScreen(
     val empresas by viewModel.empresas.collectAsState()
     val cargando by viewModel.cargando.collectAsState()
     val empresasFavoritas by viewModel.empresasFavoritas.collectAsState()
+    var buscadorActivo by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -55,14 +59,18 @@ fun PantallaBuscarScreen(
                 })
             }
     ) {
+
+
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
             contentAlignment = Alignment.TopCenter
         ) {
-            LogoAplicacionPulsable {
-                viewModel.cargarEmpresasDestacadas()
-                viewModel.cargarFavoritos()
+            androidx.compose.animation.AnimatedVisibility(visible = !buscadorActivo) {
+                LogoAplicacionPulsable {
+                    viewModel.cargarEmpresasDestacadas()
+                    viewModel.cargarFavoritos()
+                }
             }
         }
 
@@ -75,21 +83,26 @@ fun PantallaBuscarScreen(
 
         }
 
+
         Box(
             modifier = Modifier
                 .weight(1.5f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-
             TextFieldPredeterminado2Redondeado(
                 textoInicial = stringResource(R.string.texto_buscador),
                 textoEscrito = textoBuscador,
                 onValueChange = { nuevoTexto ->
                     viewModel.onTextoBuscadorChange(nuevoTexto)
-                }
+                },
+                modifier = Modifier
+                    .onFocusChanged { focusState ->
+                        buscadorActivo = focusState.isFocused
+                    }
             )
         }
+
 
         Box(
             modifier = Modifier
@@ -98,10 +111,13 @@ fun PantallaBuscarScreen(
                 .padding(start = 40.dp),
             contentAlignment = Alignment.BottomStart
         ) {
-            Text(
-                text = "Acciones destacadas",
-                fontWeight = FontWeight.Bold
-            )
+
+            androidx.compose.animation.AnimatedVisibility(visible = !buscadorActivo) {
+                Text(
+                    text = "Acciones destacadas",
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
         Box(
@@ -111,30 +127,40 @@ fun PantallaBuscarScreen(
             contentAlignment = Alignment.TopCenter
         ) {
 
-            if (empresas.isNotEmpty() && !cargando) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(empresas) { empresa ->
+            androidx.compose.animation.AnimatedVisibility(visible = !buscadorActivo) {
 
-                        val empresaJson = Uri.encode(Gson().toJson(empresa))
+                if (empresas.isNotEmpty() && !cargando) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(empresas) { empresa ->
 
-                        CardAccionPredeterminado(
-                            empresa = empresa,
-                            esFavorita = empresasFavoritas.contains(empresa.ticker),
-                            onClickFavorito = { viewModel.alternarFavorito(empresa) },
-                            onClickCard = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") }
+                            val empresaJson = Uri.encode(Gson().toJson(empresa))
+
+                            CardAccionPredeterminado(
+                                empresa = empresa,
+                                esFavorita = empresasFavoritas.contains(empresa.ticker),
+                                onClickFavorito = { viewModel.alternarFavorito(empresa) },
+                                onClickCard = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") }
+                            )
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 170.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                            color = Color.White
                         )
                     }
                 }
-            } else {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.White
-                )
             }
         }
         BottomNavigationBarPredeterminado(navController)
