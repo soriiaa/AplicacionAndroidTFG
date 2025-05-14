@@ -63,6 +63,11 @@ class PantallaBuscarViewModel @Inject constructor(
 
     }
 
+    fun limpiarEmpresasBusqueda() {
+        _empresasBusqueda.value = emptyList()
+        _textoBuscador.value = TextFieldValue("")
+    }
+
     private fun cargarResultadosBusqueda(textoCuadroBusqueda: String) {
 
         if (_textoBuscador.value.text.isNotEmpty()) {

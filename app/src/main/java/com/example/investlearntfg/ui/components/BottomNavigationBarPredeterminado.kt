@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.navigation.Destinations
+import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarViewModel
 
 @Composable
 fun BottomNavigationBarPredeterminado(navController: NavController) {
@@ -23,6 +25,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
     val currentRoute = navController.currentDestination?.route
     val colorIndicador = colorResource(R.color.color6)
     val colorNoSeleccionado = Color.White
+    val viewModelPantallaBuscar: PantallaBuscarViewModel = hiltViewModel()
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.background
@@ -39,6 +42,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
                     launchSingleTop = true
                     restoreState = true
                 }
+                viewModelPantallaBuscar.limpiarEmpresasBusqueda()
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
@@ -81,6 +85,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
                     launchSingleTop = true
                     restoreState = true
                 }
+                viewModelPantallaBuscar.limpiarEmpresasBusqueda()
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,

@@ -27,6 +27,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ import com.example.investlearntfg.ui.components.CardAccionPredeterminado1
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
 import com.example.investlearntfg.ui.navigation.Destinations
+import com.example.investlearntfg.ui.theme.backgroundColor
 import com.google.gson.Gson
 
 @Composable
@@ -53,6 +55,9 @@ fun PantallaBuscarScreen(
     val empresasFavoritas by viewModel.empresasFavoritas.collectAsState()
     var buscadorActivo by remember { mutableStateOf(false) }
     val empresasBusqueda by viewModel.empresasBusqueda.collectAsState()
+
+    val alturaRecuadroAcciones = remember { mutableStateOf(10f) }
+    val alturaTextFieldBusqueda = remember { mutableStateOf(1.5f) }
 
     Column(
         modifier = Modifier
@@ -90,7 +95,7 @@ fun PantallaBuscarScreen(
 
         Box(
             modifier = Modifier
-                .weight(1.5f)
+                .weight(alturaTextFieldBusqueda.value)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -124,19 +129,17 @@ fun PantallaBuscarScreen(
 
         Box(
             modifier = Modifier
-                .weight(10f)
+                .weight(alturaRecuadroAcciones.value)
                 .fillMaxWidth(),
             contentAlignment = Alignment.TopCenter
         ) {
 
             androidx.compose.animation.AnimatedVisibility(visible = buscadorActivo) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
-                        .background(Color(0xFF1F1F1F), shape = RoundedCornerShape(12.dp))
-                        .padding(8.dp)
-                ) {
+
+                alturaRecuadroAcciones.value = 30f
+                alturaTextFieldBusqueda.value = 3f
+
+                if (empresasBusqueda.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -158,12 +161,25 @@ fun PantallaBuscarScreen(
                             )
                         }
                     }
+                } else if (textoBuscador.text.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 170.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                            color = Color.White
+                        )
+                    }
                 }
-
-
             }
 
             androidx.compose.animation.AnimatedVisibility(visible = !buscadorActivo) {
+
+                alturaRecuadroAcciones.value = 10f
+                alturaTextFieldBusqueda.value = 1.5f
 
                 if (empresas.isNotEmpty() && !cargando) {
                     LazyColumn(
