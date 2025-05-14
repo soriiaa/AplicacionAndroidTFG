@@ -1,5 +1,6 @@
 package com.example.investlearntfg.data.repository
 
+import android.util.Log
 import com.example.investlearntfg.data.model.ApiKey
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
@@ -9,19 +10,20 @@ import javax.inject.Inject
 
 class PostRepository @Inject constructor(
     private val apiKey: ApiKey,
-    private val finnHubApiService: FinnHubApiService
+    private val apiService: FinnHubApiService
 ) {
 
     suspend fun getPerfilEmpresaPostRepository(simbolo: String): DatosPerfilCompania {
-        return finnHubApiService.getPerfilEmpresa(simbolo, apiKey.value)
+        return apiService.getPerfilEmpresa(simbolo, apiKey.value)
     }
 
     suspend fun getPrecioEmpresaPostRepository(simbolo: String): PrecioCompania {
-        return finnHubApiService.getPrecioEmpresa(simbolo, apiKey.value)
+        return apiService.getPrecioEmpresa(simbolo, apiKey.value)
     }
 
     suspend fun buscarEmpresasPorNombre(nombre: String): ListaEmpresasBusqueda {
-        return finnHubApiService.getListaEmpresasBusquedaNombre(nombre, apiKey.value)
+        Log.d("POST_REPOSITORY", "Buscando empresas con: $nombre")
+        return apiService.getListaEmpresasBusquedaNombre(nombre, apiKey.value)
     }
 
 }

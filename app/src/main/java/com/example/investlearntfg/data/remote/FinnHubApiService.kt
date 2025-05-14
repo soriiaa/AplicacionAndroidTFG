@@ -24,6 +24,7 @@ interface FinnHubApiService {
         @Query("token") apiKey: String
     ): PrecioCompania
 
+    // https://finnhub.io/api/v1/search?q=Tesla&token=d0e6uv1r01qv1dmld640d0e6uv1r01qv1dmld64g
     @GET("search")
     suspend fun getListaEmpresasBusquedaNombre(
         @Query("q") query: String,

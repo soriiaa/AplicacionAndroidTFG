@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-
     id("org.jetbrains.kotlin.plugin.compose") version "2.1.10"
     id("com.google.devtools.ksp") version "2.1.20-1.0.31"
     id("com.google.dagger.hilt.android") version "2.48"
@@ -52,6 +51,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
 }
 
 dependencies {
@@ -82,6 +83,8 @@ dependencies {
     ksp(libs.dagger.compiler)
 
     // Retrofit
+    implementation(libs.retrofit.v290)
+    implementation(libs.converter.gson.v290)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
@@ -98,6 +101,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.okhttp3.logging.interceptor)
 
     // Test
     testImplementation(libs.junit)

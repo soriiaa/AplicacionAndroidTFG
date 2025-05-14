@@ -1,5 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaBuscar
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,8 @@ import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +41,6 @@ class PantallaBuscarViewModel @Inject constructor(
 
     fun onTextoBuscadorChange(nuevoTexto: TextFieldValue) {
         _textoBuscador.value = nuevoTexto
-        cargarResultadosBusqueda()
     }
 
     private var userId = Firebase.auth.currentUser?.uid ?: ""
@@ -46,32 +48,54 @@ class PantallaBuscarViewModel @Inject constructor(
     init {
         cargarEmpresasDestacadas()
         cargarFavoritos()
+
+        viewModelScope.launch {
+            _textoBuscador
+                .debounce(500L)
+                .distinctUntilChangedBy { it.text }
+                .collect { texto ->
+                    if (texto.text.isNotBlank()) {
+                        cargarResultadosBusqueda(texto.text)
+                        Log.d("API Request", "Llamo")
+                    }
+                }
+        }
+
     }
 
-    private fun cargarResultadosBusqueda() {
+    private fun cargarResultadosBusqueda(textoCuadroBusqueda: String) {
 
         if (_textoBuscador.value.text.isNotEmpty()) {
             viewModelScope.launch {
-                val listaAccionesBuscadas = postRepository.buscarEmpresasPorNombre(_textoBuscador.value.text)
+
+                val listaAccionesBuscadas = postRepository.buscarEmpresasPorNombre(textoCuadroBusqueda)
 
                 val listaEmpresasBusquedaPreview = listaAccionesBuscadas.result.mapNotNull { empresaIndividual ->
 
-                    val simboloEmpresa = empresaIndividual.symbol
+                        try {
 
-                    val perfil = postRepository.getPerfilEmpresaPostRepository(simboloEmpresa)
-                    val precio = postRepository.getPrecioEmpresaPostRepository(simboloEmpresa)
+                            val simboloEmpresa = empresaIndividual.symbol
 
-                    val moneda = perfil.currency
-                    val simboloMonetario = establecerSimboloMoneda(moneda)
+                            val perfil = postRepository.getPerfilEmpresaPostRepository(simboloEmpresa)
+                            val precio = postRepository.getPrecioEmpresaPostRepository(simboloEmpresa)
 
-                    EmpresaPreview(
-                        ticker = simboloEmpresa,
-                        nombre = perfil.name,
-                        logo = perfil.logo,
-                        precio = precio.c,
-                        simboloMoneda = simboloMonetario
-                    )
-                }
+                            val moneda = perfil.currency
+                            val simboloMonetario = establecerSimboloMoneda(moneda)
+
+                            EmpresaPreview(
+                                ticker = simboloEmpresa,
+                                nombre = perfil.name,
+                                logo = perfil.logo,
+                                precio = precio.c,
+                                simboloMoneda = simboloMonetario
+                            )
+
+                        } catch (e: Exception) {
+                            println("Error al cargar datos de ${empresaIndividual.symbol}: ${e.message}")
+                            null
+                        }
+
+                    }
                 _empresasBusqueda.value = listaEmpresasBusquedaPreview
             }
         }

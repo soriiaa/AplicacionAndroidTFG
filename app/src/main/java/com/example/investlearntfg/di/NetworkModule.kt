@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -17,7 +18,20 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
+        // Interceptor de logs HTTP
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY // Muestra TODO
+        }
+
         return OkHttpClient.Builder()
+
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                    .build()
+                chain.proceed(request)
+            }
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 
