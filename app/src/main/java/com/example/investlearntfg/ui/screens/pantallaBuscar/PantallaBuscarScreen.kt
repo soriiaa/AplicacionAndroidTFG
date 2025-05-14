@@ -1,15 +1,18 @@
 package com.example.investlearntfg.ui.screens.pantallaBuscar
 
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
-import com.example.investlearntfg.ui.components.CardAccionPredeterminado
+import com.example.investlearntfg.ui.components.CardAccionPredeterminado1
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
 import com.example.investlearntfg.ui.navigation.Destinations
@@ -49,6 +52,7 @@ fun PantallaBuscarScreen(
     val cargando by viewModel.cargando.collectAsState()
     val empresasFavoritas by viewModel.empresasFavoritas.collectAsState()
     var buscadorActivo by remember { mutableStateOf(false) }
+    val empresasBusqueda by viewModel.empresasBusqueda.collectAsState()
 
     Column(
         modifier = Modifier
@@ -103,7 +107,6 @@ fun PantallaBuscarScreen(
             )
         }
 
-
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -111,7 +114,6 @@ fun PantallaBuscarScreen(
                 .padding(start = 40.dp),
             contentAlignment = Alignment.BottomStart
         ) {
-
             androidx.compose.animation.AnimatedVisibility(visible = !buscadorActivo) {
                 Text(
                     text = "Acciones destacadas",
@@ -127,6 +129,40 @@ fun PantallaBuscarScreen(
             contentAlignment = Alignment.TopCenter
         ) {
 
+            androidx.compose.animation.AnimatedVisibility(visible = buscadorActivo) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .background(Color(0xFF1F1F1F), shape = RoundedCornerShape(12.dp))
+                        .padding(8.dp)
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 250.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(empresasBusqueda) { empresa ->
+
+                            val empresaJson = Uri.encode(Gson().toJson(empresa))
+
+                            CardAccionPredeterminado1(
+                                empresa = empresa,
+                                esFavorita = empresasFavoritas.contains(empresa.ticker),
+                                onClickFavorito = { viewModel.alternarFavorito(empresa) },
+                                onClickCard = {
+                                    navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson")
+                                    focusManager.clearFocus()
+                                }
+                            )
+                        }
+                    }
+                }
+
+
+            }
+
             androidx.compose.animation.AnimatedVisibility(visible = !buscadorActivo) {
 
                 if (empresas.isNotEmpty() && !cargando) {
@@ -140,7 +176,7 @@ fun PantallaBuscarScreen(
 
                             val empresaJson = Uri.encode(Gson().toJson(empresa))
 
-                            CardAccionPredeterminado(
+                            CardAccionPredeterminado1(
                                 empresa = empresa,
                                 esFavorita = empresasFavoritas.contains(empresa.ticker),
                                 onClickFavorito = { viewModel.alternarFavorito(empresa) },

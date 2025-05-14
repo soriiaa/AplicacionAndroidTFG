@@ -25,7 +25,7 @@ import com.example.investlearntfg.R
 import com.example.investlearntfg.data.model.EmpresaPreview
 
 @Composable
-fun CardAccionPredeterminado(
+fun CardAccionPredeterminado1(
     empresa: EmpresaPreview,
     esFavorita: Boolean,
     onClickFavorito: () -> Unit,
