@@ -1,7 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaBuscar
 
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +25,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,7 +36,6 @@ import com.example.investlearntfg.ui.components.CardAccionPredeterminado1
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2Redondeado
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.theme.backgroundColor
 import com.google.gson.Gson
 
 @Composable
@@ -68,8 +64,6 @@ fun PantallaBuscarScreen(
                 })
             }
     ) {
-
-
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -91,7 +85,6 @@ fun PantallaBuscarScreen(
         ) {
 
         }
-
 
         Box(
             modifier = Modifier
