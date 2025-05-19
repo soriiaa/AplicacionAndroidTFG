@@ -13,10 +13,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.investlearntfg.data.model.EmpresaPreview
 
 @Composable
-fun ImagenAccionPredeterminada(empresa: EmpresaPreview) {
+fun ImagenAccionPredeterminada(logo: String) {
     Image(
-        painter = rememberAsyncImagePainter(empresa.logo),
-        contentDescription = "${empresa.nombre} logo",
+        painter = rememberAsyncImagePainter(logo),
+        contentDescription = "logo",
         modifier = Modifier
             .size(100.dp)
             .padding(8.dp)

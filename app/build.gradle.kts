@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.philjay.mpandroidchart)
 
     // Test
     testImplementation(libs.junit)

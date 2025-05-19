@@ -2,6 +2,7 @@ package com.example.investlearntfg.data.repository
 
 import android.util.Log
 import com.example.investlearntfg.data.model.ApiKey
+import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
@@ -24,6 +25,10 @@ class PostRepository @Inject constructor(
     suspend fun buscarEmpresasPorNombre(nombre: String): ListaEmpresasBusqueda {
         Log.d("POST_REPOSITORY", "Buscando empresas con: $nombre")
         return apiService.getListaEmpresasBusquedaNombre(nombre, apiKey.value)
+    }
+
+    suspend fun getVelasAccion(symbol: String, resolution: String, from: Long, to: Long): CandleResponse {
+        return apiService.getVelasAccion(symbol, resolution, from, to, apiKey.value)
     }
 
 }

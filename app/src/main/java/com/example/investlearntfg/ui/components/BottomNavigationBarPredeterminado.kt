@@ -25,7 +25,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
     val currentRoute = navController.currentDestination?.route
     val colorIndicador = colorResource(R.color.color6)
     val colorNoSeleccionado = Color.White
-    //val viewModelPantallaBuscar: PantallaBuscarViewModel = hiltViewModel()
+    val viewModelPantallaBuscar: PantallaBuscarViewModel = hiltViewModel()
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.background
@@ -42,7 +42,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
                     launchSingleTop = true
                     restoreState = true
                 }
-                //viewModelPantallaBuscar.limpiarEmpresasBusqueda()
+                viewModelPantallaBuscar.limpiarEmpresasBusqueda()
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
@@ -85,7 +85,7 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
                     launchSingleTop = true
                     restoreState = true
                 }
-                //viewModelPantallaBuscar.limpiarEmpresasBusqueda()
+                viewModelPantallaBuscar.limpiarEmpresasBusqueda()
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,

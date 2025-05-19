@@ -1,5 +1,6 @@
 package com.example.investlearntfg.data.remote
 
+import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
@@ -30,5 +31,14 @@ interface FinnHubApiService {
         @Query("q") query: String,
         @Query("token") apiKey: String
     ): ListaEmpresasBusqueda
+
+    @GET("stock/candle")
+    suspend fun getVelasAccion(
+        @Query("symbol") symbol: String,
+        @Query("resolution") resolution: String,
+        @Query("from") from: Long,
+        @Query("to") to: Long,
+        @Query("token") token: String
+    ): CandleResponse
 
 }
