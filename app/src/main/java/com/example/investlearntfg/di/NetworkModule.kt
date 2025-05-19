@@ -1,6 +1,7 @@
 package com.example.investlearntfg.di
 
 import com.example.investlearntfg.data.remote.FinnHubApiService
+import com.example.investlearntfg.data.remote.PolygonApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -37,6 +39,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @Named("finnhub")
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://finnhub.io/api/v1/")
@@ -47,7 +50,24 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideFinnHubApiService(retrofit: Retrofit): FinnHubApiService {
+    fun provideFinnHubApiService(@Named("finnhub") retrofit: Retrofit): FinnHubApiService {
         return retrofit.create(FinnHubApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("polygon")
+    fun providePolygonRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.polygon.io/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePolygonApiService(@Named("polygon") retrofit: Retrofit): PolygonApiService {
+        return retrofit.create(PolygonApiService::class.java)
     }
 }

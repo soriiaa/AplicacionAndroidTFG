@@ -1,10 +1,16 @@
 package com.example.investlearntfg.data.model
 
-data class CandleResponse (
-    val c: List<Float>, // precios de cierre
-    val h: List<Float>, // precios máximos
-    val l: List<Float>, // precios mínimos
-    val o: List<Float>, // precios de apertura
-    val t: List<Long>,  // marcas de tiempo (formato Unix)
-    val s: String       // estado (puede ser "ok" o "no_data")
+
+data class CandleResponse(
+    val results: List<CandleData>?,
+    val resultsCount: Int
+)
+
+data class CandleData(
+    val t: Long,   // Marca de tiempo
+    val o: Float,  // Apertura
+    val h: Float,  // Máximo
+    val l: Float,  // Mínimo
+    val c: Float,  // Cierre
+    val v: Long    // Volumen
 )

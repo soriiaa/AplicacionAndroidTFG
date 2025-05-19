@@ -1,5 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaAccion
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -44,23 +48,35 @@ class PantallaAccionViewModel @Inject constructor(
     }
 
     fun traerVelasAccion(periodo: String) {
-
         viewModelScope.launch {
-            val tiempoActual = System.currentTimeMillis() / 1000
-            val (resolution, from) = when (periodo) {
-                "H" -> Pair("1", tiempoActual - TimeUnit.HOURS.toSeconds(1))
-                "D" -> Pair("D", tiempoActual - TimeUnit.DAYS.toSeconds(1))
-                "M" -> Pair("D", tiempoActual - TimeUnit.DAYS.toSeconds(30))
-                else -> Pair("D", tiempoActual - TimeUnit.DAYS.toSeconds(7))
+            try {
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+                val calendar = Calendar.getInstance() // fecha actual
+                calendar.timeInMillis = System.currentTimeMillis()
+
+                val toDate = sdf.format(calendar.time) // hoy en "yyyy-MM-dd"
+
+                when (periodo) {
+                    "D" -> { calendar.add(Calendar.DAY_OF_YEAR, -1) }
+                    "W" -> { calendar.add(Calendar.DAY_OF_YEAR, -7) }
+                    "M" -> { calendar.add(Calendar.MONTH, -1) }
+                    else -> { calendar.add(Calendar.DAY_OF_YEAR, -7) }
+                }
+
+                val fromDate = sdf.format(calendar.time)
+                val tickerEmpresa = _empresa.value?.ticker ?: throw IllegalStateException("Ticker no disponible")
+
+                val valoresGrafico: CandleResponse = postRepository.getVelasAccion(tickerEmpresa, 1, "day", fromDate, toDate)
+
+                _velas.value = valoresGrafico
+
+                Log.d("VELAS_RESPUESTA_API", "Respuesta: ${_velas.value.toString()}")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _velas.value = null
             }
-            val to = tiempoActual
-
-            val tickerEmpresa = _empresa.value?.ticker ?: throw IllegalStateException("Ticker no disponible")
-
-            val valoresGrafico = postRepository.getVelasAccion(tickerEmpresa, resolution, from, to)
-            _velas.value = valoresGrafico
-
         }
     }
-
 }

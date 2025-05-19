@@ -156,7 +156,7 @@ fun PantallaAccionScreen(
 fun SelectorPeriodo(
     seleccionado: String,
     alSeleccionar: (String) -> Unit,
-    opciones: List<String> = listOf("H", "D", "M")
+    opciones: List<String> = listOf("D", "S", "M")
 ) {
     Row(
         modifier = Modifier

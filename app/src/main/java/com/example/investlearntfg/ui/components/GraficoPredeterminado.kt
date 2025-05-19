@@ -30,15 +30,16 @@ fun GraficoPredeterminado(datosVelas: CandleResponse) {
             }
         },
         update = { grafico ->
-            if (datosVelas.s == "ok" && datosVelas.c.isNotEmpty()) {
+            val velas = datosVelas.results
+            if (!velas.isNullOrEmpty()) {
 
-                val entradas = datosVelas.c.indices.map { i ->
+                val entradas = velas.mapIndexed { index, vela ->
                     CandleEntry(
-                        i.toFloat(),
-                        datosVelas.h[i],
-                        datosVelas.l[i],
-                        datosVelas.o[i],
-                        datosVelas.c[i]
+                        index.toFloat(),
+                        vela.h,
+                        vela.l,
+                        vela.o,
+                        vela.c
                     )
                 }
 
@@ -55,6 +56,7 @@ fun GraficoPredeterminado(datosVelas: CandleResponse) {
 
                 grafico.axisLeft.textColor = Color.WHITE
                 grafico.xAxis.textColor = Color.WHITE
+                grafico.axisRight.isEnabled = false
 
                 grafico.data = CandleData(conjuntoDatos)
                 grafico.invalidate()
