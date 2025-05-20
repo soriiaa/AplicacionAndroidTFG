@@ -52,11 +52,16 @@ fun GraficoPredeterminado(datosVelas: CandleResponse) {
                     increasingColor = Color.rgb(122, 242, 84)
                     increasingPaintStyle = Paint.Style.FILL
                     neutralColor = Color.BLUE
+                    setDrawValues(false)
+
+                    highLightColor = android.graphics.Color.WHITE
+                    shadowColor = 0x80FFFFFF.toInt()
                 }
 
                 grafico.axisLeft.textColor = Color.WHITE
                 grafico.xAxis.textColor = Color.WHITE
                 grafico.axisRight.isEnabled = false
+                grafico.legend.isEnabled = false
 
                 grafico.data = CandleData(conjuntoDatos)
                 grafico.invalidate()
