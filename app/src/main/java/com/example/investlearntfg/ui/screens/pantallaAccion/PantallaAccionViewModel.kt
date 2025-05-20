@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -50,24 +51,39 @@ class PantallaAccionViewModel @Inject constructor(
     fun traerVelasAccion(periodo: String) {
         viewModelScope.launch {
             try {
-                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val calendar = Calendar.getInstance()
+                val to = calendar.timeInMillis / 1000  // tiempo actual en segundos
 
-                val calendar = Calendar.getInstance() // fecha actual
-                calendar.timeInMillis = System.currentTimeMillis()
-
-                val toDate = sdf.format(calendar.time) // hoy en "yyyy-MM-dd"
+                val resolution: String
+                var multiplier: Int = 1
 
                 when (periodo) {
-                    "D" -> { calendar.add(Calendar.DAY_OF_YEAR, -1) }
-                    "W" -> { calendar.add(Calendar.DAY_OF_YEAR, -7) }
-                    "M" -> { calendar.add(Calendar.MONTH, -1) }
-                    else -> { calendar.add(Calendar.DAY_OF_YEAR, -7) }
+                    "D" -> {
+                        resolution = "minute"
+                        multiplier = 30
+                        calendar.add(Calendar.DAY_OF_YEAR, -1)
+                    }
+                    "S" -> {
+                        resolution = "hour"
+                        multiplier = 4
+                        calendar.add(Calendar.DAY_OF_YEAR, -7)
+                    }
+                    "M" -> {
+                        resolution = "day"
+                        calendar.add(Calendar.MONTH, -1)
+                    }
+                    else -> {
+                        resolution = "day"
+                        calendar.add(Calendar.DAY_OF_YEAR, -7)
+                    }
                 }
 
-                val fromDate = sdf.format(calendar.time)
+                val from = calendar.timeInMillis / 1000
+
                 val tickerEmpresa = _empresa.value?.ticker ?: throw IllegalStateException("Ticker no disponible")
 
-                val valoresGrafico: CandleResponse = postRepository.getVelasAccion(tickerEmpresa, 1, "day", fromDate, toDate)
+                Log.d("PARAMETROS_API", "ticker: $tickerEmpresa, multiplier: $multiplier, resolution: $resolution, from: $from, to: $to")
+                val valoresGrafico: CandleResponse = postRepository.getVelasAccion(tickerEmpresa, multiplier, resolution, from.toString(), to.toString())
 
                 _velas.value = valoresGrafico
 
@@ -79,4 +95,7 @@ class PantallaAccionViewModel @Inject constructor(
             }
         }
     }
+
+
+
 }
