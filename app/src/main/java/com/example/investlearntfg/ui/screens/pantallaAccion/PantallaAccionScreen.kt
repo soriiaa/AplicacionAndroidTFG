@@ -1,6 +1,7 @@
 package com.example.investlearntfg.ui.screens.pantallaAccion
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,7 +51,7 @@ fun PantallaAccionScreen(
     val focusManager = LocalFocusManager.current
     val empresa by viewModel.empresa.collectAsState()
     val velas by viewModel.velas.collectAsState()
-
+    val isLoading by viewModel.isLoading.collectAsState()
     var periodoSeleccionado by remember { mutableStateOf("D") }
 
     Column(
@@ -93,7 +95,7 @@ fun PantallaAccionScreen(
 
         Box(
             modifier = Modifier
-                .weight(1.5f)
+                .weight(1.6f)
                 .fillMaxWidth()
                 .padding(top = 15.dp),
             contentAlignment = Alignment.Center
@@ -119,7 +121,7 @@ fun PantallaAccionScreen(
 
         Box(
             modifier = Modifier
-                .weight(0.5f)
+                .weight(0.6f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -138,7 +140,11 @@ fun PantallaAccionScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            velas?.let { GraficoPredeterminado(it) }
+            if (isLoading) {
+                CircularProgressIndicator()
+            } else {
+                velas?.let { GraficoPredeterminado(it) }
+            }
         }
 
         Box(
@@ -160,46 +166,26 @@ fun SelectorPeriodo(
 ) {
     Row(
         modifier = Modifier
-            .padding(8.dp)
-            .background(Color.LightGray, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp)),
-        horizontalArrangement = Arrangement.Center
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        opciones.forEachIndexed { indice, opcion ->
+        opciones.forEachIndexed { index, opcion ->
             val estaSeleccionado = opcion == seleccionado
-            TextButton(
-                onClick = { alSeleccionar(opcion) },
+
+            Text(
+                text = opcion,
                 modifier = Modifier
-                    .weight(1f)
-                    .then(
-                        if (indice == 0) Modifier.clip(
-                            RoundedCornerShape(
-                                topStart = 12.dp,
-                                bottomStart = 12.dp
-                            )
-                        )
-                        else if (indice == opciones.lastIndex) Modifier.clip(
-                            RoundedCornerShape(
-                                topEnd = 12.dp,
-                                bottomEnd = 12.dp
-                            )
-                        )
-                        else Modifier
-                    )
-                    .background(if (estaSeleccionado) Color.Blue else Color.Transparent)
-            ) {
+                    .clickable { alSeleccionar(opcion) }
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                color = if (estaSeleccionado) Color.White else Color.LightGray,
+                fontWeight = if (estaSeleccionado) FontWeight.Bold else FontWeight.Normal
+            )
+
+            if (index < opciones.lastIndex) {
                 Text(
-                    text = opcion,
-                    color = if (estaSeleccionado) Color.White else Color.Black,
-                    fontWeight = if (estaSeleccionado) FontWeight.Bold else FontWeight.Normal
-                )
-            }
-            if (indice < opciones.lastIndex) {
-                Divider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
+                    text = " | ",
+                    color = Color.LightGray,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
         }

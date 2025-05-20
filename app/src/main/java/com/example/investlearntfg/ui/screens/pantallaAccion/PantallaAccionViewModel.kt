@@ -34,6 +34,9 @@ class PantallaAccionViewModel @Inject constructor(
     private val _velas = MutableStateFlow<CandleResponse?>(null)
     val velas: StateFlow<CandleResponse?> = _velas
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     fun alternarEsFavorito() {
         _esEmpresaFavorita.value = !_esEmpresaFavorita.value
     }
@@ -50,6 +53,8 @@ class PantallaAccionViewModel @Inject constructor(
 
     fun traerVelasAccion(periodo: String) {
         viewModelScope.launch {
+
+            _isLoading.value = true
             try {
                 val calendar = Calendar.getInstance()
                 val to = calendar.timeInMillis / 1000  // tiempo actual en segundos
@@ -88,11 +93,12 @@ class PantallaAccionViewModel @Inject constructor(
                 _velas.value = valoresGrafico
 
                 Log.d("VELAS_RESPUESTA_API", "Respuesta: ${_velas.value.toString()}")
-
             } catch (e: Exception) {
-                e.printStackTrace()
                 _velas.value = null
+            } finally {
+                _isLoading.value = false
             }
+
         }
     }
 
