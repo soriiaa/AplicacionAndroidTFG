@@ -1,6 +1,7 @@
 package com.example.investlearntfg.ui.screens.pantallaAccion
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -29,18 +30,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.investlearntfg.R
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.components.BotonAnadirFavoritoPredeterminado
 import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
+import com.example.investlearntfg.ui.components.BotonesComprarVender
 import com.example.investlearntfg.ui.components.GraficoPredeterminado
 import com.example.investlearntfg.ui.components.ImagenAccionPredeterminada
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
+import com.example.investlearntfg.ui.components.SelectorCantidadAcciones
+import com.example.investlearntfg.ui.theme.backgroundColor
 
 @Composable
 fun PantallaAccionScreen(
@@ -153,7 +160,7 @@ fun PantallaAccionScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-
+            BotonesComprarVender()
         }
     }
 }
@@ -191,7 +198,6 @@ fun SelectorPeriodo(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
