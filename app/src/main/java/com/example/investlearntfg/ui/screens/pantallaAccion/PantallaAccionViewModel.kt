@@ -6,17 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.model.Usuario
+import com.example.investlearntfg.data.repository.UsuarioRepository
 import com.example.investlearntfg.data.repository.PostRepository
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +24,8 @@ class PantallaAccionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val postRepository: PostRepository
 ) : ViewModel() {
+
+    private var userId = Firebase.auth.currentUser?.uid ?: ""
 
     private val _empresa = MutableStateFlow<EmpresaPreview?>(null)
     val empresa: StateFlow<EmpresaPreview?> = _empresa
@@ -37,11 +39,20 @@ class PantallaAccionViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _dineroCuenta = MutableStateFlow<Double?>(null)
+    val dineroCuenta: StateFlow<Double?> = _dineroCuenta
+
+    private val _simboloMoneda = MutableStateFlow<String?>(null)
+    val simboloMoneda: StateFlow<String?> = _simboloMoneda
+
     fun alternarEsFavorito() {
         _esEmpresaFavorita.value = !_esEmpresaFavorita.value
     }
 
     init {
+        cargarDineroCuenta(userId)
+        cargarSimboloMoneda(userId)
+
         val empresaJson = savedStateHandle.get<String>("empresaJson")
         val empresaDeserializada = empresaJson?.let {
             Gson().fromJson(it, EmpresaPreview::class.java)
@@ -49,6 +60,25 @@ class PantallaAccionViewModel @Inject constructor(
         _empresa.value = empresaDeserializada
 
         traerVelasAccion("D")
+    }
+
+    fun cargarSimboloMoneda(userId: String) {
+        UsuarioRepository.getSimboloMoneda(userId) { simboloMoneda ->
+            _simboloMoneda.value  = when (simboloMoneda) {
+                "Dólar estadounidense - $ - USD" -> "$"
+                "Euro - € - EUR" -> "€"
+                "Libra esterlina - £ - GBP" -> "£"
+                "Yen japonés - ¥ - JPY" -> "¥"
+                "Franco suizo - CHF - CHF" -> "CHF"
+                else -> "" // por si acaso
+            }
+        }
+    }
+
+    fun cargarDineroCuenta(userId: String) {
+        UsuarioRepository.getDineroCuenta(userId) { dinero ->
+            _dineroCuenta.value = dinero
+        }
     }
 
     fun traerVelasAccion(periodo: String) {
