@@ -41,7 +41,6 @@ fun PantallaCompraAccionScreen(
     navController: NavController,
     viewModel: PantallaCompraAccionViewModel = hiltViewModel(),
     precioActual: Double = 176.25,
-    saldoDisponibleEuros: Double = 2000.0,
     tipoCambio: Double = 1.08,
     onComprarClick: (cantidad: Int) -> Unit = {}
 ) {
@@ -53,6 +52,8 @@ fun PantallaCompraAccionScreen(
 
     val empresa by viewModel.empresa.collectAsState()
     val datosPrecioAccion by viewModel.precioCompania2.collectAsState()
+    val dineroDisponible = viewModel.dineroCuenta.collectAsState()
+    val simboloMoneda by viewModel.simboloMonedaUsuario.collectAsState()
 
 
     val tarjetaColor = color5
@@ -146,7 +147,7 @@ fun PantallaCompraAccionScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Saldo disponible: ${"%,.2f".format(saldoDisponibleEuros)} €",
+                text = "Saldo disponible: ${"%,.2f".format(dineroDisponible.value)} $simboloMoneda",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )

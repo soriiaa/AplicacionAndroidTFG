@@ -51,8 +51,8 @@ class PantallaAccionViewModel @Inject constructor(
     private val _precioCompania2 = MutableStateFlow<PrecioCompania2?>(null)
     val precioCompania2: StateFlow<PrecioCompania2?> = _precioCompania2
 
-    private val _simboloMoneda = MutableStateFlow<String?>(null)
-    val simboloMoneda: StateFlow<String?> = _simboloMoneda
+    private val _simboloMonedaUsuario = MutableStateFlow<String?>(null)
+    val simboloMonedaUsuario: StateFlow<String?> = _simboloMonedaUsuario
 
     init {
         cargarInformacionPreviaEmpresa(savedStateHandle)
@@ -112,7 +112,7 @@ class PantallaAccionViewModel @Inject constructor(
 
     fun cargarSimboloMoneda(userId: String) {
         UsuarioRepository.getSimboloMoneda(userId) { simboloMoneda ->
-            _simboloMoneda.value = when (simboloMoneda) {
+            _simboloMonedaUsuario.value = when (simboloMoneda) {
                 "Dólar estadounidense - $ - USD" -> "$"
                 "Euro - € - EUR" -> "€"
                 "Libra esterlina - £ - GBP" -> "£"

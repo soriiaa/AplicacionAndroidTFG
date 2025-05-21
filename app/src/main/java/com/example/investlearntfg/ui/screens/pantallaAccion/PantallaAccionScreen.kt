@@ -79,7 +79,7 @@ fun PantallaAccionScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     var periodoSeleccionado by remember { mutableStateOf("D") }
     val dineroDisponible = viewModel.dineroCuenta.collectAsState()
-    val simboloMoneda by viewModel.simboloMoneda.collectAsState()
+    val simboloMoneda by viewModel.simboloMonedaUsuario.collectAsState()
     val perfilCompletoEmpresa by viewModel.perfilCompletoEmpresa.collectAsState()
     val esFavorita by viewModel.esEmpresaFavorita.collectAsState()
     val datosPrecioAccion by viewModel.precioCompania2.collectAsState()

@@ -1,5 +1,6 @@
 package com.example.investlearntfg.di
 
+import com.example.investlearntfg.data.remote.ExchangeRateApiService
 import com.example.investlearntfg.data.remote.FinnHubApiService
 import com.example.investlearntfg.data.remote.PolygonApiService
 import dagger.Module
@@ -70,4 +71,22 @@ object NetworkModule {
     fun providePolygonApiService(@Named("polygon") retrofit: Retrofit): PolygonApiService {
         return retrofit.create(PolygonApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    @Named("exchange")
+    fun provideExchangeRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.exchangerate.host/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create()) // Usamos Gson como en los otros
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideExchangeRateApiService(@Named("exchange") retrofit: Retrofit): ExchangeRateApiService {
+        return retrofit.create(ExchangeRateApiService::class.java)
+    }
+
 }
