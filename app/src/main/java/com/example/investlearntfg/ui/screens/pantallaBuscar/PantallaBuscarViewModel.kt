@@ -5,7 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.EmpresaPreview
-import com.example.investlearntfg.data.repository.FavoritosRepository
+import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -150,7 +150,7 @@ class PantallaBuscarViewModel @Inject constructor(
     }
 
     fun cargarFavoritos() {
-        FavoritosRepository.obtenerFavoritas(userId) { favoritos ->
+        FirestoreRepository.obtenerFavoritas(userId) { favoritos ->
             _empresasFavoritas.value = favoritos.toSet()
         }
     }
@@ -159,10 +159,10 @@ class PantallaBuscarViewModel @Inject constructor(
         val esFavorita = _empresasFavoritas.value.contains(empresa.ticker)
 
         if (esFavorita) {
-            FavoritosRepository.eliminarFavorita(userId, empresa.ticker)
+            FirestoreRepository.eliminarFavorita(userId, empresa.ticker)
             _empresasFavoritas.value -= empresa.ticker
         } else {
-            FavoritosRepository.marcarComoFavorita(userId, empresa)
+            FirestoreRepository.marcarComoFavorita(userId, empresa)
             _empresasFavoritas.value += empresa.ticker
         }
     }

@@ -8,8 +8,7 @@ import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.PrecioCompania2
-import com.example.investlearntfg.data.repository.FavoritosRepository
-import com.example.investlearntfg.data.repository.UsuarioRepository
+import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -81,17 +80,17 @@ class PantallaAccionViewModel @Inject constructor(
 
     fun alternarFavorito() {
         if (_esEmpresaFavorita.value) {
-            _empresa.value?.let { FavoritosRepository.eliminarFavorita(userId, it.ticker) }
+            _empresa.value?.let { FirestoreRepository.eliminarFavorita(userId, it.ticker) }
             _esEmpresaFavorita.value = false
         } else {
-            _empresa.value?.let { FavoritosRepository.marcarComoFavorita(userId, it) }
+            _empresa.value?.let { FirestoreRepository.marcarComoFavorita(userId, it) }
             _esEmpresaFavorita.value = true
         }
     }
 
     fun cargarEsFavorito() {
         _empresa.value?.let { empresa ->
-            FavoritosRepository.esFavorito(userId, empresa.ticker) { esFavorito ->
+            FirestoreRepository.esFavorito(userId, empresa.ticker) { esFavorito ->
                 _esEmpresaFavorita.value = esFavorito
             }
         }
@@ -111,7 +110,7 @@ class PantallaAccionViewModel @Inject constructor(
     }
 
     fun cargarSimboloMoneda(userId: String) {
-        UsuarioRepository.getSimboloMoneda(userId) { simboloMoneda ->
+        FirestoreRepository.getSimboloMoneda(userId) { simboloMoneda ->
             _simboloMonedaUsuario.value = when (simboloMoneda) {
                 "Dólar estadounidense - $ - USD" -> "$"
                 "Euro - € - EUR" -> "€"
@@ -124,7 +123,7 @@ class PantallaAccionViewModel @Inject constructor(
     }
 
     fun cargarDineroCuenta(userId: String) {
-        UsuarioRepository.getDineroCuenta(userId) { dinero ->
+        FirestoreRepository.getDineroCuenta(userId) { dinero ->
             _dineroCuenta.value = dinero
         }
     }

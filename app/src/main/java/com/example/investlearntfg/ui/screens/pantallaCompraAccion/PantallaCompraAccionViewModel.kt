@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.PrecioCompania2
+import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
-import com.example.investlearntfg.data.repository.UsuarioRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.gson.Gson
@@ -47,7 +47,7 @@ class PantallaCompraAccionViewModel @Inject constructor(
     }
 
     fun cargarSimboloMoneda(userId: String) {
-        UsuarioRepository.getSimboloMoneda(userId) { simboloMoneda ->
+        FirestoreRepository.getSimboloMoneda(userId) { simboloMoneda ->
             _simboloMonedaUsuario.value = when (simboloMoneda) {
                 "Dólar estadounidense - $ - USD" -> "$"
                 "Euro - € - EUR" -> "€"
@@ -60,7 +60,7 @@ class PantallaCompraAccionViewModel @Inject constructor(
     }
 
     fun cargarDineroCuenta(userId: String) {
-        UsuarioRepository.getDineroCuenta(userId) { dinero ->
+        FirestoreRepository.getDineroCuenta(userId) { dinero ->
             _dineroCuenta.value = dinero
         }
     }
