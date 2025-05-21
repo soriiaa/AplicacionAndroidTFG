@@ -34,4 +34,18 @@ object FavoritosRepository {
                 onResultado(tickersFavoritos)
             }
     }
+
+    fun esFavorito(userId: String, ticker: String, onResultado: (Boolean) -> Unit) {
+        db.collection("usuarios")
+            .document(userId)
+            .collection("favoritos")
+            .document(ticker)
+            .get()
+            .addOnSuccessListener { doc ->
+                onResultado(doc.exists())
+            }
+            .addOnFailureListener {
+                onResultado(false)
+            }
+    }
 }

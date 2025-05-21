@@ -1,5 +1,7 @@
 package com.example.investlearntfg.ui.screens.pantallaAccion
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -39,11 +42,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,6 +85,7 @@ fun PantallaAccionScreen(
     val dineroDisponible = viewModel.dineroCuenta.collectAsState()
     val simboloMoneda by viewModel.simboloMoneda.collectAsState()
     val perfilCompletoEmpresa by viewModel.perfilCompletoEmpresa.collectAsState()
+    val esFavorita by viewModel.esEmpresaFavorita.collectAsState()
 
     Column(
         modifier = Modifier
@@ -117,7 +124,9 @@ fun PantallaAccionScreen(
             ) {
 
                 // TODO ESTO
-                BotonAnadirFavoritoPredeterminado(false) { }
+                BotonAnadirFavoritoPredeterminado(esFavorita) {
+                    viewModel.alternarFavorito()
+                }
             }
         }
 
@@ -314,20 +323,41 @@ fun DesplegableInformacionAccion(perfil: CompanyProfile2Response?) {
 @Composable
 fun InfoFila(etiqueta: String, valor: String?) {
     if (!valor.isNullOrBlank()) {
+        val contexto = LocalContext.current
+        val esUrl = valor.startsWith("http://") || valor.startsWith("https://")
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = etiqueta,
+                text = "$etiqueta:",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )
-            Text(
-                text = valor,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.LightGray
-            )
+
+            if (esUrl) {
+                ClickableText(
+                    text = AnnotatedString(
+                        text = valor,
+                        spanStyle = SpanStyle(
+                            color = Color(0xFF64B5F6), // azul moderno
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(valor))
+                        contexto.startActivity(intent)
+                    }
+                )
+            } else {
+                Text(
+                    text = valor,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.LightGray
+                )
+            }
         }
     }
 }

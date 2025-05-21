@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.repository.FavoritosRepository
 import com.example.investlearntfg.data.repository.UsuarioRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.Firebase
@@ -48,14 +49,9 @@ class PantallaAccionViewModel @Inject constructor(
     private val _simboloMoneda = MutableStateFlow<String?>(null)
     val simboloMoneda: StateFlow<String?> = _simboloMoneda
 
-    fun alternarEsFavorito() {
-        _esEmpresaFavorita.value = !_esEmpresaFavorita.value
-    }
-
     init {
         cargarDineroCuenta(userId)
         cargarSimboloMoneda(userId)
-
 
         val empresaJson = savedStateHandle.get<String>("empresaJson")
         val empresaDeserializada = empresaJson?.let {
@@ -64,8 +60,27 @@ class PantallaAccionViewModel @Inject constructor(
         _empresa.value = empresaDeserializada
 
         cargarDatosEmpresaCompletos()
+        cargarEsFavorito()
 
         traerVelasAccion("D")
+    }
+
+    fun alternarFavorito() {
+        if (_esEmpresaFavorita.value) {
+            _empresa.value?.let { FavoritosRepository.eliminarFavorita(userId, it.ticker) }
+            _esEmpresaFavorita.value = false
+        } else {
+            _empresa.value?.let { FavoritosRepository.marcarComoFavorita(userId, it) }
+            _esEmpresaFavorita.value = true
+        }
+    }
+
+    fun cargarEsFavorito() {
+        _empresa.value?.let { empresa ->
+            FavoritosRepository.esFavorito(userId, empresa.ticker) { esFavorito ->
+                _esEmpresaFavorita.value = esFavorito
+            }
+        }
     }
 
     fun cargarDatosEmpresaCompletos() {
