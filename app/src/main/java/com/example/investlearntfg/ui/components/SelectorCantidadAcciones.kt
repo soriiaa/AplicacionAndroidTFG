@@ -26,7 +26,8 @@ fun SelectorCantidadAcciones(
     cantidadInicial: Int = 1,
     cantidadMinima: Int = 1,
     cantidadMaxima: Int = 999,
-    onCantidadCambio: (Int) -> Unit = {}
+    onCantidadCambio: (Int) -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     var cantidad by remember { mutableStateOf(cantidadInicial.coerceAtLeast(cantidadMinima)) }
 

@@ -8,6 +8,7 @@ import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionViewModel
 import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
+import com.example.investlearntfg.ui.screens.pantallaCompraAccion.PantallaCompraAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaConfiguracion.PantallaConfiguracionScreen
 import com.example.investlearntfg.ui.screens.pantallaEditarPerfil.PantallaEditarPerfilScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
@@ -38,6 +39,10 @@ fun MainAppNavGraph(
 
         composable("${Destinations.PANTALLA_ACCION_SCREEN}/{empresaJson}") {
             PantallaAccionScreen(navController)
+        }
+
+        composable("${Destinations.PANTALLA_COMPRA_ACCION_SCREEN}/{empresaJson}") {
+            PantallaCompraAccionScreen(navController)
         }
 
         composable(Destinations.PANTALLA_CONFIGURACION_SCREEN) {

@@ -68,7 +68,9 @@ import com.example.investlearntfg.ui.components.GraficoPredeterminado
 import com.example.investlearntfg.ui.components.ImagenAccionPredeterminada
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.SelectorCantidadAcciones
+import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.theme.backgroundColor
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @Composable
@@ -193,7 +195,14 @@ fun PantallaAccionScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            BotonesComprarVender()
+            val empresaJson = Uri.encode(Gson().toJson(empresa))
+
+            BotonesComprarVender(
+                onComprarClick = {
+                    navController.navigate("${Destinations.PANTALLA_COMPRA_ACCION_SCREEN}/$empresaJson")
+                },
+                onVenderClick = {}
+            )
         }
         Box(
             modifier = Modifier
