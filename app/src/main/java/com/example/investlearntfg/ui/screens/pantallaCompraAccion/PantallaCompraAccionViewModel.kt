@@ -1,5 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaCompraAccion
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,10 +41,28 @@ class PantallaCompraAccionViewModel @Inject constructor(
     private val _simboloMonedaUsuario = MutableStateFlow<String?>(null)
     val simboloMonedaUsuario: StateFlow<String?> = _simboloMonedaUsuario
 
+    // La tasa de cambio que hay entre la moneda del usuario y la de la acción
+    private val _tipoCambio = MutableStateFlow<Double?>(null)
+    val tipoCambio: StateFlow<Double?> = _tipoCambio
+
     init {
         cargarInformacionPreviaEmpresa(savedStateHandle)
         cargarDineroCuenta(userId)
         cargarSimboloMoneda(userId)
+    }
+
+    private suspend fun cargarTasaDeCambio(simboloMonedaUsuario: String?, simboloMonedaAccion: String) {
+        val codigoMonedaUsuario = simboloMonedaUsuario?.let { obtenerCodigoMoneda(it) }
+        val codigoMonedaAccion = obtenerCodigoMoneda(simboloMonedaAccion)
+
+        Log.d("AAAAAAAAAAAAAAA", "$codigoMonedaUsuario $codigoMonedaAccion")
+
+
+        val respuesta = codigoMonedaUsuario?.let { postRepository.convertirMonedaPostRepository(it, codigoMonedaAccion) }
+        Log.d("BBBBBBBBBBBBB", "$respuesta")
+        if (respuesta != null) {
+            _tipoCambio.value = respuesta.result
+        }
     }
 
     fun cargarSimboloMoneda(userId: String) {
@@ -56,6 +75,11 @@ class PantallaCompraAccionViewModel @Inject constructor(
                 "Franco suizo - CHF - CHF" -> "CHF"
                 else -> ""
             }
+            /*
+            viewModelScope.launch {
+                _empresa.value?.let { cargarTasaDeCambio(_simboloMonedaUsuario.value, it.simboloMoneda) }
+            }
+            */
         }
     }
 

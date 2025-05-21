@@ -41,19 +41,18 @@ fun PantallaCompraAccionScreen(
     navController: NavController,
     viewModel: PantallaCompraAccionViewModel = hiltViewModel(),
     precioActual: Double = 176.25,
-    tipoCambio: Double = 1.08,
     onComprarClick: (cantidad: Int) -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
     var cantidad by remember { mutableStateOf(1) }
     val totalUSD = precioActual * cantidad
-    val totalEUR = totalUSD / tipoCambio
 
 
     val empresa by viewModel.empresa.collectAsState()
     val datosPrecioAccion by viewModel.precioCompania2.collectAsState()
     val dineroDisponible = viewModel.dineroCuenta.collectAsState()
-    val simboloMoneda by viewModel.simboloMonedaUsuario.collectAsState()
+    val simboloMonedaUsuario by viewModel.simboloMonedaUsuario.collectAsState()
+    val tipoCambio by viewModel.tipoCambio.collectAsState()
 
 
     val tarjetaColor = color5
@@ -147,15 +146,17 @@ fun PantallaCompraAccionScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Saldo disponible: ${"%,.2f".format(dineroDisponible.value)} $simboloMoneda",
+                text = "Saldo disponible: ${"%,.2f".format(dineroDisponible.value)} $simboloMonedaUsuario",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Text(
-                text = "Conversión automática: 1 € ≈ $${"%.2f".format(tipoCambio)}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-            )
+            if (empresa?.simboloMoneda != simboloMonedaUsuario) {
+                Text(
+                    text = "Conversión automática: 1 $simboloMonedaUsuario ≈ ${"%.2f".format(tipoCambio)} ${empresa?.simboloMoneda}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
+            }
         }
 
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -181,7 +182,7 @@ fun PantallaCompraAccionScreen(
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "$${"%.2f".format(totalUSD)} ≈ ${"%.2f".format(totalEUR)} €",
+                text = "$${"%.2f".format(totalUSD)} ≈ ${"%.2f".format(1.0)} €",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground

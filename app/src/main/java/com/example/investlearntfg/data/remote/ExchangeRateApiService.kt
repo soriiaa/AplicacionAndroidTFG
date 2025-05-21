@@ -9,7 +9,9 @@ interface ExchangeRateApiService {
     @GET("convert")
     suspend fun convertirMoneda(
         @Query("from") from: String,
-        @Query("to") to: String
+        @Query("to") to: String,
+        @Query("amount") amount: Double,
+        @Query("access_key") accessKey: String
     ): ExchangeRateResponse
 
 }

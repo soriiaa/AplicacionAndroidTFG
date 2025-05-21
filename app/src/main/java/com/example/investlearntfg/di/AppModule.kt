@@ -26,4 +26,11 @@ object AppModule {
         return ApiKey("sWG_SGucG1vSuLM8pGvpUpQJOd953z45")
     }
 
+    @Provides
+    @Singleton
+    @Named("exchange")
+    fun getApiKeyExchangeRate(): ApiKey {
+        return ApiKey("648b3137c9bc7a55b144e32ef3ec960d")
+    }
+
 }

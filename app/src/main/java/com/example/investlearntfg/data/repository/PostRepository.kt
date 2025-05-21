@@ -5,9 +5,11 @@ import com.example.investlearntfg.data.model.ApiKey
 import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
+import com.example.investlearntfg.data.model.ExchangeRateResponse
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
 import com.example.investlearntfg.data.model.PrecioCompania2
+import com.example.investlearntfg.data.remote.ExchangeRateApiService
 import com.example.investlearntfg.data.remote.FinnHubApiService
 import com.example.investlearntfg.data.remote.PolygonApiService
 import javax.inject.Inject
@@ -16,8 +18,10 @@ import javax.inject.Named
 class PostRepository @Inject constructor(
     @Named("finnhub") private val finnhubApiKey: ApiKey,
     @Named("polygon") private val polygonApiKey: ApiKey,
+    @Named("exchange") private val exchangeApiKey: ApiKey,
     private val finnHubApiService: FinnHubApiService,
-    private val polygonApiService: PolygonApiService
+    private val polygonApiService: PolygonApiService,
+    private val exchangeRateApiService: ExchangeRateApiService
 ) {
 
     suspend fun getPerfilEmpresaPostRepository(simbolo: String): DatosPerfilCompania {
@@ -43,6 +47,10 @@ class PostRepository @Inject constructor(
 
     suspend fun getPerfilEmpresa2PostRepository(symbol: String): CompanyProfile2Response {
         return finnHubApiService.getPerfilEmpresa2(symbol, finnhubApiKey.value)
+    }
+
+    suspend fun convertirMonedaPostRepository(from: String, to: String): ExchangeRateResponse {
+        return exchangeRateApiService.convertirMoneda(from, to, 1.0, exchangeApiKey.value)
     }
 
 
