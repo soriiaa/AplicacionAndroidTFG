@@ -5,8 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.CandleResponse
+import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.EmpresaPreview
-import com.example.investlearntfg.data.model.Usuario
 import com.example.investlearntfg.data.repository.UsuarioRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.Firebase
@@ -29,6 +29,9 @@ class PantallaAccionViewModel @Inject constructor(
 
     private val _empresa = MutableStateFlow<EmpresaPreview?>(null)
     val empresa: StateFlow<EmpresaPreview?> = _empresa
+
+    private val _perfilCompletoEmpresa = MutableStateFlow<CompanyProfile2Response?>(null)
+    val perfilCompletoEmpresa: StateFlow<CompanyProfile2Response?> = _perfilCompletoEmpresa
 
     private val _esEmpresaFavorita = MutableStateFlow(false)
     val esEmpresaFavorita: StateFlow<Boolean> = _esEmpresaFavorita
@@ -53,24 +56,40 @@ class PantallaAccionViewModel @Inject constructor(
         cargarDineroCuenta(userId)
         cargarSimboloMoneda(userId)
 
+
         val empresaJson = savedStateHandle.get<String>("empresaJson")
         val empresaDeserializada = empresaJson?.let {
             Gson().fromJson(it, EmpresaPreview::class.java)
         }
         _empresa.value = empresaDeserializada
 
+        cargarDatosEmpresaCompletos()
+
         traerVelasAccion("D")
+    }
+
+    fun cargarDatosEmpresaCompletos() {
+        viewModelScope.launch {
+            try {
+                val respuestaApi = _empresa.value?.let {
+                    postRepository.getPerfilEmpresa2PostRepository(it.ticker)
+                }
+                _perfilCompletoEmpresa.value = respuestaApi
+            } catch (e: Exception) {
+                Log.e("PerfilEmpresa", "Error al obtener perfil: ${e.message}")
+            }
+        }
     }
 
     fun cargarSimboloMoneda(userId: String) {
         UsuarioRepository.getSimboloMoneda(userId) { simboloMoneda ->
-            _simboloMoneda.value  = when (simboloMoneda) {
+            _simboloMoneda.value = when (simboloMoneda) {
                 "Dólar estadounidense - $ - USD" -> "$"
                 "Euro - € - EUR" -> "€"
                 "Libra esterlina - £ - GBP" -> "£"
                 "Yen japonés - ¥ - JPY" -> "¥"
                 "Franco suizo - CHF - CHF" -> "CHF"
-                else -> "" // por si acaso
+                else -> ""
             }
         }
     }
@@ -98,15 +117,18 @@ class PantallaAccionViewModel @Inject constructor(
                         multiplier = 30
                         calendar.add(Calendar.DAY_OF_YEAR, -1)
                     }
+
                     "S" -> {
                         resolution = "hour"
                         multiplier = 4
                         calendar.add(Calendar.DAY_OF_YEAR, -7)
                     }
+
                     "M" -> {
                         resolution = "day"
                         calendar.add(Calendar.MONTH, -1)
                     }
+
                     else -> {
                         resolution = "day"
                         calendar.add(Calendar.DAY_OF_YEAR, -7)
@@ -115,10 +137,20 @@ class PantallaAccionViewModel @Inject constructor(
 
                 val from = calendar.timeInMillis / 1000
 
-                val tickerEmpresa = _empresa.value?.ticker ?: throw IllegalStateException("Ticker no disponible")
+                val tickerEmpresa =
+                    _empresa.value?.ticker ?: throw IllegalStateException("Ticker no disponible")
 
-                Log.d("PARAMETROS_API", "ticker: $tickerEmpresa, multiplier: $multiplier, resolution: $resolution, from: $from, to: $to")
-                val valoresGrafico: CandleResponse = postRepository.getVelasAccion(tickerEmpresa, multiplier, resolution, from.toString(), to.toString())
+                Log.d(
+                    "PARAMETROS_API",
+                    "ticker: $tickerEmpresa, multiplier: $multiplier, resolution: $resolution, from: $from, to: $to"
+                )
+                val valoresGrafico: CandleResponse = postRepository.getVelasAccionPostRepository(
+                    tickerEmpresa,
+                    multiplier,
+                    resolution,
+                    from.toString(),
+                    to.toString()
+                )
 
                 _velas.value = valoresGrafico
 
@@ -131,7 +163,6 @@ class PantallaAccionViewModel @Inject constructor(
 
         }
     }
-
 
 
 }

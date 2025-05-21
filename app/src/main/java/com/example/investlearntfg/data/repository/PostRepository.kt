@@ -3,15 +3,12 @@ package com.example.investlearntfg.data.repository
 import android.util.Log
 import com.example.investlearntfg.data.model.ApiKey
 import com.example.investlearntfg.data.model.CandleResponse
+import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
 import com.example.investlearntfg.data.remote.FinnHubApiService
 import com.example.investlearntfg.data.remote.PolygonApiService
-import retrofit2.Call
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -35,8 +32,13 @@ class PostRepository @Inject constructor(
         return finnHubApiService.getListaEmpresasBusquedaNombre(nombre, finnhubApiKey.value)
     }
 
-    suspend fun getVelasAccion(symbol: String, multiplier: Int, timespan: String, fromDate: String, toDate: String): CandleResponse {
+    suspend fun getVelasAccionPostRepository(symbol: String, multiplier: Int, timespan: String, fromDate: String, toDate: String): CandleResponse {
         return polygonApiService.getVelasAccion(symbol, multiplier, timespan, fromDate, toDate, polygonApiKey.value)
     }
+
+    suspend fun getPerfilEmpresa2PostRepository(symbol: String): CompanyProfile2Response {
+        return finnHubApiService.getPerfilEmpresa2(symbol, finnhubApiKey.value)
+    }
+
 
 }

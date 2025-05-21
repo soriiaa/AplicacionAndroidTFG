@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
@@ -48,7 +51,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.investlearntfg.R
+import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.components.BotonAnadirFavoritoPredeterminado
 import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
@@ -73,6 +78,7 @@ fun PantallaAccionScreen(
     var periodoSeleccionado by remember { mutableStateOf("D") }
     val dineroDisponible = viewModel.dineroCuenta.collectAsState()
     val simboloMoneda by viewModel.simboloMoneda.collectAsState()
+    val perfilCompletoEmpresa by viewModel.perfilCompletoEmpresa.collectAsState()
 
     Column(
         modifier = Modifier
@@ -186,57 +192,143 @@ fun PantallaAccionScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            DesplegableInformacionAccion()
+            DesplegableInformacionAccion(perfilCompletoEmpresa)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DesplegableInformacionAccion() {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
-    )
+fun DesplegableInformacionAccion(perfil: CompanyProfile2Response?) {
+    val estadoHoja = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var showSheet by remember { mutableStateOf(false) }
+    var mostrarHoja by remember { mutableStateOf(false) }
 
-    if (showSheet) {
+    if (mostrarHoja) {
         ModalBottomSheet(
             onDismissRequest = {
                 scope.launch {
-                    sheetState.hide()
-                    showSheet = false
+                    estadoHoja.hide()
+                    mostrarHoja = false
                 }
             },
-            sheetState = sheetState,
+            sheetState = estadoHoja,
             containerColor = colorResource(id = R.color.backgroundColor)
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.9f)
-                    .padding(16.dp)
-            ) {
-                Text(text = "Este es el contenido del bottom sheet")
-                Spacer(Modifier.height(8.dp))
-                Button(onClick = {
-                    scope.launch {
-                        sheetState.hide()
-                        showSheet = false
+            if (perfil != null) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        perfil.logo?.let { url ->
+                            AsyncImage(
+                                model = url,
+                                contentDescription = "Logo",
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = perfil.name ?: "Nombre no disponible",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = perfil.ticker ?: "",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                        }
                     }
-                }) {
-                    Text("Cerrar")
+
+                    Divider()
+
+                    InfoFila("Industria", perfil.finnhubIndustry)
+                    InfoFila("País", perfil.country)
+                    InfoFila("Moneda", perfil.currency)
+                    InfoFila("Bolsa", perfil.exchange)
+                    InfoFila("Capitalización", perfil.marketCapitalization?.toString())
+                    InfoFila("Acciones", perfil.shareOutstanding?.toString())
+                    InfoFila("IPO", perfil.ipo)
+                    InfoFila("Web", perfil.weburl)
+                    InfoFila("Teléfono", perfil.phone)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            scope.launch {
+                                estadoHoja.hide()
+                                mostrarHoja = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Cerrar")
+                    }
+                }
+            } else {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                ) {
+                    Text("No hay información disponible.")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            scope.launch {
+                                estadoHoja.hide()
+                                mostrarHoja = false
+                            }
+                        }
+                    ) {
+                        Text("Cerrar")
+                    }
                 }
             }
         }
     }
-    Button(onClick = {
-        scope.launch {
-            showSheet = true
-            sheetState.show()
+
+    Button(
+        onClick = {
+            scope.launch {
+                mostrarHoja = true
+                estadoHoja.show()
+            }
         }
-    }) {
-        Text("Detalles")
+    ) {
+        Text("Detalles", fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun InfoFila(etiqueta: String, valor: String?) {
+    if (!valor.isNullOrBlank()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = etiqueta,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = valor,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.LightGray
+            )
+        }
     }
 }
 
@@ -285,7 +377,6 @@ fun SelectorPeriodo(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

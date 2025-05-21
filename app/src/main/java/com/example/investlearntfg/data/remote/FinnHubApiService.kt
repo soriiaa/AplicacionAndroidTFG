@@ -1,5 +1,6 @@
 package com.example.investlearntfg.data.remote
 
+import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
@@ -30,5 +31,12 @@ interface FinnHubApiService {
         @Query("q") query: String,
         @Query("token") apiKey: String
     ): ListaEmpresasBusqueda
+
+    // Perfil de la empresa más completo que el anterior, para mostrar los detalles de la empresa
+    @GET("stock/profile2")
+    suspend fun getPerfilEmpresa2(
+        @Query("symbol") symbol: String,
+        @Query("token") token: String
+    ): CompanyProfile2Response
 
 }
