@@ -4,6 +4,7 @@ import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
+import com.example.investlearntfg.data.model.PrecioCompania2
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -18,12 +19,19 @@ interface FinnHubApiService {
         @Query("token") apiKey: String
     ): DatosPerfilCompania
 
-    // Endpoint: https://finnhub.io/api/v1/quote?symbol=AAPL&token=TU_API_KEY
+    // Endpoint: https://finnhub.io/api/v1/quote?symbol=AAPL&token=d0e6uv1r01qv1dmld640d0e6uv1r01qv1dmld64g
     @GET("quote?")
     suspend fun getPrecioEmpresa(
         @Query("symbol") simbolo: String,
         @Query("token") apiKey: String
     ): PrecioCompania
+
+    // Endpoint: https://finnhub.io/api/v1/quote?symbol=AAPL&token=d0e6uv1r01qv1dmld640d0e6uv1r01qv1dmld64g
+    @GET("quote?")
+    suspend fun getPrecioEmpresa2(
+        @Query("symbol") simbolo: String,
+        @Query("token") apiKey: String
+    ): PrecioCompania2
 
     // https://finnhub.io/api/v1/search?q=Tesla&token=d0e6uv1r01qv1dmld640d0e6uv1r01qv1dmld64g
     @GET("search")

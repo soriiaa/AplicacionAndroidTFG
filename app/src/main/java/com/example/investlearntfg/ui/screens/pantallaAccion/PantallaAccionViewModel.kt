@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.CandleResponse
 import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.model.PrecioCompania2
 import com.example.investlearntfg.data.repository.FavoritosRepository
 import com.example.investlearntfg.data.repository.UsuarioRepository
 import com.example.investlearntfg.data.repository.PostRepository
@@ -46,23 +47,36 @@ class PantallaAccionViewModel @Inject constructor(
     private val _dineroCuenta = MutableStateFlow<Double?>(null)
     val dineroCuenta: StateFlow<Double?> = _dineroCuenta
 
+    // Precio y cambio de la accion actual
+    private val _precioCompania2 = MutableStateFlow<PrecioCompania2?>(null)
+    val precioCompania2: StateFlow<PrecioCompania2?> = _precioCompania2
+
     private val _simboloMoneda = MutableStateFlow<String?>(null)
     val simboloMoneda: StateFlow<String?> = _simboloMoneda
 
     init {
+        cargarInformacionPreviaEmpresa(savedStateHandle)
         cargarDineroCuenta(userId)
         cargarSimboloMoneda(userId)
+        cargarDatosEmpresaCompletos()
+        cargarEsFavorito()
+        traerVelasAccion("D")
+    }
 
+    fun cargarPrecioAccion() {
+        _empresa.value?.let { empresa ->
+            viewModelScope.launch {
+                _precioCompania2.value = postRepository.getPrecioEmpresa2PostRepository(empresa.ticker)
+            }
+        }
+    }
+
+    fun cargarInformacionPreviaEmpresa(savedStateHandle: SavedStateHandle) {
         val empresaJson = savedStateHandle.get<String>("empresaJson")
         val empresaDeserializada = empresaJson?.let {
             Gson().fromJson(it, EmpresaPreview::class.java)
         }
         _empresa.value = empresaDeserializada
-
-        cargarDatosEmpresaCompletos()
-        cargarEsFavorito()
-
-        traerVelasAccion("D")
     }
 
     fun alternarFavorito() {

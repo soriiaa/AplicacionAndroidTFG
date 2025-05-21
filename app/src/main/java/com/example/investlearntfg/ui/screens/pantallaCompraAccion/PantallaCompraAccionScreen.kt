@@ -3,6 +3,7 @@ package com.example.investlearntfg.ui.screens.pantallaCompraAccion
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,24 +18,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.investlearntfg.ui.components.SelectorCantidadAcciones
 import com.example.investlearntfg.ui.theme.color5
+import kotlinx.coroutines.delay
 
 @Composable
 fun PantallaCompraAccionScreen(
     navController: NavController,
-    nombreAccion: String = "Apple",
+    viewModel: PantallaCompraAccionViewModel = hiltViewModel(),
     precioActual: Double = 176.25,
     saldoDisponibleEuros: Double = 2000.0,
     tipoCambio: Double = 1.08,
@@ -45,7 +50,23 @@ fun PantallaCompraAccionScreen(
     val totalUSD = precioActual * cantidad
     val totalEUR = totalUSD / tipoCambio
 
+
+    val empresa by viewModel.empresa.collectAsState()
+    val datosPrecioAccion by viewModel.precioCompania2.collectAsState()
+
+
     val tarjetaColor = color5
+
+
+    LaunchedEffect(empresa?.ticker) {
+        empresa?.ticker?.let {
+            while (true) {
+                viewModel.cargarPrecioAccion()
+                delay(10000)
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -62,12 +83,14 @@ fun PantallaCompraAccionScreen(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )
-            Text(
-                text = nombreAccion,
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            empresa?.let {
+                Text(
+                    text = it.nombre,
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -77,19 +100,49 @@ fun PantallaCompraAccionScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Precio actual (USD)",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = "$${"%.2f".format(precioActual)}",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+
+                    val codigoMoneda = empresa?.let { viewModel.obtenerCodigoMoneda(it.simboloMoneda) }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(
+                                text = "Precio actual ($codigoMoneda)",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = datosPrecioAccion?.let { "%.2f".format(it.c) }?.let { "$it" } ?: "-",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        Column(horizontalAlignment = Alignment.End) {
+                            datosPrecioAccion?.let { precio ->
+                                Text(
+                                    text = "%.2f".format(precio.d),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = if (precio.dp >= 0) "+${"%.2f".format(precio.dp)}%" else "${"%.2f".format(precio.dp)}%",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = if (precio.dp >= 0)
+                                        androidx.compose.ui.graphics.Color(0xFF0DCB11)
+                                    else
+                                        androidx.compose.ui.graphics.Color(0xFFF44336)
+                                )
+                            }
+                        }
+                    }
                 }
             }
+
+
 
             Spacer(modifier = Modifier.height(12.dp))
             Text(

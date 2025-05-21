@@ -3,7 +3,6 @@ package com.example.investlearntfg.ui.screens.pantallaAccion
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,15 +19,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,26 +50,21 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.investlearntfg.R
 import com.example.investlearntfg.data.model.CompanyProfile2Response
-import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.components.BotonAnadirFavoritoPredeterminado
 import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
 import com.example.investlearntfg.ui.components.BotonesComprarVender
 import com.example.investlearntfg.ui.components.GraficoPredeterminado
 import com.example.investlearntfg.ui.components.ImagenAccionPredeterminada
-import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
-import com.example.investlearntfg.ui.components.SelectorCantidadAcciones
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.theme.backgroundColor
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -88,6 +82,16 @@ fun PantallaAccionScreen(
     val simboloMoneda by viewModel.simboloMoneda.collectAsState()
     val perfilCompletoEmpresa by viewModel.perfilCompletoEmpresa.collectAsState()
     val esFavorita by viewModel.esEmpresaFavorita.collectAsState()
+    val datosPrecioAccion by viewModel.precioCompania2.collectAsState()
+
+    LaunchedEffect(empresa?.ticker) {
+        empresa?.ticker?.let {
+            while (true) {
+                viewModel.cargarPrecioAccion()
+                delay(10000)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -141,7 +145,8 @@ fun PantallaAccionScreen(
             empresa?.let {
                 Text(
                     text = it.nombre,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
                 )
             }
         }
@@ -163,7 +168,7 @@ fun PantallaAccionScreen(
 
         Box(
             modifier = Modifier
-                .weight(4f)
+                .weight(4.6f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -176,22 +181,71 @@ fun PantallaAccionScreen(
 
         Box(
             modifier = Modifier
-                .weight(0.5f)
-                .fillMaxWidth(),
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("Capital disponible: ")
-                    }
-                    append("${dineroDisponible.value} $simboloMoneda")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Columna con Capital y Precio, alineados a la izquierda
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
+                                append("Capital: ")
+                            }
+                            append("${dineroDisponible.value} $simboloMoneda")
+                        },
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
+                                append("Precio: ")
+                            }
+                            append("${datosPrecioAccion?.c} ${empresa?.simboloMoneda}")
+                        },
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
-            )
+
+                val variacion = datosPrecioAccion?.dp
+
+                val variacionColor = when {
+                    variacion == null -> Color.Gray
+                    variacion >= 0 -> Color(0xFF4CAF50)
+                    else -> Color(0xFFF44336)
+                }
+
+                val signo = if (variacion != null && variacion >= 0) "+" else ""
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(variacionColor.copy(alpha = 0.15f))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "$signo${"%.2f".format(variacion)}%",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = variacionColor
+                    )
+                }
+            }
         }
+
         Box(
             modifier = Modifier
-                .weight(1.2f)
+                .weight(1f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -206,7 +260,7 @@ fun PantallaAccionScreen(
         }
         Box(
             modifier = Modifier
-                .weight(1.2f)
+                .weight(1f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -323,10 +377,23 @@ fun DesplegableInformacionAccion(perfil: CompanyProfile2Response?) {
                 mostrarHoja = true
                 estadoHoja.show()
             }
-        }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .height(48.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.buttonColors(Color(0xFF2196F3)) // Azul
     ) {
-        Text("Detalles", fontWeight = FontWeight.Bold)
+        Text(
+            "Detalles",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 14.sp
+        )
     }
+
+
 }
 
 @Composable
@@ -415,20 +482,4 @@ fun SelectorPeriodo(
             }
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewPantallaAccionScreen() {
-    val navController = rememberNavController()
-    val empresaEjemplo = EmpresaPreview(
-        ticker = "AAPL",
-        nombre = "Apple",
-        logo = "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/AAPL.png",
-        precio = 192.50,
-        simboloMoneda = "USD"
-    )
-
-    PantallaAccionScreen(navController = navController)
 }

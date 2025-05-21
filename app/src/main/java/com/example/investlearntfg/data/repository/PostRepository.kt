@@ -7,6 +7,7 @@ import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
 import com.example.investlearntfg.data.model.PrecioCompania
+import com.example.investlearntfg.data.model.PrecioCompania2
 import com.example.investlearntfg.data.remote.FinnHubApiService
 import com.example.investlearntfg.data.remote.PolygonApiService
 import javax.inject.Inject
@@ -25,6 +26,10 @@ class PostRepository @Inject constructor(
 
     suspend fun getPrecioEmpresaPostRepository(simbolo: String): PrecioCompania {
         return finnHubApiService.getPrecioEmpresa(simbolo, finnhubApiKey.value)
+    }
+
+    suspend fun getPrecioEmpresa2PostRepository(simbolo: String): PrecioCompania2 {
+        return finnHubApiService.getPrecioEmpresa2(simbolo, finnhubApiKey.value)
     }
 
     suspend fun buscarEmpresasPorNombre(nombre: String): ListaEmpresasBusqueda {
