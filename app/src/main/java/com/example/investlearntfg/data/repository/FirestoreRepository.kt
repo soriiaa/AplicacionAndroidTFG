@@ -2,7 +2,9 @@ package com.example.investlearntfg.data.repository
 
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
+import java.util.UUID
 
 object FirestoreRepository {
 
@@ -82,4 +84,65 @@ object FirestoreRepository {
                 onResultado(null)
             }
     }
+
+    fun guardarCompraEnFirestore(
+        userId: String,
+        ticker: String,
+        precioCompra: Double,
+        unidades: Int,
+        monedaPagada: String,
+        onExito: () -> Unit,
+        onFallo: () -> Unit
+    ) {
+        val compraId = UUID.randomUUID().toString()
+        val compra = hashMapOf(
+            "id" to compraId,
+            "ticker" to ticker,
+            "precioCompra" to precioCompra,
+            "unidades" to unidades,
+            "moneda_pagada" to monedaPagada,
+            "fecha" to FieldValue.serverTimestamp()
+        )
+        db.collection("usuarios")
+            .document(userId)
+            .collection("acciones_en_propiedad")
+            .document(compraId)
+            .set(compra)
+            .addOnSuccessListener {
+                onExito()
+            }
+            .addOnFailureListener {
+                onFallo()
+            }
+    }
+
+    fun restarDineroCuenta(
+        userId: String,
+        cantidadARestar: Double
+    ) {
+        val userDocRef = db.collection("usuarios").document(userId)
+
+        userDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val dineroCuentaActual = documentSnapshot.getDouble("dinero_cuenta") ?: 0.0
+                    val nuevoDineroCuenta = dineroCuentaActual - cantidadARestar
+
+                    userDocRef.update("dinero_cuenta", nuevoDineroCuenta)
+                        .addOnSuccessListener {
+
+                        }
+                        .addOnFailureListener {
+
+                        }
+                } else {
+
+                }
+            }
+            .addOnFailureListener {
+
+            }
+    }
+
+
 }

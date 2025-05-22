@@ -45,23 +45,63 @@ class PantallaCompraAccionViewModel @Inject constructor(
     private val _tipoCambio = MutableStateFlow<Double?>(null)
     val tipoCambio: StateFlow<Double?> = _tipoCambio
 
+    // La tasa de cambio que hay entre la moneda de la acción y la del usuario
+    private val _tipoCambioInverso = MutableStateFlow<Double?>(null)
+    val tipoCambioInverso: StateFlow<Double?> = _tipoCambioInverso
+
+    // La cantidad de acciones que el usuario selecciona para comprar
+    private val _cantidadAcciones = MutableStateFlow(1)
+    val cantidadAcciones: StateFlow<Int> = _cantidadAcciones
+
+    // El precio total que va a pagar el usuario
+    private val _precioCompra = MutableStateFlow(0.0)
+    val precioCompra: StateFlow<Double> = _precioCompra
+
     init {
         cargarInformacionPreviaEmpresa(savedStateHandle)
         cargarDineroCuenta(userId)
         cargarSimboloMoneda(userId)
     }
 
+    fun guardarCompraEnFirestore(onExito: () -> Unit, onFallo: () -> Unit) {
+
+        FirestoreRepository.restarDineroCuenta(
+            userId,
+            _precioCompra.value
+        )
+
+        _empresa.value?.let {
+            _simboloMonedaUsuario.value?.let { it1 ->
+                FirestoreRepository.guardarCompraEnFirestore(
+                    userId = userId,
+                    ticker = it.ticker,
+                    precioCompra = _precioCompra.value,
+                    unidades = _cantidadAcciones.value,
+                    monedaPagada = it1,
+                    onExito = onExito,
+                    onFallo = onFallo
+                )
+            }
+        }
+    }
+
+    fun setPrecioCompra(nuevoPrecio: Double) {
+        _precioCompra.value = nuevoPrecio
+    }
+
+    fun setCantidadAcciones(nuevaCantidad: Int) {
+        _cantidadAcciones.value = nuevaCantidad
+    }
+
     private suspend fun cargarTasaDeCambio(simboloMonedaUsuario: String?, simboloMonedaAccion: String) {
         val codigoMonedaUsuario = simboloMonedaUsuario?.let { obtenerCodigoMoneda(it) }
         val codigoMonedaAccion = obtenerCodigoMoneda(simboloMonedaAccion)
-
-        Log.d("AAAAAAAAAAAAAAA", "$codigoMonedaUsuario $codigoMonedaAccion")
-
 
         val respuesta = codigoMonedaUsuario?.let { postRepository.convertirMonedaPostRepository(it, codigoMonedaAccion) }
         Log.d("BBBBBBBBBBBBB", "$respuesta")
         if (respuesta != null) {
             _tipoCambio.value = respuesta.result
+            _tipoCambioInverso.value = 1 / respuesta.result
         }
     }
 
@@ -75,11 +115,9 @@ class PantallaCompraAccionViewModel @Inject constructor(
                 "Franco suizo - CHF - CHF" -> "CHF"
                 else -> ""
             }
-            /*
             viewModelScope.launch {
                 _empresa.value?.let { cargarTasaDeCambio(_simboloMonedaUsuario.value, it.simboloMoneda) }
             }
-            */
         }
     }
 

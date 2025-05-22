@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.SelectorCantidadAcciones
 import com.example.investlearntfg.ui.theme.color5
 import kotlinx.coroutines.delay
@@ -39,24 +42,20 @@ import kotlinx.coroutines.delay
 @Composable
 fun PantallaCompraAccionScreen(
     navController: NavController,
-    viewModel: PantallaCompraAccionViewModel = hiltViewModel(),
-    precioActual: Double = 176.25,
-    onComprarClick: (cantidad: Int) -> Unit = {}
+    viewModel: PantallaCompraAccionViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    var cantidad by remember { mutableStateOf(1) }
-    val totalUSD = precioActual * cantidad
-
+    var mostrarDialogoConfirmacion by remember { mutableStateOf(false) }
 
     val empresa by viewModel.empresa.collectAsState()
     val datosPrecioAccion by viewModel.precioCompania2.collectAsState()
     val dineroDisponible = viewModel.dineroCuenta.collectAsState()
     val simboloMonedaUsuario by viewModel.simboloMonedaUsuario.collectAsState()
     val tipoCambio by viewModel.tipoCambio.collectAsState()
-
+    val tipoCambioInverso by viewModel.tipoCambioInverso.collectAsState()
+    val cantidadAcciones by viewModel.cantidadAcciones.collectAsState()
 
     val tarjetaColor = color5
-
 
     LaunchedEffect(empresa?.ticker) {
         empresa?.ticker?.let {
@@ -66,7 +65,6 @@ fun PantallaCompraAccionScreen(
             }
         }
     }
-
 
     Column(
         modifier = Modifier
@@ -163,8 +161,8 @@ fun PantallaCompraAccionScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             SelectorCantidadAcciones(
-                cantidadInicial = cantidad,
-                onCantidadCambio = { nuevaCantidad -> cantidad = nuevaCantidad },
+                cantidadInicial = cantidadAcciones,
+                onCantidadCambio = { nuevaCantidad -> viewModel.setCantidadAcciones(nuevaCantidad) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -182,7 +180,12 @@ fun PantallaCompraAccionScreen(
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "$${"%.2f".format(totalUSD)} ≈ ${"%.2f".format(1.0)} €",
+                datosPrecioAccion?.let { datos ->
+                    val precioLocal = "%.2f".format(datos.c * cantidadAcciones)
+                    val precioUsuario = tipoCambioInverso?.let { "%.2f".format((datos.c * it) * cantidadAcciones) } ?: "..."
+                    "$precioLocal ${empresa?.simboloMoneda} ≈ $precioUsuario $simboloMonedaUsuario"
+                } ?: "Sin datos",
+
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground
@@ -192,9 +195,8 @@ fun PantallaCompraAccionScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             Button(
                 onClick = {
-                    if (cantidad > 0) {
-                        onComprarClick(cantidad)
-                        navController.popBackStack()
+                    if (cantidadAcciones > 0) {
+                        mostrarDialogoConfirmacion = true
                     }
                 },
                 modifier = Modifier
@@ -214,5 +216,110 @@ fun PantallaCompraAccionScreen(
                 Text("Cancelar", color = MaterialTheme.colorScheme.onBackground)
             }
         }
+    }
+
+    if (mostrarDialogoConfirmacion) {
+        var estadoOperacion by remember { mutableStateOf("confirmacion") }
+        var cargando by remember { mutableStateOf(false) }
+        var mensajeResultado by remember { mutableStateOf("") }
+
+        AlertDialog(
+            onDismissRequest = {
+                if (!cargando) { // No cerrar mientras carga
+                    mostrarDialogoConfirmacion = false
+                    estadoOperacion = "confirmacion"
+                    mensajeResultado = ""
+                }
+            },
+            title = {
+                Text(
+                    when (estadoOperacion) {
+                        "confirmacion" -> "¿Confirmar compra?"
+                        "cargando" -> "Procesando compra..."
+                        "exito" -> "Compra completada"
+                        "error" -> "Error"
+                        else -> ""
+                    }
+                )
+            },
+            text = {
+                when (estadoOperacion) {
+                    "confirmacion" -> {
+                        val precioTotal = cantidadAcciones * datosPrecioAccion?.c!!
+                        val precioEnEuros = tipoCambioInverso?.let { precioTotal * it }
+                        viewModel.setPrecioCompra(precioTotal)
+                        Text(
+                            "Vas a comprar $cantidadAcciones acciones de ${empresa?.nombre} " +
+                                    "por un total de ${"%.2f".format(precioTotal)} ${empresa?.simboloMoneda} " +
+                                    (if (precioEnEuros != null) "(${String.format("%.2f", precioEnEuros)} €)" else "")
+                        )
+                    }
+                    "cargando" -> {
+                        androidx.compose.material3.CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                    }
+                    "exito", "error" -> {
+                        Text(mensajeResultado)
+                    }
+                }
+            },
+            confirmButton = {
+                when (estadoOperacion) {
+                    "confirmacion" -> {
+                        TextButton(
+                            onClick = {
+                                val precioTotal = cantidadAcciones * datosPrecioAccion?.c!!
+                                val precioEnEuros = tipoCambioInverso?.let { precioTotal * it } ?: 0.0
+
+                                if (precioEnEuros > dineroDisponible.value!!) {
+                                    estadoOperacion = "error"
+                                    mensajeResultado = "Saldo insuficiente para completar la compra"
+                                    return@TextButton
+                                }
+
+                                cargando = true
+                                estadoOperacion = "cargando"
+
+                                viewModel.guardarCompraEnFirestore(
+                                    onExito = {
+                                        cargando = false
+                                        estadoOperacion = "exito"
+                                        mensajeResultado = "Compra completada correctamente"
+                                    },
+                                    onFallo = {
+                                        cargando = false
+                                        estadoOperacion = "error"
+                                        mensajeResultado = "Error en la transacción"
+                                    }
+                                )
+                            }
+                        ) {
+                            Text("Confirmar", color = colorResource(R.color.color3))
+                        }
+                    }
+                    "exito", "error" -> {
+                        TextButton(
+                            onClick = {
+                                mostrarDialogoConfirmacion = false
+                                estadoOperacion = "confirmacion"
+                                mensajeResultado = ""
+                            }
+                        ) {
+                            Text("Cerrar", color = colorResource(R.color.color3))
+                        }
+                    }
+                    "cargando" -> {
+                        // No mostrar botón confirm, solo espera
+                    }
+                }
+            },
+            dismissButton = {
+                if (estadoOperacion == "confirmacion") {
+                    TextButton(onClick = { mostrarDialogoConfirmacion = false }) {
+                        Text("Cancelar", color = colorResource(R.color.color3))
+                    }
+                }
+            },
+            containerColor = colorResource(R.color.color7)
+        )
     }
 }
