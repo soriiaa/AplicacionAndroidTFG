@@ -5,7 +5,6 @@ data class Usuario(
     val apellidos: String,
     val nickname: String,
     val correoElectronico: String,
-    val contrasena: String,
     val monedaPrincipal: String,
     val fechaCreacion: Long,
     val dineroEnCuenta: Double,

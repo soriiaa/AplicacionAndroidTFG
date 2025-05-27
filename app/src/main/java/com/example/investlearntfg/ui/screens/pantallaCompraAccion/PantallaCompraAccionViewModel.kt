@@ -71,18 +71,17 @@ class PantallaCompraAccionViewModel @Inject constructor(
         )
 
         _empresa.value?.let {
-            _simboloMonedaUsuario.value?.let { it1 ->
-                FirestoreRepository.guardarCompraEnFirestore(
-                    userId = userId,
-                    ticker = it.ticker,
-                    precioCompra = _precioCompra.value,
-                    unidades = _cantidadAcciones.value,
-                    monedaPagada = it1,
-                    onExito = onExito,
-                    onFallo = onFallo
-                )
-            }
+            FirestoreRepository.guardarCompraEnFirestore(
+                userId = userId,
+                ticker = it.ticker,
+                precioCompra = _empresa.value!!.precio,
+                unidades = _cantidadAcciones.value,
+                onExito = onExito,
+                onFallo = onFallo
+            )
         }
+
+        FirestoreRepository.incrementarComprasRealizadas(userId)
     }
 
     fun setPrecioCompra(nuevoPrecio: Double) {
@@ -93,11 +92,19 @@ class PantallaCompraAccionViewModel @Inject constructor(
         _cantidadAcciones.value = nuevaCantidad
     }
 
-    private suspend fun cargarTasaDeCambio(simboloMonedaUsuario: String?, simboloMonedaAccion: String) {
+    private suspend fun cargarTasaDeCambio(
+        simboloMonedaUsuario: String?,
+        simboloMonedaAccion: String
+    ) {
         val codigoMonedaUsuario = simboloMonedaUsuario?.let { obtenerCodigoMoneda(it) }
         val codigoMonedaAccion = obtenerCodigoMoneda(simboloMonedaAccion)
 
-        val respuesta = codigoMonedaUsuario?.let { postRepository.convertirMonedaPostRepository(it, codigoMonedaAccion) }
+        val respuesta = codigoMonedaUsuario?.let {
+            postRepository.convertirMonedaPostRepository(
+                it,
+                codigoMonedaAccion
+            )
+        }
         Log.d("BBBBBBBBBBBBB", "$respuesta")
         if (respuesta != null) {
             _tipoCambio.value = respuesta.result
@@ -116,7 +123,12 @@ class PantallaCompraAccionViewModel @Inject constructor(
                 else -> ""
             }
             viewModelScope.launch {
-                _empresa.value?.let { cargarTasaDeCambio(_simboloMonedaUsuario.value, it.simboloMoneda) }
+                _empresa.value?.let {
+                    cargarTasaDeCambio(
+                        _simboloMonedaUsuario.value,
+                        it.simboloMoneda
+                    )
+                }
             }
         }
     }
@@ -130,7 +142,8 @@ class PantallaCompraAccionViewModel @Inject constructor(
     fun cargarPrecioAccion() {
         _empresa.value?.let { empresa ->
             viewModelScope.launch {
-                _precioCompania2.value = postRepository.getPrecioEmpresa2PostRepository(empresa.ticker)
+                _precioCompania2.value =
+                    postRepository.getPrecioEmpresa2PostRepository(empresa.ticker)
             }
         }
     }

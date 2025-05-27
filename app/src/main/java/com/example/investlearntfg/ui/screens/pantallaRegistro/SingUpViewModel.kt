@@ -56,7 +56,6 @@ class SignUpViewModel @Inject constructor(
                     "ventas_realizadas" to 0,
                     "dinero_cuenta" to 5000,
                     "ganancias_totales" to 0,
-                    "valores_en_propiedad" to 0,
                     "fecha_creacion" to System.currentTimeMillis()
                 )
 
