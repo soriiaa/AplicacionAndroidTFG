@@ -225,7 +225,7 @@ fun PantallaCompraAccionScreen(
 
         AlertDialog(
             onDismissRequest = {
-                if (!cargando) { // No cerrar mientras carga
+                if (!cargando) {
                     mostrarDialogoConfirmacion = false
                     estadoOperacion = "confirmacion"
                     mensajeResultado = ""
@@ -307,14 +307,17 @@ fun PantallaCompraAccionScreen(
                             Text("Cerrar", color = colorResource(R.color.color3))
                         }
                     }
-                    "cargando" -> {
-                        // No mostrar botón confirm, solo espera
-                    }
+                    "cargando" -> { }
                 }
             },
             dismissButton = {
                 if (estadoOperacion == "confirmacion") {
-                    TextButton(onClick = { mostrarDialogoConfirmacion = false }) {
+                    TextButton(
+                        onClick = {
+                            mostrarDialogoConfirmacion = false
+                            navController.popBackStack()
+                        }
+                    ) {
                         Text("Cancelar", color = colorResource(R.color.color3))
                     }
                 }

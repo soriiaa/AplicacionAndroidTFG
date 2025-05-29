@@ -4,17 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionScreen
-import com.example.investlearntfg.ui.screens.pantallaAccion.PantallaAccionViewModel
 import com.example.investlearntfg.ui.screens.pantallaBuscar.PantallaBuscarScreen
 import com.example.investlearntfg.ui.screens.pantallaCompraAccion.PantallaCompraAccionScreen
 import com.example.investlearntfg.ui.screens.pantallaConfiguracion.PantallaConfiguracionScreen
 import com.example.investlearntfg.ui.screens.pantallaEditarPerfil.PantallaEditarPerfilScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
 import com.example.investlearntfg.ui.screens.pantallaPerfil.PantallaPerfilScreen
-import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
-import com.google.gson.Gson
+import com.example.investlearntfg.ui.screens.pantallaVentaAccion.PantallaVentaAccionScreen
 
 @Composable
 fun MainAppNavGraph(
@@ -43,6 +40,10 @@ fun MainAppNavGraph(
 
         composable("${Destinations.PANTALLA_COMPRA_ACCION_SCREEN}/{empresaJson}") {
             PantallaCompraAccionScreen(navController)
+        }
+
+        composable("${Destinations.PANTALLA_VENTA_ACCION_SCREEN}/{empresaJson}") {
+            PantallaVentaAccionScreen(navController)
         }
 
         composable(Destinations.PANTALLA_CONFIGURACION_SCREEN) {

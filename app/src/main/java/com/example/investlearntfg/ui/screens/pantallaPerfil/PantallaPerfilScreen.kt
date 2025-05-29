@@ -258,7 +258,7 @@ fun PestanasAccionesHistorial(
                                 viewModel,
                                 accion,
                                 onCardClick = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") },
-                                onVenderClick = { /*TODO*/ }
+                                onVenderClick = { navController.navigate("${Destinations.PANTALLA_VENTA_ACCION_SCREEN}/$empresaJson") }
                             )
                         }
                     }

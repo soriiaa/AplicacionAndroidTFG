@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +55,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.investlearntfg.R
@@ -83,6 +86,7 @@ fun PantallaAccionScreen(
     val perfilCompletoEmpresa by viewModel.perfilCompletoEmpresa.collectAsState()
     val esFavorita by viewModel.esEmpresaFavorita.collectAsState()
     val datosPrecioAccion by viewModel.precioCompania2.collectAsState()
+    var mostrarAlertaSinAcciones by remember { mutableStateOf(false) }
 
     LaunchedEffect(empresa?.ticker) {
         empresa?.ticker?.let {
@@ -128,8 +132,6 @@ fun PantallaAccionScreen(
                     .align(Alignment.CenterEnd)
                     .padding(end = 5.dp)
             ) {
-
-                // TODO ESTO
                 BotonAnadirFavoritoPredeterminado(esFavorita) {
                     viewModel.alternarFavorito()
                 }
@@ -191,7 +193,6 @@ fun PantallaAccionScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Columna con Capital y Precio, alineados a la izquierda
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
@@ -200,11 +201,12 @@ fun PantallaAccionScreen(
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
                                 append("Capital: ")
                             }
-                            append("${dineroDisponible.value} $simboloMoneda")
+                            append(String.format("%.2f", dineroDisponible.value) + " $simboloMoneda")
                         },
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
+
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
@@ -255,7 +257,15 @@ fun PantallaAccionScreen(
                 onComprarClick = {
                     navController.navigate("${Destinations.PANTALLA_COMPRA_ACCION_SCREEN}/$empresaJson")
                 },
-                onVenderClick = {}
+                onVenderClick = {
+                    viewModel.viewModelScope.launch {
+                        if (viewModel.puedeVender()) {
+                            navController.navigate("${Destinations.PANTALLA_VENTA_ACCION_SCREEN}/$empresaJson")
+                        } else {
+                            mostrarAlertaSinAcciones = true
+                        }
+                    }
+                }
             )
         }
         Box(
@@ -266,6 +276,24 @@ fun PantallaAccionScreen(
         ) {
             DesplegableInformacionAccion(perfilCompletoEmpresa)
         }
+    }
+
+    if (mostrarAlertaSinAcciones) {
+        AlertDialog(
+            onDismissRequest = { mostrarAlertaSinAcciones = false },
+            title = {
+                Text("Acciones no disponibles")
+            },
+            text = {
+                Text("Parece que no tienes acciones disponibles de esta empresa en tu portafolio. Solo puedes vender acciones que posees actualmente.")
+            },
+            confirmButton = {
+                TextButton(onClick = { mostrarAlertaSinAcciones = false }) {
+                    Text("Entendido")
+                }
+            },
+            containerColor = colorResource(R.color.color7)
+        )
     }
 }
 

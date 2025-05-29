@@ -62,6 +62,13 @@ class PantallaAccionViewModel @Inject constructor(
         traerVelasAccion("D")
     }
 
+    suspend fun puedeVender(): Boolean {
+        _empresa.value?.let {
+            return FirestoreRepository.getAccionCompradaBoolean(userId, it.ticker)
+        }
+        return false
+    }
+
     fun cargarPrecioAccion() {
         _empresa.value?.let { empresa ->
             viewModelScope.launch {

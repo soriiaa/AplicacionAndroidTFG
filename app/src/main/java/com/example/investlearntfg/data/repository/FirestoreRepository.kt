@@ -186,5 +186,21 @@ object FirestoreRepository {
         }
     }
 
+    suspend fun getAccionCompradaBoolean(userId: String, simbolo: String): Boolean {
+        return try {
+            val querySnapshot = db.collection("usuarios")
+                .document(userId)
+                .collection("acciones_en_propiedad")
+                .whereEqualTo("ticker", simbolo)
+                .limit(1)
+                .get()
+                .await()
+
+            !querySnapshot.isEmpty
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 
 }
