@@ -77,8 +77,7 @@ fun PantallaPerfilScreen(
 ) {
 
     val focusManager = LocalFocusManager.current
-    val entradaActualDeNavegacion =
-        remember { navController.currentBackStackEntryFlow }.collectAsState(null)
+    val entradaActualDeNavegacion = remember { navController.currentBackStackEntryFlow }.collectAsState(null)
 
     val nickname by viewModel.nickname.collectAsState()
     val accionesEnPropiedad = viewModel.accionesEnPropiedad.collectAsState()

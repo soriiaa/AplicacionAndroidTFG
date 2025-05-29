@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.model.PaqueteAcciones
 import com.example.investlearntfg.data.model.PrecioCompania2
 import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PantallaVentaAccionViewModel @Inject constructor(
+open class PantallaVentaAccionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val postRepository: PostRepository
 ) : ViewModel() {
@@ -49,10 +50,33 @@ class PantallaVentaAccionViewModel @Inject constructor(
     private val _tipoCambioInverso = MutableStateFlow<Double?>(null)
     val tipoCambioInverso: StateFlow<Double?> = _tipoCambioInverso
 
+    // Lista paquetes en posesion por el usuario
+    private val _listaPaquetesEnPosesion = MutableStateFlow<List<PaqueteAcciones>>(emptyList())
+    val listaPaquetesEnPosesion: StateFlow<List<PaqueteAcciones>> = _listaPaquetesEnPosesion
+
+    // Aqui almaceno los id de los paquetes que han sido seleccionados
+    private val _paquetesSeleccionados = MutableStateFlow<Set<String>>(emptySet())
+    val paquetesSeleccionados: StateFlow<Set<String>> = _paquetesSeleccionados
+
     init {
         cargarInformacionPreviaEmpresa(savedStateHandle)
         cargarDineroCuenta(userId)
         cargarSimboloMoneda(userId)
+        obtenerPaquetesPropiedadPorTicker()
+    }
+
+    fun obtenerPaquetesPropiedadPorTicker() {
+        viewModelScope.launch {
+            _empresa.value?.let {
+                _listaPaquetesEnPosesion.value = FirestoreRepository.obtenerPaquetesPropiedadPorTicker(userId, it.ticker)
+            }
+        }
+    }
+
+    fun alternarSeleccion(id: String) {
+        _paquetesSeleccionados.value = _paquetesSeleccionados.value.toMutableSet().apply {
+            if (contains(id)) remove(id) else add(id)
+        }
     }
 
     fun cargarPrecioAccion() {

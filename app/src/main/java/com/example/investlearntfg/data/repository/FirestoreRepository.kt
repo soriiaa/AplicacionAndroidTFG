@@ -2,6 +2,7 @@ package com.example.investlearntfg.data.repository
 
 import android.util.Log
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.model.PaqueteAcciones
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -201,6 +202,29 @@ object FirestoreRepository {
             e.printStackTrace()
             false
         }
+    }
+
+    suspend fun obtenerPaquetesPropiedadPorTicker(userId: String, ticker: String): List<PaqueteAcciones> {
+
+        val resultado = mutableListOf<PaqueteAcciones>()
+
+        try {
+            val snapshot = db
+                .collection("usuarios")
+                .document(userId)
+                .collection("acciones_en_propiedad")
+                .whereEqualTo("ticker", ticker)
+                .get()
+                .await()
+
+            for (document in snapshot.documents) {
+                document.toObject(PaqueteAcciones::class.java)?.let { resultado.add(it) }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return resultado
     }
 
 }
