@@ -1,6 +1,7 @@
 package com.example.investlearntfg.ui.screens.pantallaVentaAccion
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -131,19 +132,29 @@ fun PantallaVentaAccionScreen(
             )
         }
 
-        // Esto es el lazy Column que almacena las cards con los paquetes de las acciones que se van a vender
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(listaPaquetesEnPosesion.value) { paquete ->
-                empresa?.let {
-                    CardPaqueteAccionesVenta(
-                        accion = it,
-                        paquete = paquete,
-                        isSelected = paquetesSeleccionados.contains(paquete.id),
-                        onSelectionChange = { viewModel.alternarSeleccion(paquete.id) }
-                    )
+        Box(modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            // Esto es el lazy Column que almacena las cards con los paquetes de las acciones que se van a vender
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(listaPaquetesEnPosesion.value) { paquete ->
+                    empresa?.let {
+                        CardPaqueteAccionesVenta(
+                            accion = it,
+                            paquete = paquete,
+                            isSelected = paquetesSeleccionados.contains(paquete.id),
+                            onSelectionChange = { viewModel.alternarSeleccion(paquete.id) }
+                        )
+                    }
                 }
             }
         }
+
 
         // Parte inferior -> Botones de vender y cancelar
         Column(modifier = Modifier.fillMaxWidth()) {

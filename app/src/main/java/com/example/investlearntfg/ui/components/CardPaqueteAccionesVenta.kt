@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.PaqueteAcciones
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun CardPaqueteAccionesVenta(
@@ -35,6 +37,8 @@ fun CardPaqueteAccionesVenta(
 ) {
     val gananciaPorcentaje = ((accion.precio - paquete.precioCompra) / paquete.precioCompra) * 100
     val gananciaNeta = (accion.precio - paquete.precioCompra) * paquete.unidades
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val fechaFormateada = paquete.fecha?.toDate()?.let { sdf.format(it) } ?: "Fecha no disponible"
 
     val color = when {
         gananciaPorcentaje > 0 -> Color(0xFF4CAF50)
@@ -47,7 +51,6 @@ fun CardPaqueteAccionesVenta(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
             .clickable { onSelectionChange(!isSelected) },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp)
@@ -76,7 +79,7 @@ fun CardPaqueteAccionesVenta(
                 )
 
                 Text(
-                    "Fecha compra: ${paquete.fecha}",
+                    "Fecha compra: $fechaFormateada",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
