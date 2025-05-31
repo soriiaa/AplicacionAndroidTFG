@@ -79,6 +79,14 @@ class PantallaCompraAccionViewModel @Inject constructor(
                 onExito = onExito,
                 onFallo = onFallo
             )
+
+            FirestoreRepository.subirTransaccion(
+                userId = userId,
+                ticker = it.ticker,
+                tipoTransaccion = "Compra",
+                precioTransaccion = _empresa.value!!.precio,
+                unidades = _cantidadAcciones.value
+            )
         }
 
         FirestoreRepository.incrementarComprasRealizadas(userId)

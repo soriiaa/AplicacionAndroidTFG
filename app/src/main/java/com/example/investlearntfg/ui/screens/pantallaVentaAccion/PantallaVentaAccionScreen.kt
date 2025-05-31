@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,13 +23,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.CardPaqueteAccionesVenta
 
 import com.example.investlearntfg.ui.theme.color5
@@ -48,6 +54,7 @@ fun PantallaVentaAccionScreen(
     val tipoCambioInversoViewModel2 by viewModel.tipoCambioInverso.collectAsState()
     val listaPaquetesEnPosesion = viewModel.listaPaquetesEnPosesion.collectAsState()
     val paquetesSeleccionados by viewModel.paquetesSeleccionados.collectAsState()
+    var mostrarConfirmacion by remember { mutableStateOf(false) }
 
     LaunchedEffect(empresa?.ticker) {
         empresa?.ticker?.let {
@@ -155,11 +162,10 @@ fun PantallaVentaAccionScreen(
             }
         }
 
-
-        // Parte inferior -> Botones de vender y cancelar
         Column(modifier = Modifier.fillMaxWidth()) {
             Button(
-                onClick = { },
+                onClick = { mostrarConfirmacion = true },
+                enabled = paquetesSeleccionados.isNotEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -176,5 +182,27 @@ fun PantallaVentaAccionScreen(
                 Text("Cancelar", color = MaterialTheme.colorScheme.onBackground)
             }
         }
+    }
+
+    if (mostrarConfirmacion) {
+        AlertDialog(
+            onDismissRequest = { mostrarConfirmacion = false },
+            title = { Text("¿Confirmar venta?") },
+            text = { Text("¿Estás seguro de que quieres vender las acciones seleccionadas?") },
+            containerColor = colorResource(R.color.color7),
+            confirmButton = {
+                TextButton(onClick = {
+                    mostrarConfirmacion = false
+                    viewModel.venderPaquetesSeleccionados()
+                }) {
+                    Text("Sí")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarConfirmacion = false }) {
+                    Text("No")
+                }
+            }
+        )
     }
 }

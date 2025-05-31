@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -240,7 +241,12 @@ fun PestanasAccionesHistorial(
                         CircularProgressIndicator()
                     }
                 } else {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
                         items(accionesEnPropiedad.value) { accion ->
 
                             val empresaPreview = EmpresaPreview(
@@ -297,7 +303,7 @@ fun TarjetaAccion(
     Card(
         Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp)
             .clickable(onClick = onCardClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp)
@@ -313,9 +319,7 @@ fun TarjetaAccion(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.placeholder_blanco),
-                error = painterResource(R.drawable.placeholder_blanco)
+                contentScale = ContentScale.Crop
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {

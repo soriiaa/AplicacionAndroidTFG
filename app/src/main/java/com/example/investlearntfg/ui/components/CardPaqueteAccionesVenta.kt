@@ -72,7 +72,7 @@ fun CardPaqueteAccionesVenta(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    "${accion.ticker} - ${accion.nombre}",
+                    text = accion.nombre,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

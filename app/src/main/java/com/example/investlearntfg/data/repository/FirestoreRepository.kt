@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.PaqueteAcciones
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
@@ -225,6 +226,36 @@ object FirestoreRepository {
         }
 
         return resultado
+    }
+
+    fun subirTransaccion(
+        userId: String,
+        ticker: String,
+        tipoTransaccion: String,
+        precioTransaccion: Double,
+        unidades: Int,
+        onSuccess: () -> Unit = {},
+        onFailure: (Exception) -> Unit = {}
+    ) {
+
+        val transaccion = hashMapOf(
+            "ticker" to ticker,
+            "tipo_transaccion" to tipoTransaccion,
+            "precio_transaccion" to precioTransaccion,
+            "unidades" to unidades,
+            "fecha" to Timestamp.now()
+        )
+
+        db.collection("usuarios")
+            .document(userId)
+            .collection("historial_transacciones")
+            .add(transaccion)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
     }
 
 }

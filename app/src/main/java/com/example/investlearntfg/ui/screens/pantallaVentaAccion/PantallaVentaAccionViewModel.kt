@@ -65,6 +65,12 @@ open class PantallaVentaAccionViewModel @Inject constructor(
         obtenerPaquetesPropiedadPorTicker()
     }
 
+    fun venderPaquetesSeleccionados() {
+
+
+
+    }
+
     fun obtenerPaquetesPropiedadPorTicker() {
         viewModelScope.launch {
             _empresa.value?.let {
