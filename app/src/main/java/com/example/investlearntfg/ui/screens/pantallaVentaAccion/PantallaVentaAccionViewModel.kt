@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.times
 
 @HiltViewModel
 open class PantallaVentaAccionViewModel @Inject constructor(
@@ -66,15 +67,47 @@ open class PantallaVentaAccionViewModel @Inject constructor(
     }
 
     fun venderPaquetesSeleccionados() {
+        try {
+            var ganancia = 0.0
 
+            _paquetesSeleccionados.value.forEach { paqueteId ->
 
+                val paquete = _listaPaquetesEnPosesion.value.find { it.id == paqueteId }
+                _empresa.value?.let {
+                    _precioCompania2.value?.let { it1 ->
+                        if (paquete != null) {
+                            FirestoreRepository.subirTransaccion(
+                                userId = userId,
+                                ticker = it.ticker,
+                                tipoTransaccion = "Venta",
+                                precioTransaccion = it1.c,
+                                unidades = paquete.unidades
+                            )
+                        }
+                    }
+                }
+                FirestoreRepository.eliminarAccionEnPropiedad(userId, paqueteId)
+                ganancia += (((_precioCompania2.value?.c ?: 0.0) - paquete?.precioCompra!!) * paquete.unidades)
+            }
 
+            FirestoreRepository.incrementarVentasRealizadas(userId)
+
+            if ((_empresa.value?.simboloMoneda ?: 0.0) != simboloMonedaUsuario.value) {
+                ganancia *= _tipoCambioInverso.value!!
+            }
+
+            FirestoreRepository.incrementarGananciasTotales(userId, ganancia)
+
+        } catch (e: Exception) {
+            println("Error al vender la acción ${e.message}")
+        }
     }
 
     fun obtenerPaquetesPropiedadPorTicker() {
         viewModelScope.launch {
             _empresa.value?.let {
-                _listaPaquetesEnPosesion.value = FirestoreRepository.obtenerPaquetesPropiedadPorTicker(userId, it.ticker)
+                _listaPaquetesEnPosesion.value =
+                    FirestoreRepository.obtenerPaquetesPropiedadPorTicker(userId, it.ticker)
             }
         }
     }

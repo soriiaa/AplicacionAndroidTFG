@@ -158,6 +158,30 @@ object FirestoreRepository {
             }
     }
 
+    fun incrementarVentasRealizadas(usuarioId: String) {
+        val usuarioRef = db.collection("usuarios").document(usuarioId)
+
+        usuarioRef.update("ventas_realizadas", FieldValue.increment(1))
+            .addOnSuccessListener {
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error actualizando ventas_realizadas", e)
+            }
+    }
+
+    fun incrementarGananciasTotales(usuarioId: String, ganancias: Double) {
+        val usuarioRef = db.collection("usuarios").document(usuarioId)
+
+        usuarioRef.update("ganancias_totales", FieldValue.increment(ganancias))
+            .addOnSuccessListener {
+                Log.d("Firestore", "Ganancias totales incrementadas en $ganancias")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error actualizando ganancias_totales", e)
+            }
+    }
+
+
     suspend fun obtenerNickname(userId: String): String {
         return try {
             val doc = db.collection("usuarios").document(userId).get().await()
@@ -255,6 +279,21 @@ object FirestoreRepository {
             }
             .addOnFailureListener { exception ->
                 onFailure(exception)
+            }
+    }
+
+    fun eliminarAccionEnPropiedad(usuarioId: String, paqueteId: String) {
+        val accionRef = db.collection("usuarios")
+            .document(usuarioId)
+            .collection("acciones_en_propiedad")
+            .document(paqueteId)
+
+        accionRef.delete()
+            .addOnSuccessListener {
+                Log.d("Firestore", "Acción con ID $paqueteId eliminada correctamente.")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al eliminar la acción con ID $paqueteId", e)
             }
     }
 
