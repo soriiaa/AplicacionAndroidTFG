@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.AccionPropiedad
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.model.Transaccion
 import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.Firebase
@@ -32,9 +33,19 @@ class PantallaPerfilViewModel @Inject constructor(
     private val _accionesEnPropiedad = MutableStateFlow<List<AccionPropiedad>>(emptyList())
     val accionesEnPropiedad: StateFlow<List<AccionPropiedad>> = _accionesEnPropiedad
 
+    // Aqui almaceno todas las transacciones que devuelve el endpoint de la base de datos de firebase
+    private val _historialTransacciones = MutableStateFlow<List<Transaccion>>(emptyList())
+    val historialTransacciones: StateFlow<List<Transaccion>> = _historialTransacciones
+
     init {
         cargarNickname()
         cargarAccionesEnPropiedad()
+    }
+
+    fun cargarHistorialTransacciones() {
+        viewModelScope.launch {
+            _historialTransacciones.value = FirestoreRepository.cargarHistorialTransacciones(usuarioId = userId)
+        }
     }
 
     fun cargarAccionesEnPropiedad() {

@@ -85,7 +85,8 @@ class PantallaCompraAccionViewModel @Inject constructor(
                 ticker = it.ticker,
                 tipoTransaccion = "Compra",
                 precioTransaccion = _empresa.value!!.precio,
-                unidades = _cantidadAcciones.value
+                unidades = _cantidadAcciones.value,
+                fotoAccion = _empresa.value!!.logo
             )
         }
 

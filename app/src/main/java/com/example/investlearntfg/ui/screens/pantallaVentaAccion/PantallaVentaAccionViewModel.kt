@@ -81,7 +81,8 @@ open class PantallaVentaAccionViewModel @Inject constructor(
                                 ticker = it.ticker,
                                 tipoTransaccion = "Venta",
                                 precioTransaccion = it1.c,
-                                unidades = paquete.unidades
+                                unidades = paquete.unidades,
+                                fotoAccion = _empresa.value!!.logo
                             )
                         }
                     }

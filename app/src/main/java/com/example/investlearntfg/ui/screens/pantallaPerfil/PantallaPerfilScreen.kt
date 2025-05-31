@@ -67,6 +67,7 @@ import coil.compose.AsyncImage
 import com.example.investlearntfg.R
 import com.example.investlearntfg.data.model.AccionPropiedad
 import com.example.investlearntfg.data.model.EmpresaPreview
+import com.example.investlearntfg.data.model.Transaccion
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.google.gson.Gson
@@ -82,9 +83,11 @@ fun PantallaPerfilScreen(
 
     val nickname by viewModel.nickname.collectAsState()
     val accionesEnPropiedad = viewModel.accionesEnPropiedad.collectAsState()
+    val historialTransacciones by viewModel.historialTransacciones.collectAsState()
 
     LaunchedEffect(entradaActualDeNavegacion.value) {
         viewModel.cargarAccionesEnPropiedad()
+        viewModel.cargarHistorialTransacciones()
     }
 
     Column(
@@ -173,7 +176,7 @@ fun PantallaPerfilScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            PestanasAccionesHistorial(accionesEnPropiedad, viewModel, navController)
+            PestanasAccionesHistorial(accionesEnPropiedad, viewModel, navController, historialTransacciones)
         }
         BottomNavigationBarPredeterminado(navController)
     }
@@ -199,7 +202,8 @@ fun BotonEditarPerfil(navController: NavController) {
 fun PestanasAccionesHistorial(
     accionesEnPropiedad: State<List<AccionPropiedad>>,
     viewModel: PantallaPerfilViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    historialTransacciones: List<Transaccion>
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Tus Acciones", "Historial")
@@ -271,16 +275,59 @@ fun PestanasAccionesHistorial(
             }
 
             1 -> {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(10) { index ->
-                        Text(
-                            "Compra pasada nº $index",
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(historialTransacciones) { transaccion ->
+                        Card(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(4.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Imagen de perfil
+                                AsyncImage(
+                                    model = "https://tuproyecto.com/foto-perfil.jpg",
+                                    contentDescription = "Foto de perfil",
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.LightGray),
+                                    contentScale = ContentScale.Crop
+                                )
+
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                Column {
+                                    Text(
+                                        text = "Ticker: ${transaccion.ticker}",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = "Tipo: ${transaccion.tipo_transaccion}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = if (transaccion.tipo_transaccion.lowercase() == "compra") Color(0xFF4CAF50) else Color(0xFFF44336)
+                                    )
+                                    Text(
+                                        text = "Unidades: ${transaccion.unidades}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.Gray
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
+
             }
         }
     }

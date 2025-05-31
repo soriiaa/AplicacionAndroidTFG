@@ -3,6 +3,7 @@ package com.example.investlearntfg.data.repository
 import android.util.Log
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.PaqueteAcciones
+import com.example.investlearntfg.data.model.Transaccion
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -258,6 +259,7 @@ object FirestoreRepository {
         tipoTransaccion: String,
         precioTransaccion: Double,
         unidades: Int,
+        fotoAccion: String,
         onSuccess: () -> Unit = {},
         onFailure: (Exception) -> Unit = {}
     ) {
@@ -267,6 +269,7 @@ object FirestoreRepository {
             "tipo_transaccion" to tipoTransaccion,
             "precio_transaccion" to precioTransaccion,
             "unidades" to unidades,
+            "foto_accion" to fotoAccion,
             "fecha" to Timestamp.now()
         )
 
@@ -296,5 +299,21 @@ object FirestoreRepository {
                 Log.e("Firestore", "Error al eliminar la acción con ID $paqueteId", e)
             }
     }
+
+    suspend fun cargarHistorialTransacciones(usuarioId: String): List<Transaccion> {
+        return try {
+            val snapshot = db.collection("usuarios")
+                .document(usuarioId)
+                .collection("historial_transacciones")
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { it.toObject(Transaccion::class.java) }
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error al obtener historial de transacciones", e)
+            emptyList()
+        }
+    }
+
 
 }
