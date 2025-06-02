@@ -296,7 +296,7 @@ fun PestanasAccionesHistorial(
                             ) {
                                 // Imagen de perfil
                                 AsyncImage(
-                                    model = "https://tuproyecto.com/foto-perfil.jpg",
+                                    model = transaccion.foto_accion,
                                     contentDescription = "Foto de perfil",
                                     modifier = Modifier
                                         .size(48.dp)
@@ -309,7 +309,7 @@ fun PestanasAccionesHistorial(
 
                                 Column {
                                     Text(
-                                        text = "Ticker: ${transaccion.ticker}",
+                                        text = transaccion.ticker,
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                     Text(

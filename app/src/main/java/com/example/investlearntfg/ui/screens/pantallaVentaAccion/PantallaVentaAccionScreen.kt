@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,6 +58,9 @@ fun PantallaVentaAccionScreen(
     val listaPaquetesEnPosesion = viewModel.listaPaquetesEnPosesion.collectAsState()
     val paquetesSeleccionados by viewModel.paquetesSeleccionados.collectAsState()
     var mostrarConfirmacion by remember { mutableStateOf(false) }
+    var mostrandoCarga by remember { mutableStateOf(false) }
+    var resultadoOperacion by remember { mutableStateOf<String?>(null) }
+    var titulo by remember { mutableStateOf<String?>("¿Confirmar venta?") }
 
     LaunchedEffect(empresa?.ticker) {
         empresa?.ticker?.let {
@@ -141,7 +147,8 @@ fun PantallaVentaAccionScreen(
 
         Box(modifier = Modifier
             .weight(1f)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(top = 10.dp, bottom = 10.dp),
             contentAlignment = Alignment.Center
         ) {
             // Esto es el lazy Column que almacena las cards con los paquetes de las acciones que se van a vender
@@ -186,21 +193,57 @@ fun PantallaVentaAccionScreen(
 
     if (mostrarConfirmacion) {
         AlertDialog(
-            onDismissRequest = { mostrarConfirmacion = false },
-            title = { Text("¿Confirmar venta?") },
-            text = { Text("¿Estás seguro de que quieres vender las acciones seleccionadas?") },
+            onDismissRequest = {
+                if (!mostrandoCarga) {
+                    mostrarConfirmacion = false
+                    resultadoOperacion = null
+                }
+            },
+            title = { titulo?.let { Text(it) } },
+            text = {
+                when {
+                    mostrandoCarga -> {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
+                    }
+                    resultadoOperacion != null -> {
+                        Text(resultadoOperacion ?: "")
+                    }
+                    else -> {
+                        Text("¿Estás seguro de que quieres vender las acciones seleccionadas?")
+                    }
+                }
+            },
             containerColor = colorResource(R.color.color7),
             confirmButton = {
-                TextButton(onClick = {
-                    mostrarConfirmacion = false
-                    viewModel.venderPaquetesSeleccionados()
-                }) {
-                    Text("Sí")
+                if (!mostrandoCarga && resultadoOperacion == null) {
+                    TextButton(onClick = {
+                        mostrandoCarga = true
+                        // Simula la venta llamando a la función en el ViewModel
+                        viewModel.venderPaquetesSeleccionados(
+                            onResult = { exito, mensaje ->
+                                mostrandoCarga = false
+                                resultadoOperacion = if (exito) "Venta realizada con éxito" else "Error: $mensaje"
+                                titulo = if (exito) "Éxito" else "Error: $mensaje"
+                                if (exito) {
+                                    navController.popBackStack()
+                                }
+                            }
+                        )
+                    }) {
+                        Text("Aceptar")
+                    }
                 }
             },
             dismissButton = {
-                TextButton(onClick = { mostrarConfirmacion = false }) {
-                    Text("No")
+                if (!mostrandoCarga) {
+                    TextButton(onClick = {
+                        mostrarConfirmacion = false
+                        resultadoOperacion = null
+                    }) {
+                        Text("Aceptar")
+                    }
                 }
             }
         )

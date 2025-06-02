@@ -302,6 +302,7 @@ fun PantallaCompraAccionScreen(
                                 mostrarDialogoConfirmacion = false
                                 estadoOperacion = "confirmacion"
                                 mensajeResultado = ""
+                                navController.popBackStack()
                             }
                         ) {
                             Text("Cerrar", color = colorResource(R.color.color3))
@@ -315,7 +316,6 @@ fun PantallaCompraAccionScreen(
                     TextButton(
                         onClick = {
                             mostrarDialogoConfirmacion = false
-                            navController.popBackStack()
                         }
                     ) {
                         Text("Cancelar", color = colorResource(R.color.color3))

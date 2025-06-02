@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.times
 
 @HiltViewModel
 open class PantallaVentaAccionViewModel @Inject constructor(
@@ -66,7 +65,7 @@ open class PantallaVentaAccionViewModel @Inject constructor(
         obtenerPaquetesPropiedadPorTicker()
     }
 
-    fun venderPaquetesSeleccionados() {
+    fun venderPaquetesSeleccionados(onResult: (exito: Boolean, mensaje: String?) -> Unit) {
         try {
             var ganancia = 0.0
 
@@ -99,8 +98,11 @@ open class PantallaVentaAccionViewModel @Inject constructor(
 
             FirestoreRepository.incrementarGananciasTotales(userId, ganancia)
 
+            onResult(true, null)
+
         } catch (e: Exception) {
             println("Error al vender la acción ${e.message}")
+            onResult(false, "Error al vender la acción")
         }
     }
 

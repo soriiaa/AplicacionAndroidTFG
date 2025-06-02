@@ -1,11 +1,9 @@
 package com.example.investlearntfg.ui.screens.pantallaPerfil
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.model.AccionPropiedad
-import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.Transaccion
 import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
@@ -40,11 +38,15 @@ class PantallaPerfilViewModel @Inject constructor(
     init {
         cargarNickname()
         cargarAccionesEnPropiedad()
+        cargarHistorialTransacciones()
     }
 
     fun cargarHistorialTransacciones() {
         viewModelScope.launch {
             _historialTransacciones.value = FirestoreRepository.cargarHistorialTransacciones(usuarioId = userId)
+            _historialTransacciones.value.forEachIndexed { index, transaccion ->
+                Log.d("HistorialTransacciones", "Transacción #$index: $transaccion")
+            }
         }
     }
 
