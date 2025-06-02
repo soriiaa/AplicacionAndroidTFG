@@ -315,5 +315,36 @@ object FirestoreRepository {
         }
     }
 
+    fun getNumeroAccionesEnPropiedad(userId: String, onResultado: (Int) -> Unit) {
+        db.collection("usuarios")
+            .document(userId)
+            .collection("acciones_en_propiedad")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val numeroAcciones = querySnapshot.size()
+                onResultado(numeroAcciones)
+            }
+            .addOnFailureListener {
+                onResultado(0)
+            }
+    }
+
+    fun getNumeroTransacciones(userId: String, onResultado: (Int?) -> Unit) {
+        db.collection("usuarios")
+            .document(userId)
+            .collection("historial_transacciones")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot != null) {
+                    val numeroTransacciones = querySnapshot.size()
+                    onResultado(numeroTransacciones)
+                } else {
+                    onResultado(null)
+                }
+            }
+            .addOnFailureListener {
+                onResultado(null)
+            }
+    }
 
 }
