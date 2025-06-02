@@ -175,7 +175,7 @@ fun TextFieldContrasenaLogin(
             )
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true,
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(), // Ocultar/Mostrar contraseña
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             val image =
                 if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff

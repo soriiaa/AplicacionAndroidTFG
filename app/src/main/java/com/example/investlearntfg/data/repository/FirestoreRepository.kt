@@ -347,4 +347,49 @@ object FirestoreRepository {
             }
     }
 
+    fun getNicknameNombreApellidoUsuario(
+        userId: String,
+        onResultado: (nickname: String?, nombre: String?, apellidos: String?) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        db.collection("usuarios")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val nickname = document.getString("nickname")
+                    val nombre = document.getString("nombre")
+                    val apellidos = document.getString("apellidos")
+                    onResultado(nickname, nombre, apellidos)
+                } else {
+                    onResultado(null, null, null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                onError(exception)
+            }
+    }
+
+    fun setDatosNuevosUsuario(
+        userId: String,
+        nickname: String,
+        nombre: String,
+        apellidos: String,
+        onResultado: () -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        val datosActualizados = mapOf(
+            "nickname" to nickname,
+            "nombre" to nombre,
+            "apellidos" to apellidos
+        )
+
+        db.collection("usuarios")
+            .document(userId)
+            .update(datosActualizados)
+            .addOnSuccessListener { onResultado() }
+            .addOnFailureListener { exception -> onError(exception) }
+    }
+
+
 }
