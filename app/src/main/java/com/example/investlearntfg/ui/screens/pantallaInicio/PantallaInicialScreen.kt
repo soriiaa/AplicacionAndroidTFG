@@ -11,29 +11,42 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,12 +54,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.investlearntfg.R
+import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.components.CardAccionPredeterminado1
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.navigation.Destinations
+import com.example.investlearntfg.ui.screens.pantallaAccion.InfoFila
 import com.google.gson.Gson
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -126,13 +143,7 @@ fun PantallaInicialScreen(
                     .padding(end = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "Información",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                PantallaConDesplegable()
             }
         }
 
@@ -357,8 +368,167 @@ fun EstadisticasPantallaInicio(
             }
         }
     }
-
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PantallaConDesplegable() {
+    val estadoHoja = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+    var mostrarHoja by remember { mutableStateOf(false) }
+
+    // Mostrar el ModalBottomSheet si mostrarHoja es true
+    if (mostrarHoja) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                scope.launch {
+                    estadoHoja.hide()
+                    mostrarHoja = false
+                }
+            },
+            sheetState = estadoHoja,
+            containerColor = colorResource(id = R.color.backgroundColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 600.dp)
+                    .padding(horizontal = 20.dp, vertical = 28.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(32.dp)
+                ) {
+                    Text(
+                        text = "¿Cómo funciona la app?",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.White
+                    )
+
+                    // Dinero inicial y objetivo
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Dinero inicial y objetivo",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Empiezas con 5000 € (o su equivalente en otras monedas) para invertir como tú quieras. Es una simulación pensada para que aprendas a invertir, sin riesgo real, pero con una experiencia lo más parecida posible a la realidad.",
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                    }
+
+                    // Pantalla principal
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Pantalla principal",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Aquí ves tus estadísticas clave: tu saldo actual, las acciones que más te interesan, tus últimos movimientos y la fecha actual. Todo diseñado para que te sitúes de un vistazo.",
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                    }
+
+                    // Pantalla de búsqueda
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Pantalla de búsqueda",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Busca acciones de todo el mundo, explora algunas destacadas y márcalas como favoritas para tenerlas siempre a mano. Perfecto para descubrir nuevas empresas.",
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                    }
+
+                    // Pantalla del perfil
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Pantalla del perfil",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Consulta las acciones que has comprado, revisa tu historial de movimientos y accede a tres botones: uno para editar tu perfil, otro para cambiar tu foto y otro para ir a la configuración.",
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                    }
+
+                    // Pantalla de una acción
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Pantalla de la acción",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Podrás ver un gráfico de la acción (último día, semana o mes), algo de información relevante y dos opciones: comprar o vender. Si no tienes acciones de esa empresa, el botón de vender estará desactivado.",
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                    }
+                }
+            }
 
 
+
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(end = 5.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        IconButton(
+            onClick = {
+                scope.launch {
+                    mostrarHoja = true
+                    estadoHoja.show()
+                }
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = "Información",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
