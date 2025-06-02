@@ -138,47 +138,61 @@ fun PantallaInicialScreen(
 
         Box(
             modifier = Modifier
-                .weight(2f)
+                .weight(2.1f)
                 .fillMaxWidth()
+                .padding(start = 5.dp, end = 5.dp)
         ) {
             EstadisticasPantallaInicio(dineroEnCuenta, simboloMonedaUsuario, accionesEnPropiedad, totalTransacciones, fechaHoy)
         }
 
         Box(
             modifier = Modifier
-                .weight(3f)
+                .weight(3.1f)
                 .fillMaxWidth()
         ) {
-            if (empresasFavoritas.isNotEmpty() && !cargando) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(listaEmpresasFavoritasPreview) { empresa ->
-
-                        val empresaJson = Uri.encode(Gson().toJson(empresa))
-
-                        CardAccionPredeterminado1(
-                            empresa = empresa,
-                            esFavorita = empresasFavoritas.contains(empresa.ticker),
-                            onClickFavorito = { viewModel.alternarFavorito(empresa) },
-                            onClickCard = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") }
-                        )
-                    }
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .padding(top = 170.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.BottomCenter),
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "Acciones favoritas",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
                         color = Color.White
-                    )
+                    ),
+                    modifier = Modifier.padding(start = 17.dp, bottom = 12.dp)
+                )
+
+                if (empresasFavoritas.isNotEmpty() && !cargando) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(listaEmpresasFavoritasPreview) { empresa ->
+
+                            val empresaJson = Uri.encode(Gson().toJson(empresa))
+
+                            CardAccionPredeterminado1(
+                                empresa = empresa,
+                                esFavorita = empresasFavoritas.contains(empresa.ticker),
+                                onClickFavorito = { viewModel.alternarFavorito(empresa) },
+                                onClickCard = {
+                                    navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson")
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 100.dp),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
                 }
             }
         }
@@ -236,13 +250,17 @@ fun EstadisticasPantallaInicio(
                         .padding(horizontal = 16.dp, vertical = 20.dp),
                     contentAlignment = Alignment.TopStart
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(text = "Tu dinero", style = titleStyle)
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "Tu dinero",
+                            style = titleStyle.copy(color = Color.White)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         val dineroFormateado = String.format("%.2f", dineroEnCuenta)
-                        Text(text = "$dineroFormateado $simboloMonedaUsuario", style = valueStyle)
+                        Text(
+                            text = "$dineroFormateado $simboloMonedaUsuario",
+                            style = valueStyle.copy(color = Color.White)
+                        )
                     }
                 }
             }
@@ -261,12 +279,16 @@ fun EstadisticasPantallaInicio(
                         .padding(horizontal = 16.dp, vertical = 20.dp),
                     contentAlignment = Alignment.TopStart
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(text = "Tus acciones", style = titleStyle)
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "Tus acciones",
+                            style = titleStyle.copy(color = Color.White)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = accionesEnPropiedad.toString(), style = valueStyle)
+                        Text(
+                            text = accionesEnPropiedad.toString(),
+                            style = valueStyle.copy(color = Color.White)
+                        )
                     }
                 }
             }
@@ -292,12 +314,16 @@ fun EstadisticasPantallaInicio(
                         .padding(horizontal = 16.dp, vertical = 20.dp),
                     contentAlignment = Alignment.TopStart
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(text = "Movimientos", style = titleStyle)
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "Movimientos",
+                            style = titleStyle.copy(color = Color.White)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = totalTransacciones.toString(), style = valueStyle)
+                        Text(
+                            text = totalTransacciones.toString(),
+                            style = valueStyle.copy(color = Color.White)
+                        )
                     }
                 }
             }
@@ -316,17 +342,22 @@ fun EstadisticasPantallaInicio(
                         .padding(horizontal = 16.dp, vertical = 20.dp),
                     contentAlignment = Alignment.TopStart
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(text = "Hoy es", style = titleStyle)
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = "Hoy es",
+                            style = titleStyle.copy(color = Color.White)
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = fechaHoy, style = valueStyle)
+                        Text(
+                            text = fechaHoy,
+                            style = valueStyle.copy(color = Color.White)
+                        )
                     }
                 }
             }
         }
     }
+
 }
 
 
