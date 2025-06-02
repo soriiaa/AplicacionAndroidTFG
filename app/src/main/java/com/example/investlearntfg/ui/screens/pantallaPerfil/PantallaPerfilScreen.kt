@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,8 +44,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,8 +56,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -70,7 +73,11 @@ import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.Transaccion
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.navigation.Destinations
+import com.example.investlearntfg.ui.theme.color5
+import com.example.investlearntfg.ui.theme.color6
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun PantallaPerfilScreen(
@@ -281,53 +288,78 @@ fun PestanasAccionesHistorial(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(historialTransacciones) { transaccion ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            elevation = CardDefaults.cardElevation(4.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // Imagen de perfil
-                                AsyncImage(
-                                    model = transaccion.foto_accion,
-                                    contentDescription = "Foto de perfil",
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(CircleShape)
-                                        .background(Color.LightGray),
-                                    contentScale = ContentScale.Crop
-                                )
-
-                                Spacer(modifier = Modifier.width(16.dp))
-
-                                Column {
-                                    Text(
-                                        text = transaccion.ticker,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                    Text(
-                                        text = "Tipo: ${transaccion.tipo_transaccion}",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = if (transaccion.tipo_transaccion.lowercase() == "compra") Color(0xFF4CAF50) else Color(0xFFF44336)
-                                    )
-                                    Text(
-                                        text = "Unidades: ${transaccion.unidades}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
-                        }
+                    items(historialTransacciones.sortedByDescending { it.fecha?.toDate() }) { transaccion ->
+                        CardTransaccion(transaccion)
                     }
                 }
 
+            }
+        }
+    }
+}
+
+@Composable
+fun CardTransaccion(transaccion: Transaccion) {
+    val fecha = transaccion.fecha?.toDate()?.let {
+        SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault()).format(it)
+    } ?: "Fecha desconocida"
+
+    val colorTipo = when (transaccion.tipo_transaccion.lowercase()) {
+        "compra" -> Color(0xFF4CAF50)
+        "venta" -> Color(0xFFF44336)
+        else -> Color.Gray
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 12.dp),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(containerColor = color6)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = transaccion.foto_accion,
+                contentDescription = "Logo de la acción",
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = transaccion.ticker,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Text(
+                    text = buildAnnotatedString {
+                        // Tipo de transacción (con color)
+                        withStyle(style = SpanStyle(color = colorTipo)) {
+                            append(transaccion.tipo_transaccion.replaceFirstChar { it.uppercase() })
+                        }
+                        append(" • ${transaccion.unidades} uds • ")
+                        append("%.2f€".format(transaccion.precio_transaccion * transaccion.unidades))
+                    },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
+                    text = fecha,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
             }
         }
     }

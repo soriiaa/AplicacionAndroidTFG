@@ -220,15 +220,12 @@ fun PantallaVentaAccionScreen(
                 if (!mostrandoCarga && resultadoOperacion == null) {
                     TextButton(onClick = {
                         mostrandoCarga = true
-                        // Simula la venta llamando a la función en el ViewModel
                         viewModel.venderPaquetesSeleccionados(
                             onResult = { exito, mensaje ->
                                 mostrandoCarga = false
                                 resultadoOperacion = if (exito) "Venta realizada con éxito" else "Error: $mensaje"
                                 titulo = if (exito) "Éxito" else "Error: $mensaje"
-                                if (exito) {
-                                    navController.popBackStack()
-                                }
+
                             }
                         )
                     }) {
@@ -241,6 +238,7 @@ fun PantallaVentaAccionScreen(
                     TextButton(onClick = {
                         mostrarConfirmacion = false
                         resultadoOperacion = null
+                        navController.popBackStack()
                     }) {
                         Text("Aceptar")
                     }
