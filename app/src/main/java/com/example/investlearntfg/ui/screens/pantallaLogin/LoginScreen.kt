@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -222,15 +224,20 @@ fun BotonInicioSesionLogin(
         enabled = botonHabilitado,
         modifier = Modifier
             .height(50.dp)
-            .width(150.dp)
+            .width(160.dp)
     ) {
         Text(
-            stringResource(R.string.texto_iniciar_sesion),
+            text = stringResource(R.string.texto_iniciar_sesion),
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            fontSize = 15.sp
+            fontSize = 15.sp,
+            maxLines = 1,
+            softWrap = false,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
     }
+
 
     if (mostrarDialogo.value) {
         AlertDialog(
