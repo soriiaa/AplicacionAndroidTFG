@@ -62,7 +62,7 @@ fun SignUpScreen(
     val mostrarDialogoCorreo by viewModel.mostrarDialogoCorreoYaExistente.collectAsState()
     val mostrarDialogoRegistroExitoso by viewModel.mostrarDialogoRegistroExitoso.collectAsState()
     val mostrarDialogoRegistroErroneo by viewModel.mostrarDialogoRegistroErroneo.collectAsState()
-
+    val correoVerificacionEnviado by viewModel.correoVerificacionEnviado.collectAsState()
 
     val opcionesMoneda = listOf(
         "Dólar estadounidense - $ - USD",
@@ -190,15 +190,33 @@ fun SignUpScreen(
                 navController.popBackStack()
             },
             title = { Text("Registro exitoso") },
-            text = { Text("Tu cuenta ha sido creada correctamente.") },
+            text = {
+                Column {
+                    Text("Consulta tu bandeja de entrada para verificar tu cuenta.")
+                    if (!correoVerificacionEnviado) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text("¿No has recibido el correo? Pulsa para reenviarlo.")
+                    }
+                }
+            },
             confirmButton = {
-                Button(onClick = {
-                    viewModel.ocultarDialogoExitoso()
-                    navController.popBackStack()
-                    navController.navigate(Destinations.LOGIN_SCREEN)
-                    navController.popBackStack()
-                }) {
-                    Text("Continuar")
+                Row {
+                    if (!correoVerificacionEnviado) {
+                        Button(onClick = {
+                            viewModel.enviarVerificacionPorCorreo()
+                        }) {
+                            Text("Reenviar correo")
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                    Button(onClick = {
+                        viewModel.ocultarDialogoExitoso()
+                        navController.popBackStack()
+                        navController.navigate(Destinations.LOGIN_SCREEN)
+                        navController.popBackStack()
+                    }) {
+                        Text("Continuar")
+                    }
                 }
             },
             containerColor = colorResource(id = R.color.color7)

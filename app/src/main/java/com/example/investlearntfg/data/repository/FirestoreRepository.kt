@@ -111,6 +111,14 @@ object FirestoreRepository {
         }
     }
 
+    suspend fun enviarCorreoVerificacion(): Boolean {
+        return try {
+            auth.currentUser?.sendEmailVerification()?.await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     fun getDineroCuenta(userId: String, onResultado: (Double?) -> Unit) {
         db.collection("usuarios")

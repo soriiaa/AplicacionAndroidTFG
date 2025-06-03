@@ -19,7 +19,6 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
 
     private val _correo = MutableStateFlow(TextFieldValue())
     val correo: StateFlow<TextFieldValue> = _correo
@@ -44,11 +43,21 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                auth.signInWithEmailAndPassword(email, password).await()
-                onExito()
+                if (usuarioVerificado()) {
+                    auth.signInWithEmailAndPassword(email, password).await()
+                    onExito()
+                } else {
+                    onError("Usuario no verificado.")
+                }
             } catch (e: Exception) {
                 onError(e.message ?: "Error desconocido al iniciar sesión.")
             }
         }
     }
+
+    fun usuarioVerificado(): Boolean {
+        val usuario = auth.currentUser
+        return usuario?.isEmailVerified ?: false
+    }
+
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -60,6 +61,14 @@ class SignUpViewModel @Inject constructor(
     // Diálogo de registro erróneo
     private val _mostrarDialogoRegistroErroneo = MutableStateFlow(false)
     val mostrarDialogoRegistroErroneo: StateFlow<Boolean> = _mostrarDialogoRegistroErroneo
+
+    // Aqui almaceno si se ha enviado o no correctamente el correo de verificación
+    private val _correoVerificacionEnviado = MutableStateFlow(false)
+    val correoVerificacionEnviado: StateFlow<Boolean> = _correoVerificacionEnviado
+
+    fun actualizarEstadoCorreoVerificacion(enviado: Boolean) {
+        _correoVerificacionEnviado.value = enviado
+    }
 
     // Funciones para mostrar u ocultar los dialogos de exito o error del registro
     fun mostrarDialogoExitoso() {
@@ -166,12 +175,29 @@ class SignUpViewModel @Inject constructor(
                 )
 
                 if (respuesta) {
+
+                    val respuestaCorreo = enviarVerificacionPorCorreo()
+                    _correoVerificacionEnviado.value = respuestaCorreo
+
                     _mostrarDialogoRegistroExitoso.value = true
+                    cerrarSesion()
                 } else {
                     _mostrarDialogoRegistroErroneo.value = true
                 }
             }
         }
+    }
+
+    fun enviarVerificacionPorCorreo(): Boolean {
+        var respuesta = false
+        viewModelScope.launch {
+            respuesta = FirestoreRepository.enviarCorreoVerificacion()
+        }
+        return respuesta
+    }
+
+    fun cerrarSesion() {
+        FirebaseAuth.getInstance().signOut()
     }
 
 }
