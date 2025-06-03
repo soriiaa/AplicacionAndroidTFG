@@ -1,5 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaLogin
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,10 +44,11 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
+                auth.signInWithEmailAndPassword(email, password).await()
                 if (usuarioVerificado()) {
-                    auth.signInWithEmailAndPassword(email, password).await()
                     onExito()
                 } else {
+                    auth.signOut()
                     onError("Usuario no verificado.")
                 }
             } catch (e: Exception) {
@@ -55,9 +57,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun usuarioVerificado(): Boolean {
-        val usuario = auth.currentUser
-        return usuario?.isEmailVerified ?: false
+    suspend fun usuarioVerificado(): Boolean {
+        val usuario = auth.currentUser ?: return false
+        usuario.reload().await()
+        return usuario.isEmailVerified
     }
 
 }
