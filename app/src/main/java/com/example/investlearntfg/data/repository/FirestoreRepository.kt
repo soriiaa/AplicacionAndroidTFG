@@ -6,6 +6,10 @@ import com.example.investlearntfg.data.model.PaqueteAcciones
 import com.example.investlearntfg.data.model.Transaccion
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
@@ -15,6 +19,7 @@ import java.util.UUID
 object FirestoreRepository {
 
     private val db = Firebase.firestore
+    private val auth = FirebaseAuth.getInstance()
 
     fun marcarComoFavorita(userId: String, empresa: EmpresaPreview) {
         db.collection("usuarios")
@@ -56,6 +61,56 @@ object FirestoreRepository {
                 onResultado(false)
             }
     }
+
+    suspend fun verificarCorreoExistente(correo: String): Boolean {
+        return try {
+            val resultado = db.collection("usuarios")
+                .whereEqualTo("email", correo)
+                .get()
+                .await()
+            !resultado.isEmpty
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun registrarUsuario(
+        nombre: String,
+        apellidos: String,
+        nickname: String,
+        correo: String,
+        contrasena: String,
+        moneda: String
+    ): Boolean {
+        return try {
+            val resultado = auth.createUserWithEmailAndPassword(correo, contrasena).await()
+            val uid = resultado.user?.uid
+
+            if (uid != null) {
+                val nuevoUsuario = hashMapOf(
+                    "uid" to uid,
+                    "nombre" to nombre,
+                    "apellidos" to apellidos,
+                    "nickname" to nickname,
+                    "email" to correo,
+                    "moneda_principal" to moneda,
+                    "compras_realizadas" to 0,
+                    "ventas_realizadas" to 0,
+                    "dinero_cuenta" to 5000,
+                    "ganancias_totales" to 0,
+                    "fecha_creacion" to System.currentTimeMillis()
+                )
+
+                db.collection("usuarios").document(uid).set(nuevoUsuario).await()
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 
     fun getDineroCuenta(userId: String, onResultado: (Double?) -> Unit) {
         db.collection("usuarios")

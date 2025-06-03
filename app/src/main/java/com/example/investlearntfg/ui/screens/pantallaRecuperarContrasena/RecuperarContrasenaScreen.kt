@@ -21,18 +21,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
 import kotlin.math.roundToInt
 
 @Composable

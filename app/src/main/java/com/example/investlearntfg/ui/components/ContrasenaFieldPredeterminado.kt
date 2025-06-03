@@ -12,7 +12,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,16 +29,16 @@ import com.example.investlearntfg.R
 
 @Composable
 fun TextFieldContrasena(
-    textoInicial: String,
-    textoContrasenaIntroducido: MutableState<TextFieldValue>
+    textoEscrito: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    placeholder: String
 ) {
-
     var passwordVisible by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = textoContrasenaIntroducido.value,
-        onValueChange = { nuevaContrasena -> textoContrasenaIntroducido.value = nuevaContrasena },
-        placeholder = { Text(textoInicial, color = Color.Black) },
+        value = textoEscrito,
+        onValueChange = { nuevaContrasena -> onValueChange(nuevaContrasena) },
+        placeholder = { Text(placeholder, color = Color.Black) },
         textStyle = TextStyle(color = Color.Black, fontSize = 17.sp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = colorResource(id = R.color.color1),
@@ -56,7 +55,7 @@ fun TextFieldContrasena(
             )
             .border(2.dp, colorResource(id = R.color.color1), RoundedCornerShape(5.dp)),
         singleLine = true,
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(), // Ocultar/Mostrar contraseña
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             val image =
                 if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff

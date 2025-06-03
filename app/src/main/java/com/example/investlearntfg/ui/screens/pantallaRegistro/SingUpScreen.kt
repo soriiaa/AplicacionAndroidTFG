@@ -18,12 +18,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +29,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,21 +36,33 @@ import androidx.navigation.NavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.SelectorDesplegable
 import com.example.investlearntfg.ui.components.TextFieldContrasena
-import com.example.investlearntfg.ui.components.TextFieldPredeterminado
+import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 import com.example.investlearntfg.ui.components.TitulosInvestLearn
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.theme.InvestLearnTFGTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: SignUpViewModel = hiltViewModel()
+) {
 
-    val viewModel: SignUpViewModel = hiltViewModel()
-    val scope = rememberCoroutineScope()
-    val textoError = remember { mutableStateOf(TextFieldValue()) }
-    val habilitarTextoError = remember { mutableStateOf(false) }
-    val mostrarDialogo = remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
+    val textoNombre by viewModel.textoNombre.collectAsState()
+    val textoApellido by viewModel.textoApellido.collectAsState()
+    val textoNickname by viewModel.textoNickname.collectAsState()
+    val textoCorreo by viewModel.textoCorreo.collectAsState()
+    val textoContrasena by viewModel.textoContrasena.collectAsState()
+    val textoConfirmarContrasena by viewModel.textoConfirmarContrasena.collectAsState()
+    val monedaSeleccionada by viewModel.monedaSeleccionada.collectAsState()
+
+    val botonHabilitado by viewModel.botonHabilitado.collectAsState()
+    val formatoCorreoCorrecto by viewModel.formatoCorreoCorrecto.collectAsState()
+
+    val mostrarDialogoCorreo by viewModel.mostrarDialogoCorreoYaExistente.collectAsState()
+    val mostrarDialogoRegistroExitoso by viewModel.mostrarDialogoRegistroExitoso.collectAsState()
+    val mostrarDialogoRegistroErroneo by viewModel.mostrarDialogoRegistroErroneo.collectAsState()
+
 
     val opcionesMoneda = listOf(
         "Dólar estadounidense - $ - USD",
@@ -65,21 +72,25 @@ fun SignUpScreen(navController: NavController) {
         "Franco suizo - CHF - CHF"
     )
 
-    val focusManager = LocalFocusManager.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            },
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(15.dp))
+        BotonInicioSesionSingIn(navController)
 
-    val textoNombre = remember { mutableStateOf(TextFieldValue()) }
-    val textoApellido = remember { mutableStateOf(TextFieldValue()) }
-    val textoNickname = remember { mutableStateOf(TextFieldValue()) }
-    val textoCorreo = remember { mutableStateOf(TextFieldValue()) }
-    val textoContrasena = remember { mutableStateOf(TextFieldValue()) }
-    val textoConfirmarContrasena = remember { mutableStateOf(TextFieldValue()) }
-    var monedaSeleccionada by remember { mutableStateOf("Elegir moneda") }
-
-    InvestLearnTFGTheme {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding()
+                .widthIn(max = 10.dp)
+                .padding(bottom = 26.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
@@ -87,70 +98,135 @@ fun SignUpScreen(navController: NavController) {
                 },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(15.dp))
-            BotonInicioSesionSingIn(navController)
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .widthIn(max = 10.dp)
-                    .padding(bottom = 26.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures(onTap = {
-                            focusManager.clearFocus()
-                        })
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    TitulosInvestLearn()
-                    TextoRegistro()
-                    Spacer(modifier = Modifier.height(45.dp))
-                    TextFieldPredeterminado("Nombre", textoNombre)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldPredeterminado("Apellidos", textoApellido)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldPredeterminado("Nickname", textoNickname)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldPredeterminado("Correo", textoCorreo)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldContrasena(stringResource(R.string.contrasena_longitud), textoContrasena)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    TextFieldContrasena("Confirmar Contraseña", textoConfirmarContrasena)
-                    Spacer(modifier = Modifier.height(30.dp))
-                    SelectorDesplegable(
-                        opcionesMoneda,
-                        monedaSeleccionada,
-                        onSeleccionChanged = { nuevaSeleccion ->
-                            monedaSeleccionada = nuevaSeleccion
-                        }
+            item {
+                TitulosInvestLearn()
+                TextoRegistro()
+                Spacer(modifier = Modifier.height(45.dp))
+                TextFieldPredeterminado2(
+                    textoInicial = "Nombre",
+                    textoEscrito = textoNombre,
+                    onValueChange = { viewModel.onNombreChange(it) }
+                )
+                Spacer1()
+                TextFieldPredeterminado2(
+                    textoInicial = "Apellidos",
+                    textoEscrito = textoApellido,
+                    onValueChange = { viewModel.onApellidoChange(it) }
+                )
+                Spacer1()
+                TextFieldPredeterminado2(
+                    textoInicial = "Nickname",
+                    textoEscrito = textoNickname,
+                    onValueChange = { viewModel.onNicknameChange(it) }
+                )
+                Spacer1()
+                TextFieldPredeterminado2(
+                    textoInicial = "Correo",
+                    textoEscrito = textoCorreo,
+                    onValueChange = { viewModel.onCorreoChange(it) }
+                )
+                if (!formatoCorreoCorrecto) {
+                    Text(
+                        text = "Formato de correo inválido",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    MensajesErrores(textoError, habilitarTextoError)
-                    BotonRegistroSingIn(
-                        navController,
-                        mostrarDialogo,
-                        viewModel,
-                        scope,
-                        textoError,
-                        habilitarTextoError,
-                        textoNombre,
-                        textoApellido,
-                        textoNickname,
-                        textoCorreo,
-                        textoContrasena,
-                        textoConfirmarContrasena,
-                        monedaSeleccionada
-                    )
-
                 }
+                Spacer1()
+                TextFieldContrasena(
+                    textoEscrito = textoContrasena,
+                    onValueChange = { viewModel.onContrasenaChange(it) },
+                    placeholder = "Contraseña - (min 6)"
+                )
+                Spacer1()
+                TextFieldContrasena(
+                    textoEscrito = textoConfirmarContrasena,
+                    onValueChange = { viewModel.onConfirmarContrasenaChange(it) },
+                    placeholder = "Confirmar Contraseña"
+                )
+                Spacer1()
+                SelectorDesplegable(
+                    opcionesMoneda,
+                    monedaSeleccionada,
+                    onSeleccionChanged = { nuevaSeleccion ->
+                        viewModel.onMonedaSeleccionadaChange(nuevaSeleccion)
+                    }
+                )
+                Spacer1()
+                BotonRegistroSingIn(
+                    viewModel,
+                    botonHabilitado
+                )
             }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
         }
+        Spacer(modifier = Modifier.height(30.dp))
     }
+
+    if (mostrarDialogoCorreo) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.ocultarDialogoCorreo()
+            },
+            title = { Text("Error en el registro") },
+            text = { Text("El correo introducido ya está registrado.") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.ocultarDialogoCorreo()
+                }) {
+                    Text("Aceptar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
+
+    if (mostrarDialogoRegistroExitoso) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.ocultarDialogoExitoso()
+                navController.popBackStack()
+                navController.navigate(Destinations.LOGIN_SCREEN)
+                navController.popBackStack()
+            },
+            title = { Text("Registro exitoso") },
+            text = { Text("Tu cuenta ha sido creada correctamente.") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.ocultarDialogoExitoso()
+                    navController.popBackStack()
+                    navController.navigate(Destinations.LOGIN_SCREEN)
+                    navController.popBackStack()
+                }) {
+                    Text("Continuar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
+
+    if (mostrarDialogoRegistroErroneo) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.ocultarDialogoErroneo()
+            },
+            title = { Text("Registro erroneo") },
+            text = { Text("Lo sentimos, se ha producido un error inesperado.") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.ocultarDialogoErroneo()
+                }) {
+                    Text("Aceptar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
+}
+
+@Composable
+fun Spacer1() {
+    Spacer(modifier = Modifier.height(30.dp))
 }
 
 @Composable
@@ -188,81 +264,20 @@ fun BotonInicioSesionSingIn(navController: NavController) {
 }
 
 @Composable
-fun MensajesErrores(
-    textoError: MutableState<TextFieldValue>,
-    habilitarTextoError: MutableState<Boolean>
-) {
-
-    if (habilitarTextoError.value) {
-        Text(
-            text = textoError.value.text,
-            color = Color.Red,
-            fontSize = 14.sp
-        )
-        Spacer(modifier = Modifier.height(25.dp))
-    }
-
-}
-
-@Composable
 fun BotonRegistroSingIn(
-
-    navController: NavController,
-    mostrarDialogo: MutableState<Boolean>,
     viewModel: SignUpViewModel,
-    scope: CoroutineScope,
-    textoError: MutableState<TextFieldValue>,
-    habilitarTextoError: MutableState<Boolean>,
-    textoNombreIntroducido: MutableState<TextFieldValue>,
-    textoApellidoIntroducido: MutableState<TextFieldValue>,
-    textoNicknameIntroducido: MutableState<TextFieldValue>,
-    textoCorreoIntroducido: MutableState<TextFieldValue>,
-    textoContrasenaIntroducido: MutableState<TextFieldValue>,
-    textoConfirmarContrasenaIntroducido: MutableState<TextFieldValue>,
-    textoMonedaIntroducido: String
-
+    botonHabilitado: Boolean
 ) {
-
-    val todosLosCamposValidos = textoNombreIntroducido.value.text.isNotBlank() &&
-            textoApellidoIntroducido.value.text.isNotBlank() &&
-            textoNicknameIntroducido.value.text.isNotBlank() &&
-            textoCorreoIntroducido.value.text.isNotBlank() &&
-            textoContrasenaIntroducido.value.text.isNotBlank() &&
-            textoConfirmarContrasenaIntroducido.value.text.isNotBlank() &&
-            textoMonedaIntroducido != "Elegir moneda" &&
-            textoContrasenaIntroducido.value.text == textoConfirmarContrasenaIntroducido.value.text &&
-            esCorreoValido(textoCorreoIntroducido.value.text) &&
-            textoContrasenaIntroducido.value.text.length >= 6 &&
-            textoConfirmarContrasenaIntroducido.value.text.length >= 6
-
     Button(
         onClick = {
-            scope.launch {
-
-                val emailExiste =
-                    viewModel.verificarCorreoExistente(textoCorreoIntroducido.value.text)
-
-                if (emailExiste) {
-                    textoError.value = TextFieldValue("El email introducido ya está registrado")
-                    habilitarTextoError.value = true
-                } else {
-                    habilitarTextoError.value = false
-                    mostrarDialogo.value = viewModel.registrarUsuario(
-                        textoNombreIntroducido.value.text,
-                        textoApellidoIntroducido.value.text,
-                        textoNicknameIntroducido.value.text,
-                        textoCorreoIntroducido.value.text,
-                        textoContrasenaIntroducido.value.text,
-                        textoMonedaIntroducido
-                    )
-                }
-            }
+            viewModel.verificarCorreoExistente()
+            viewModel.registrarUsuario()
         },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.color4)),
         modifier = Modifier
             .height(50.dp)
             .width(150.dp),
-        enabled = todosLosCamposValidos
+        enabled = botonHabilitado
     ) {
         Text(
             stringResource(R.string.texto_registro4),
@@ -271,32 +286,4 @@ fun BotonRegistroSingIn(
             fontSize = 15.sp
         )
     }
-
-    if (mostrarDialogo.value) {
-        AlertDialog(
-            onDismissRequest = {
-                mostrarDialogo.value = false
-                navController.popBackStack()
-                navController.navigate(Destinations.LOGIN_SCREEN)
-                navController.popBackStack()
-            },
-            title = { Text("Registro exitoso") },
-            text = { Text("Tu cuenta ha sido creada correctamente.") },
-            confirmButton = {
-                Button(onClick = {
-                    mostrarDialogo.value = false
-                    navController.popBackStack()
-                    navController.navigate(Destinations.LOGIN_SCREEN)
-                    navController.popBackStack()
-                }) {
-                    Text("Continuar")
-                }
-            }
-        )
-    }
-}
-
-fun esCorreoValido(correo: String): Boolean {
-    val regex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}\$")
-    return correo.matches(regex)
 }
