@@ -363,7 +363,7 @@ fun Historial(historialTransacciones: List<Transaccion>, cargandoHistorialAccion
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Sin movimientos por ahora 📉",
+                    text = "Sin movimientos por ahora",
                     color = Color.LightGray,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.investlearntfg.R
+import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.components.CardAccionPredeterminado1
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
@@ -174,40 +175,52 @@ fun PantallaBuscarScreen(
                 alturaRecuadroAcciones.value = 10f
                 alturaTextFieldBusqueda.value = 1.5f
 
-                if (empresas.isNotEmpty() && !cargando) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(empresas) { empresa ->
+                EmpresasDestacadas(empresas, cargando, empresasFavoritas, viewModel, navController)
 
-                            val empresaJson = Uri.encode(Gson().toJson(empresa))
-
-                            CardAccionPredeterminado1(
-                                empresa = empresa,
-                                esFavorita = empresasFavoritas.contains(empresa.ticker),
-                                onClickFavorito = { viewModel.alternarFavorito(empresa) },
-                                onClickCard = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") }
-                            )
-                        }
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 170.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.BottomCenter),
-                            color = Color.White
-                        )
-                    }
-                }
             }
         }
         BottomNavigationBarPredeterminado(navController)
+    }
+}
+
+@Composable
+fun EmpresasDestacadas(
+    empresas: List<EmpresaPreview>,
+    cargando: Boolean,
+    empresasFavoritas: Set<String>,
+    viewModel: PantallaBuscarViewModel,
+    navController: NavHostController
+) {
+    if (empresas.isNotEmpty() && !cargando) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(empresas) { empresa ->
+
+                val empresaJson = Uri.encode(Gson().toJson(empresa))
+
+                CardAccionPredeterminado1(
+                    empresa = empresa,
+                    esFavorita = empresasFavoritas.contains(empresa.ticker),
+                    onClickFavorito = { viewModel.alternarFavorito(empresa) },
+                    onClickCard = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") }
+                )
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .padding(top = 170.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                color = Color.White
+            )
+        }
     }
 }
