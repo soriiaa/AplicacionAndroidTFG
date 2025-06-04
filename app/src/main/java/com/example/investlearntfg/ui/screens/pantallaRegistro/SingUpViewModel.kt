@@ -3,6 +3,7 @@ package com.example.investlearntfg.ui.screens.pantallaRegistro
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.investlearntfg.data.model.ExchangeRateResponse
 import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -132,7 +133,7 @@ class SignUpViewModel @Inject constructor(
         comprobarCampos()
     }
 
-    fun comprobarCampos() {
+    private fun comprobarCampos() {
         val camposValidos = _textoNombre.value.text.isNotBlank() &&
                 _textoApellido.value.text.isNotBlank() &&
                 _textoNickname.value.text.isNotBlank() &&
@@ -153,7 +154,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun esCorreoValido(): Boolean {
+    private fun esCorreoValido(): Boolean {
         val regex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}\$")
         _formatoCorreoCorrecto.value = _textoCorreo.value.text.matches(regex)
         return _formatoCorreoCorrecto.value
@@ -165,13 +166,15 @@ class SignUpViewModel @Inject constructor(
             if (_correoYaExistente.value) {
                 _mostrarDialogoCorreoYaExistente.value = true
             } else {
+                val dinero = calcularDineroGenerado()
                 val respuesta = FirestoreRepository.registrarUsuario(
                     _textoNombre.value.text,
                     _textoApellido.value.text,
                     _textoNickname.value.text,
                     _textoCorreo.value.text,
                     _textoContrasena.value.text,
-                    _monedaSeleccionada.value
+                    _monedaSeleccionada.value,
+                    dinero
                 )
 
                 if (respuesta) {
@@ -188,6 +191,20 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    private fun calcularDineroGenerado(): Double {
+
+        val monedaElegida = obtenerCodigoMoneda(_monedaSeleccionada.value)
+        var tipoCambio = ExchangeRateResponse (0.0)
+
+        viewModelScope.launch {
+            tipoCambio = postRepository.convertirMonedaPostRepository("EUR", monedaElegida)
+        }
+
+        val dinero = 5000.00 * tipoCambio.result
+
+        return dinero
+    }
+
     fun enviarVerificacionPorCorreo(): Boolean {
         var respuesta = false
         viewModelScope.launch {
@@ -196,8 +213,19 @@ class SignUpViewModel @Inject constructor(
         return respuesta
     }
 
-    fun cerrarSesion() {
+    private fun cerrarSesion() {
         FirebaseAuth.getInstance().signOut()
+    }
+
+    private fun obtenerCodigoMoneda(moneda: String): String {
+        return when (moneda) {
+            "Dólar estadounidense - $ - USD" -> "USD"
+            "Euro - € - EUR" -> "EUR"
+            "Libra esterlina - £ - GBP" -> "GBP"
+            "Yen japonés - ¥ - JPY" -> "JPY"
+            "Franco suizo - CHF - CHF" -> "CHF"
+            else -> ""
+        }
     }
 
 }

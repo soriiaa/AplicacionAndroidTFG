@@ -7,9 +7,6 @@ import com.example.investlearntfg.data.model.Transaccion
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
@@ -80,7 +77,8 @@ object FirestoreRepository {
         nickname: String,
         correo: String,
         contrasena: String,
-        moneda: String
+        moneda: String,
+        dinero: Double
     ): Boolean {
         return try {
             val resultado = auth.createUserWithEmailAndPassword(correo, contrasena).await()
@@ -96,7 +94,7 @@ object FirestoreRepository {
                     "moneda_principal" to moneda,
                     "compras_realizadas" to 0,
                     "ventas_realizadas" to 0,
-                    "dinero_cuenta" to 5000,
+                    "dinero_cuenta" to dinero,
                     "ganancias_totales" to 0,
                     "fecha_creacion" to System.currentTimeMillis()
                 )
