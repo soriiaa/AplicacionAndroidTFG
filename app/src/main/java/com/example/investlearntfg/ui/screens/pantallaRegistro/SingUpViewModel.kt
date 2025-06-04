@@ -191,14 +191,10 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun calcularDineroGenerado(): Double {
+    private suspend fun calcularDineroGenerado(): Double {
 
         val monedaElegida = obtenerCodigoMoneda(_monedaSeleccionada.value)
-        var tipoCambio = ExchangeRateResponse (0.0)
-
-        viewModelScope.launch {
-            tipoCambio = postRepository.convertirMonedaPostRepository("EUR", monedaElegida)
-        }
+        var tipoCambio = postRepository.convertirMonedaPostRepository("EUR", monedaElegida)
 
         val dinero = 5000.00 * tipoCambio.result
 
