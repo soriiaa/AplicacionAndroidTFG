@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.investlearntfg.R
+import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.components.CardAccionPredeterminado1
 import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
@@ -168,74 +169,85 @@ fun PantallaInicialScreen(
                     modifier = Modifier.padding(start = 17.dp, bottom = 17.dp, top = 5.dp)
                 )
 
-                if (empresasFavoritas.isNotEmpty() && !cargando) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(listaEmpresasFavoritasPreview) { empresa ->
-
-                            val empresaJson = Uri.encode(Gson().toJson(empresa))
-
-                            CardAccionPredeterminado1(
-                                empresa = empresa,
-                                esFavorita = empresasFavoritas.contains(empresa.ticker),
-                                onClickFavorito = { viewModel.alternarFavorito(empresa) },
-                                onClickCard = {
-                                    navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson")
-                                }
-                            )
-                        }
-                    }
-
-                } else if (empresasFavoritas.isEmpty()) {
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 24.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
-                                contentDescription = "Icono de favorito vacío",
-                                tint = Color.Gray,
-                                modifier = Modifier.size(64.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "Esto está muy vacío 😕",
-                                color = Color.LightGray,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Añade algunas acciones favoritas para tenerlas aquí.",
-                                color = Color.LightGray,
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 100.dp),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        CircularProgressIndicator(color = Color.White)
-                    }
-                }
+                AccionesFavoritas(empresasFavoritas, cargando, listaEmpresasFavoritasPreview, navController, viewModel)
             }
         }
 
         BottomNavigationBarPredeterminado(navController)
+    }
+}
+
+@Composable
+fun AccionesFavoritas(
+    empresasFavoritas: Set<String>,
+    cargando: Boolean,
+    listaEmpresasFavoritasPreview: List<EmpresaPreview>,
+    navController: NavHostController,
+    viewModel: PantallaInicialViewModel
+) {
+    if (empresasFavoritas.isNotEmpty() && !cargando) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(listaEmpresasFavoritasPreview) { empresa ->
+
+                val empresaJson = Uri.encode(Gson().toJson(empresa))
+
+                CardAccionPredeterminado1(
+                    empresa = empresa,
+                    esFavorita = empresasFavoritas.contains(empresa.ticker),
+                    onClickFavorito = { viewModel.alternarFavorito(empresa) },
+                    onClickCard = {
+                        navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson")
+                    }
+                )
+            }
+        }
+
+    } else if (empresasFavoritas.isEmpty()) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Icono de favorito vacío",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(64.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Esto está muy vacío 😕",
+                    color = Color.LightGray,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Añade algunas acciones favoritas para tenerlas aquí.",
+                    color = Color.LightGray,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 100.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            CircularProgressIndicator(color = Color.White)
+        }
     }
 }
 

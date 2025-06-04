@@ -31,9 +31,17 @@ class PantallaPerfilViewModel @Inject constructor(
     private val _accionesEnPropiedad = MutableStateFlow<List<AccionPropiedad>>(emptyList())
     val accionesEnPropiedad: StateFlow<List<AccionPropiedad>> = _accionesEnPropiedad
 
+    // Mediante este boleeano controlo el estado de la carga de las acciones
+    private val _cargandoAccionesEnPropiedad = MutableStateFlow(false)
+    val cargandoAccionesEnPropiedad: StateFlow<Boolean> = _cargandoAccionesEnPropiedad
+
     // Aqui almaceno todas las transacciones que devuelve el endpoint de la base de datos de firebase
     private val _historialTransacciones = MutableStateFlow<List<Transaccion>>(emptyList())
     val historialTransacciones: StateFlow<List<Transaccion>> = _historialTransacciones
+
+    // Aqui almaceno el estado de la carga del histórico de las acciones del usuario
+    private val _cargandoHistorialAcciones = MutableStateFlow(false)
+    val cargandoHistorialAcciones: StateFlow<Boolean> = _cargandoHistorialAcciones
 
     init {
         cargarNickname()
@@ -43,15 +51,26 @@ class PantallaPerfilViewModel @Inject constructor(
 
     fun cargarHistorialTransacciones() {
         viewModelScope.launch {
-            _historialTransacciones.value = FirestoreRepository.cargarHistorialTransacciones(usuarioId = userId)
-            _historialTransacciones.value.forEachIndexed { index, transaccion ->
-                Log.d("HistorialTransacciones", "Transacción #$index: $transaccion")
+            _cargandoHistorialAcciones.value = true
+            try {
+                val historial = FirestoreRepository.cargarHistorialTransacciones(usuarioId = userId)
+                _historialTransacciones.value = historial
+                historial.forEachIndexed { index, transaccion ->
+                    Log.d("HistorialTransacciones", "Transacción #$index: $transaccion")
+                }
+            } catch (e: Exception) {
+                Log.e("HistorialTransacciones", "Error al cargar historial: ${e.message}", e)
+                _historialTransacciones.value = emptyList()
+            } finally {
+                _cargandoHistorialAcciones.value = false
             }
+            _cargandoHistorialAcciones.value = false
         }
     }
 
     fun cargarAccionesEnPropiedad() {
         viewModelScope.launch {
+            _cargandoAccionesEnPropiedad.value = true
             val documentos = FirestoreRepository.getDocumentosAccionesPropiedad(userId)
             val accionesEnPropiedad = documentos.map { doc ->
 
@@ -71,12 +90,14 @@ class PantallaPerfilViewModel @Inject constructor(
                     val precioAccion = postRepository.getPrecioEmpresaPostRepository(ticker)
                     precioActual = precioAccion.c
                 } catch (e: retrofit2.HttpException) {
+                    _cargandoAccionesEnPropiedad.value = false
                     if (e.code() == 429) {
                         Log.e("API_ERROR", "Demasiadas solicitudes (429). Intenta más tarde.")
                     } else {
                         Log.e("API_ERROR", "Error HTTP: ${e.code()}")
                     }
                 } catch (e: Exception) {
+                    _cargandoAccionesEnPropiedad.value = false
                     Log.e("API_ERROR", "Error inesperado: ${e.localizedMessage}")
                 }
 
@@ -98,6 +119,7 @@ class PantallaPerfilViewModel @Inject constructor(
             }
 
             _accionesEnPropiedad.value = accionesEnPropiedad
+            _cargandoAccionesEnPropiedad.value = true
         }
     }
 

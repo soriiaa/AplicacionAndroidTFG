@@ -25,7 +25,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -59,6 +61,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -73,7 +76,6 @@ import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.Transaccion
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
 import com.example.investlearntfg.ui.navigation.Destinations
-import com.example.investlearntfg.ui.theme.color5
 import com.example.investlearntfg.ui.theme.color6
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -91,6 +93,9 @@ fun PantallaPerfilScreen(
     val nickname by viewModel.nickname.collectAsState()
     val accionesEnPropiedad = viewModel.accionesEnPropiedad.collectAsState()
     val historialTransacciones by viewModel.historialTransacciones.collectAsState()
+
+    val cargandoAccionesEnPropiedad by viewModel.cargandoAccionesEnPropiedad.collectAsState()
+    val cargandoHistorialAcciones by viewModel.cargandoHistorialAcciones.collectAsState()
 
     LaunchedEffect(entradaActualDeNavegacion.value) {
         viewModel.cargarAccionesEnPropiedad()
@@ -183,7 +188,7 @@ fun PantallaPerfilScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            PestanasAccionesHistorial(accionesEnPropiedad, viewModel, navController, historialTransacciones)
+            PestanasAccionesHistorial(accionesEnPropiedad, viewModel, navController, historialTransacciones, cargandoAccionesEnPropiedad, cargandoHistorialAcciones)
         }
         BottomNavigationBarPredeterminado(navController)
     }
@@ -210,7 +215,9 @@ fun PestanasAccionesHistorial(
     accionesEnPropiedad: State<List<AccionPropiedad>>,
     viewModel: PantallaPerfilViewModel,
     navController: NavHostController,
-    historialTransacciones: List<Transaccion>
+    historialTransacciones: List<Transaccion>,
+    cargandoAccionesEnPropiedad: Boolean,
+    cargandoHistorialAcciones: Boolean
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Tus Acciones", "Historial")
@@ -244,56 +251,138 @@ fun PestanasAccionesHistorial(
 
         when (selectedTabIndex) {
             0 -> {
-                if (accionesEnPropiedad.value.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(accionesEnPropiedad.value) { accion ->
-
-                            val empresaPreview = EmpresaPreview(
-                                ticker = accion.ticker,
-                                nombre = accion.nombre,
-                                logo = accion.fotoUrl,
-                                precio = accion.precioActual,
-                                simboloMoneda = viewModel.obtenerSimboloMoneda(accion.moneda)
-                            )
-
-                            val empresaJson = Uri.encode(Gson().toJson(empresaPreview))
-
-                            TarjetaAccion(
-                                viewModel,
-                                accion,
-                                onCardClick = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") },
-                                onVenderClick = { navController.navigate("${Destinations.PANTALLA_VENTA_ACCION_SCREEN}/$empresaJson") }
-                            )
-                        }
-                    }
-                }
+                Acciones(accionesEnPropiedad, cargandoAccionesEnPropiedad, navController, viewModel)
             }
-
             1 -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(historialTransacciones.sortedByDescending { it.fecha?.toDate() }) { transaccion ->
-                        CardTransaccion(transaccion)
-                    }
-                }
-
+                Historial(historialTransacciones, cargandoHistorialAcciones)
             }
+        }
+    }
+}
+
+@Composable
+fun Acciones(
+    accionesEnPropiedad: State<List<AccionPropiedad>>,
+    cargandoAccionesEnPropiedad: Boolean,
+    navController: NavHostController,
+    viewModel: PantallaPerfilViewModel
+) {
+    if (accionesEnPropiedad.value.isNotEmpty() && !cargandoAccionesEnPropiedad) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(accionesEnPropiedad.value) { accion ->
+
+                val empresaPreview = EmpresaPreview(
+                    ticker = accion.ticker,
+                    nombre = accion.nombre,
+                    logo = accion.fotoUrl,
+                    precio = accion.precioActual,
+                    simboloMoneda = viewModel.obtenerSimboloMoneda(accion.moneda)
+                )
+
+                val empresaJson = Uri.encode(Gson().toJson(empresaPreview))
+
+                TarjetaAccion(
+                    viewModel,
+                    accion,
+                    onCardClick = { navController.navigate("${Destinations.PANTALLA_ACCION_SCREEN}/$empresaJson") },
+                    onVenderClick = { navController.navigate("${Destinations.PANTALLA_VENTA_ACCION_SCREEN}/$empresaJson") }
+                )
+            }
+        }
+    } else if (accionesEnPropiedad.value.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Icono de carrito vacío",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(64.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Todavía no has comprado nada",
+                    color = Color.LightGray,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Cuando compres acciones, aparecerán aquí para que puedas seguir su evolución.",
+                    color = Color.LightGray,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+}
+
+@Composable
+fun Historial(historialTransacciones: List<Transaccion>, cargandoHistorialAcciones: Boolean) {
+    if (historialTransacciones.isNotEmpty() && !cargandoHistorialAcciones) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(historialTransacciones.sortedByDescending { it.fecha?.toDate() }) { transaccion ->
+                CardTransaccion(transaccion)
+            }
+        }
+    } else if (historialTransacciones.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    imageVector = Icons.Default.History,
+                    contentDescription = "Icono de historial vacío",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(64.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Sin movimientos por ahora 📉",
+                    color = Color.LightGray,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Aquí verás todas tus compras y ventas una vez empieces a operar en el mercado.",
+                    color = Color.LightGray,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
     }
 }
