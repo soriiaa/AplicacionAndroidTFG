@@ -119,7 +119,7 @@ class PantallaPerfilViewModel @Inject constructor(
             }
 
             _accionesEnPropiedad.value = accionesEnPropiedad
-            _cargandoAccionesEnPropiedad.value = true
+            _cargandoAccionesEnPropiedad.value = false
         }
     }
 
