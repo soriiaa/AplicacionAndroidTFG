@@ -568,4 +568,35 @@ object FirestoreRepository {
                 onResultado(false)
             }
     }
+
+    fun getGananciasTotales(
+        userId: String,
+        onResultado: (Double?) -> Unit
+    ) {
+        db.collection("usuarios")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val gananciasTotales = document.getDouble("ganancias_totales")
+                    onResultado(gananciasTotales)
+                } else {
+                    onResultado(null)
+                }
+            }
+            .addOnFailureListener {
+                onResultado(null)
+            }
+    }
+
+    fun setGananciasTotales(
+        userId: String,
+        nuevasGanancias: Double
+    ) {
+        db.collection("usuarios")
+            .document(userId)
+            .update("ganancias_totales", nuevasGanancias)
+            .addOnSuccessListener { }
+            .addOnFailureListener { }
+    }
 }

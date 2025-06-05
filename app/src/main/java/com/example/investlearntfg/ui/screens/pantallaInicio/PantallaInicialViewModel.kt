@@ -29,9 +29,9 @@ class PantallaInicialViewModel @Inject constructor(
     private val _simboloMoneda = MutableStateFlow("")
     val simboloMoneda: StateFlow<String> = _simboloMoneda
 
-    // Aqui guardo el número de acciones que tiene el usuario
-    private val _accionesEnPropiedad = MutableStateFlow(0)
-    val accionesEnPropiedad: StateFlow<Int> = _accionesEnPropiedad
+    // Aqui guardo la ganancia que el usuario ha conseguido
+    private val _gananciaUsuario = MutableStateFlow(0.00)
+    val gananciaUsuario: StateFlow<Double> = _gananciaUsuario
 
     // Aqui guardo el total de transacciones que ha hecho el usuario en su cuenta
     private val _totalTransacciones = MutableStateFlow(0)
@@ -46,7 +46,7 @@ class PantallaInicialViewModel @Inject constructor(
     val listaEmpresasFavoritasPreview: StateFlow<List<EmpresaPreview>> = _listaEmpresasFavoritasPreview
 
     // Aqui guardo el estado de la carga de las acciones favoritas para luego mostrarlo por pantalla
-    val _cargandoAccionesFavoritas = MutableStateFlow(false)
+    private val _cargandoAccionesFavoritas = MutableStateFlow(false)
     val cargandoAccionesFavoritas: StateFlow<Boolean> = _cargandoAccionesFavoritas
 
     fun recargarPantalla() {
@@ -61,7 +61,7 @@ class PantallaInicialViewModel @Inject constructor(
     fun cargarEstadisticas() {
         cargarDineroCuenta()
         cargarSimboloMonedaUsuario()
-        cargarNumeroAccionesEnPropiedad()
+        cargarGananciaUsuario()
         cargarNumeroTransacciones()
     }
 
@@ -128,11 +128,11 @@ class PantallaInicialViewModel @Inject constructor(
         )
     }
 
-    private fun cargarNumeroAccionesEnPropiedad() {
-        FirestoreRepository.getNumeroAccionesEnPropiedad(
+    private fun cargarGananciaUsuario() {
+        FirestoreRepository.getGananciasTotales(
             userId,
-            onResultado = { numeroAcciones ->
-                _accionesEnPropiedad.value = numeroAcciones
+            onResultado = { ganancias ->
+                _gananciaUsuario.value = ganancias ?: 0.00
             }
         )
     }
@@ -162,7 +162,7 @@ class PantallaInicialViewModel @Inject constructor(
         )
     }
 
-    fun establecerSimboloMoneda(moneda: String): String {
+    private fun establecerSimboloMoneda(moneda: String): String {
         val simboloMonetario = when (moneda) {
             "USD" -> "$"
             "EUR" -> "€"

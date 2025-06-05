@@ -117,6 +117,21 @@ class PantallaConfiguracionViewModel @Inject constructor(
                             mostrarDialogoMoneda("error")
                         }
                     )
+
+                    FirestoreRepository.getGananciasTotales(
+                        userId = userId,
+                        onResultado = { gananciasAntiguas ->
+
+                            val gananciasNuevas = (gananciasAntiguas ?: 0.0) * tipoCambio
+
+                            FirestoreRepository.setGananciasTotales(
+                                userId = userId,
+                                nuevasGanancias = gananciasNuevas
+                            )
+                        }
+                    )
+
+
                 }
             },
             onError = {
@@ -143,7 +158,7 @@ class PantallaConfiguracionViewModel @Inject constructor(
         }
     }
 
-    fun obtenerCodigoMoneda(opcionMoneda: String): String {
+    private fun obtenerCodigoMoneda(opcionMoneda: String): String {
         val codigoMoneda = when (opcionMoneda) {
             "Dólar estadounidense - $ - USD" -> "USD"
             "Euro - € - EUR" -> "EUR"

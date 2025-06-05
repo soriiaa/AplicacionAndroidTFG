@@ -74,7 +74,7 @@ fun PantallaInicialScreen(
 
     val dineroEnCuenta by viewModel.dineroEnCuenta.collectAsState()
     val simboloMonedaUsuario by viewModel.simboloMoneda.collectAsState()
-    val accionesEnPropiedad by viewModel.accionesEnPropiedad.collectAsState()
+    val gananciaUsuario by viewModel.gananciaUsuario.collectAsState()
     val totalTransacciones by viewModel.totalTransacciones.collectAsState()
 
     val empresasFavoritas by viewModel.empresasFavoritas.collectAsState()
@@ -148,7 +148,7 @@ fun PantallaInicialScreen(
                 .fillMaxWidth()
                 .padding(start = 5.dp, end = 5.dp)
         ) {
-            EstadisticasPantallaInicio(dineroEnCuenta, simboloMonedaUsuario, accionesEnPropiedad, totalTransacciones, fechaHoy)
+            EstadisticasPantallaInicio(dineroEnCuenta, simboloMonedaUsuario, gananciaUsuario, totalTransacciones, fechaHoy)
         }
 
         Box(
@@ -255,7 +255,7 @@ fun AccionesFavoritas(
 fun EstadisticasPantallaInicio(
     dineroEnCuenta: Double,
     simboloMonedaUsuario: String,
-    accionesEnPropiedad: Int,
+    gananciasTotalesUsuario: Double,
     totalTransacciones: Int,
     fechaHoy: String
 ) {
@@ -331,12 +331,12 @@ fun EstadisticasPantallaInicio(
                 ) {
                     Column(horizontalAlignment = Alignment.Start) {
                         Text(
-                            text = "Tus acciones",
+                            text = "Ganancia",
                             style = titleStyle.copy(color = Color.White)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = accionesEnPropiedad.toString(),
+                            text = "${String.format("%.2f", gananciasTotalesUsuario)} $simboloMonedaUsuario",
                             style = valueStyle.copy(color = Color.White)
                         )
                     }
