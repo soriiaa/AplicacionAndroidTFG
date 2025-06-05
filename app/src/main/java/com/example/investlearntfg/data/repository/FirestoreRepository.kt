@@ -196,7 +196,8 @@ object FirestoreRepository {
                     userDocRef.update("dinero_cuenta", nuevoDineroCuenta)
                         .addOnSuccessListener { }
                         .addOnFailureListener { }
-                } else { }
+                } else {
+                }
             }
             .addOnFailureListener { }
     }
@@ -214,20 +215,34 @@ object FirestoreRepository {
                     val nuevoDineroCuenta = dineroCuentaActual - cantidadARestar
 
                     userDocRef.update("dinero_cuenta", nuevoDineroCuenta)
-                        .addOnSuccessListener {
-
-                        }
-                        .addOnFailureListener {
-
-                        }
-                } else {
-
-                }
+                        .addOnSuccessListener { }
+                        .addOnFailureListener { }
+                } else { }
             }
             .addOnFailureListener {
 
             }
     }
+
+    fun modificarDineroCuenta(
+        userId: String,
+        nuevoValor: Double,
+        onExito: () -> Unit,
+        onError: () -> Unit
+    ) {
+        val userDocRef = db.collection("usuarios").document(userId)
+
+        userDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    userDocRef.update("dinero_cuenta", nuevoValor)
+                        .addOnSuccessListener { onExito() }
+                        .addOnFailureListener { onError() }
+                } else { onError() }
+            }
+            .addOnFailureListener { onError() }
+    }
+
 
     fun incrementarComprasRealizadas(usuarioId: String) {
         val usuarioRef = db.collection("usuarios").document(usuarioId)
@@ -311,7 +326,10 @@ object FirestoreRepository {
         }
     }
 
-    suspend fun obtenerPaquetesPropiedadPorTicker(userId: String, ticker: String): List<PaqueteAcciones> {
+    suspend fun obtenerPaquetesPropiedadPorTicker(
+        userId: String,
+        ticker: String
+    ): List<PaqueteAcciones> {
 
         val resultado = mutableListOf<PaqueteAcciones>()
 
@@ -472,5 +490,21 @@ object FirestoreRepository {
             .addOnFailureListener { exception -> onError(exception) }
     }
 
+    fun actualizarMonedaPrincipal(
+        userId: String,
+        nuevaMoneda: String,
+        onExito: () -> Unit,
+        onError: () -> Unit
+    ) {
+        db.collection("usuarios")
+            .document(userId)
+            .update("moneda_principal", nuevaMoneda)
+            .addOnSuccessListener {
+                onExito()
+            }
+            .addOnFailureListener {
+                onError()
+            }
+    }
 
 }

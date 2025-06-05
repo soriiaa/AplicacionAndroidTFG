@@ -6,7 +6,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -48,8 +48,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
-import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
-import com.example.investlearntfg.ui.theme.backgroundColor
 
 @Composable
 fun PantallaConfiguracionScreen(
@@ -62,6 +60,9 @@ fun PantallaConfiguracionScreen(
 
     val monedaUsuario by viewModel.monedaInicialUsuario.collectAsState()
     val botonActivado by viewModel.botonActivado.collectAsState()
+
+    val mostrarDialogoMoneda by viewModel.mostrarDialogoMoneda.collectAsState()
+
 
     LaunchedEffect(entradaActualDeNavegacion.value) {
         viewModel.cargarMonedaActualUsuario()
@@ -98,7 +99,7 @@ fun PantallaConfiguracionScreen(
                 )
             )
             Button(
-                onClick = { viewModel.subirCambiosAFirebase() },
+                onClick = { viewModel.actualizarMonedaPrincipal() },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.color4)),
                 enabled = botonActivado,
                 modifier = Modifier
@@ -214,6 +215,31 @@ fun PantallaConfiguracionScreen(
             }
         }
     }
+
+    if (mostrarDialogoMoneda.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = { viewModel.ocultarDialogoMoneda() },
+            title = {
+                Text(
+                    if (mostrarDialogoMoneda == "exito") "Éxito" else "Error"
+                )
+            },
+            text = {
+                Text(
+                    if (mostrarDialogoMoneda == "exito") "Moneda principal actualizada correctamente."
+                    else "Error al actualizar la moneda."
+                )
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.ocultarDialogoMoneda() }) {
+                    Text("Aceptar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
