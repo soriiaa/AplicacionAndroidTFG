@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.investlearntfg.data.repository.FirestoreRepository
 import com.example.investlearntfg.data.repository.PostRepository
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +43,17 @@ class PantallaConfiguracionViewModel @Inject constructor(
     // Aquí almaceno el resultado que devuelve la función que cambia la contraseña
     private val _mostrarDialogoCambioContrasenaResultado = MutableStateFlow("")
     val mostrarDialogoCambioContrasenaResultado: StateFlow<String> = _mostrarDialogoCambioContrasenaResultado
+
+    private val _mostrarDialogoBorrarCuenta = MutableStateFlow("")
+    val mostrarDialogoBorrarCuenta: StateFlow<String> = _mostrarDialogoBorrarCuenta
+
+    fun setDialogoBorrarCuenta(texto: String) {
+        _mostrarDialogoBorrarCuenta.value = texto
+    }
+
+    fun ocultarDialogoBorrarCuenta() {
+        _mostrarDialogoBorrarCuenta.value = ""
+    }
 
     fun ocultarDialogoResultadoCambioContrasena() {
         _mostrarDialogoCambioContrasenaResultado.value = ""
@@ -163,6 +175,23 @@ class PantallaConfiguracionViewModel @Inject constructor(
                 _mostrarDialogoCambioContrasenaResultado.value = "error"
             }
         )
+    }
+
+    fun borrarCuenta() {
+        FirestoreRepository.borrarCuentaUsuario(
+            userId = userId,
+            onResultado = { exito ->
+                if (exito) {
+                    _mostrarDialogoBorrarCuenta.value = "exito"
+                } else {
+                    _mostrarDialogoBorrarCuenta.value = "error"
+                }
+            }
+        )
+    }
+
+    fun cerrarSesion() {
+        FirebaseAuth.getInstance().signOut()
     }
 
 }

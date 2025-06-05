@@ -217,7 +217,8 @@ object FirestoreRepository {
                     userDocRef.update("dinero_cuenta", nuevoDineroCuenta)
                         .addOnSuccessListener { }
                         .addOnFailureListener { }
-                } else { }
+                } else {
+                }
             }
             .addOnFailureListener {
 
@@ -238,7 +239,9 @@ object FirestoreRepository {
                     userDocRef.update("dinero_cuenta", nuevoValor)
                         .addOnSuccessListener { onExito() }
                         .addOnFailureListener { onError() }
-                } else { onError() }
+                } else {
+                    onError()
+                }
             }
             .addOnFailureListener { onError() }
     }
@@ -544,4 +547,25 @@ object FirestoreRepository {
             }
     }
 
+    fun borrarCuentaUsuario(
+        userId: String,
+        onResultado: (Boolean) -> Unit
+    ) {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        db.collection("usuarios").document(userId)
+            .delete()
+            .addOnSuccessListener {
+                user?.delete()
+                    ?.addOnSuccessListener {
+                        onResultado(true)
+                    }
+                    ?.addOnFailureListener {
+                        onResultado(false)
+                    }
+            }
+            .addOnFailureListener {
+                onResultado(false)
+            }
+    }
 }

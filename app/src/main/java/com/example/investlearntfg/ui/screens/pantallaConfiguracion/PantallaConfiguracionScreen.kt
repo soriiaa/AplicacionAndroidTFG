@@ -52,11 +52,13 @@ import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
 @Composable
 fun PantallaConfiguracionScreen(
     navController: NavController,
-    viewModel: PantallaConfiguracionViewModel = hiltViewModel()
+    viewModel: PantallaConfiguracionViewModel = hiltViewModel(),
+    onLogout: () -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
-    val entradaActualDeNavegacion = remember { navController.currentBackStackEntryFlow }.collectAsState(null)
+    val entradaActualDeNavegacion =
+        remember { navController.currentBackStackEntryFlow }.collectAsState(null)
 
     val monedaUsuario by viewModel.monedaInicialUsuario.collectAsState()
     val botonActivado by viewModel.botonActivado.collectAsState()
@@ -64,6 +66,7 @@ fun PantallaConfiguracionScreen(
     val mostrarDialogoMoneda by viewModel.mostrarDialogoMoneda.collectAsState()
     val mostrarDialogoCambioContrasena by viewModel.mostrarDialogoCambioContrasena.collectAsState()
     val mostrarDialogoCambioContrasenaResultado by viewModel.mostrarDialogoCambioContrasenaResultado.collectAsState()
+    val mostrarDialogoBorrarCuenta by viewModel.mostrarDialogoBorrarCuenta.collectAsState()
 
     LaunchedEffect(entradaActualDeNavegacion.value) {
         viewModel.cargarMonedaActualUsuario()
@@ -184,7 +187,7 @@ fun PantallaConfiguracionScreen(
                 }
 
                 Button(
-                    onClick = { /* TODO: Eliminar cuenta */ },
+                    onClick = { viewModel.setDialogoBorrarCuenta("pregunta") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -280,6 +283,62 @@ fun PantallaConfiguracionScreen(
             containerColor = colorResource(id = R.color.color7)
         )
     }
+
+    when (mostrarDialogoBorrarCuenta) {
+        "pregunta" -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.ocultarDialogoBorrarCuenta() },
+                title = { Text("¿Estás seguro?") },
+                text = { Text("Esta acción eliminará tu cuenta permanentemente.") },
+                confirmButton = {
+                    Button(onClick = {
+                        viewModel.ocultarDialogoBorrarCuenta()
+                        viewModel.borrarCuenta()
+                    }) {
+                        Text("Sí, borrar")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { viewModel.ocultarDialogoBorrarCuenta() }) {
+                        Text("Cancelar")
+                    }
+                },
+                containerColor = colorResource(id = R.color.color7)
+            )
+        }
+
+        "exito", "error" -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.ocultarDialogoBorrarCuenta() },
+                title = {
+                    Text(if (mostrarDialogoBorrarCuenta == "exito") "Cuenta eliminada" else "Error")
+                },
+                text = {
+                    Text(
+                        if (mostrarDialogoBorrarCuenta == "exito")
+                            "Tu cuenta ha sido eliminada correctamente."
+                        else
+                            "Hubo un error al intentar eliminar la cuenta."
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.ocultarDialogoBorrarCuenta()
+                            if (mostrarDialogoBorrarCuenta == "exito") {
+                                viewModel.cerrarSesion()
+                                onLogout()
+                            }
+                        }
+                    ) {
+                        Text("Aceptar")
+                    }
+                },
+                containerColor = colorResource(id = R.color.color7)
+            )
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)

@@ -47,7 +47,7 @@ fun MainAppNavGraph(
         }
 
         composable(Destinations.PANTALLA_CONFIGURACION_SCREEN) {
-            PantallaConfiguracionScreen(navController)
+            PantallaConfiguracionScreen(navController, onLogout = onLogout)
         }
 
         composable(Destinations.PANTALLA_EDITAR_PERFIL_SCREEN) {
