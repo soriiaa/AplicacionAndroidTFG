@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +49,7 @@ import androidx.navigation.NavController
 import com.example.investlearntfg.R
 import com.example.investlearntfg.ui.components.BotonVolverAtrasPredeterminado
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
+import com.example.investlearntfg.ui.theme.backgroundColor
 
 @Composable
 fun PantallaConfiguracionScreen(
@@ -68,6 +70,7 @@ fun PantallaConfiguracionScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = colorResource(R.color.backgroundColor))
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
@@ -90,7 +93,8 @@ fun PantallaConfiguracionScreen(
                 modifier = Modifier.align(Alignment.Center),
                 style = TextStyle(
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
             )
             Button(
@@ -101,7 +105,9 @@ fun PantallaConfiguracionScreen(
                     .height(40.dp)
                     .width(90.dp)
                     .align(Alignment.CenterEnd)
-                    .padding(end = 15.dp)
+                    .padding(end = 15.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = ButtonDefaults.buttonElevation(6.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Done,
@@ -125,9 +131,9 @@ fun PantallaConfiguracionScreen(
             ) {
                 Text(
                     text = "Selecciona tu moneda principal",
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.DarkGray,
+                    color = Color.White,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -147,6 +153,64 @@ fun PantallaConfiguracionScreen(
                         viewModel.comprobarDiferenciasParaBoton()
                     }
                 )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(3f)
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Button(
+                    onClick = { /* TODO: Cambiar dirección de correo */ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.buttonElevation(6.dp)
+                ) {
+                    Text(
+                        text = "Cambiar dirección de correo",
+                        fontSize = 15.sp
+                    )
+                }
+
+                Button(
+                    onClick = { /* TODO: Cambiar contraseña */ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.buttonElevation(6.dp)
+                ) {
+                    Text(
+                        text = "Cambiar contraseña",
+                        fontSize = 15.sp
+                    )
+                }
+
+                Button(
+                    onClick = { /* TODO: Eliminar cuenta */ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.buttonElevation(6.dp)
+                ) {
+                    Text(
+                        text = "Eliminar cuenta",
+                        fontSize = 15.sp,
+                        color = Color.White
+                    )
+                }
+
             }
         }
     }
