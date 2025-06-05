@@ -35,6 +35,26 @@ class PantallaConfiguracionViewModel @Inject constructor(
     private val _mostrarDialogoMoneda = MutableStateFlow("")
     val mostrarDialogoMoneda: StateFlow<String> = _mostrarDialogoMoneda
 
+    // Aqui almaceno el estado de si muestro el dialogo del correo o no
+    private val _mostrarDialogoCambioContrasena = MutableStateFlow(false)
+    val mostrarDialogoCambioContrasena: StateFlow<Boolean> = _mostrarDialogoCambioContrasena
+
+    // Aquí almaceno el resultado que devuelve la función que cambia la contraseña
+    private val _mostrarDialogoCambioContrasenaResultado = MutableStateFlow("")
+    val mostrarDialogoCambioContrasenaResultado: StateFlow<String> = _mostrarDialogoCambioContrasenaResultado
+
+    fun ocultarDialogoResultadoCambioContrasena() {
+        _mostrarDialogoCambioContrasenaResultado.value = ""
+    }
+
+    fun mostrarDialogoCambioContrasena() {
+        _mostrarDialogoCambioContrasena.value = true
+    }
+
+    fun ocultarDialogoCambioContrasena() {
+        _mostrarDialogoCambioContrasena.value = false
+    }
+
     fun mostrarDialogoMoneda(tipo: String) {
         // tipo: "exito", "error" o ""
         _mostrarDialogoMoneda.value = tipo
@@ -121,6 +141,28 @@ class PantallaConfiguracionViewModel @Inject constructor(
             else -> ""
         }
         return codigoMoneda
+    }
+
+    fun cambiarContrasena() {
+        _mostrarDialogoCambioContrasena.value = false
+
+        FirestoreRepository.getEmailUsuario(
+            userId = userId,
+            onExito = { email ->
+                FirestoreRepository.enviarCorreoRestablecerContrasena(
+                    email = email,
+                    onExito = {
+                        _mostrarDialogoCambioContrasenaResultado.value = "exito"
+                    },
+                    onError = {
+                        _mostrarDialogoCambioContrasenaResultado.value = "error"
+                    }
+                )
+            },
+            onError = {
+                _mostrarDialogoCambioContrasenaResultado.value = "error"
+            }
+        )
     }
 
 }

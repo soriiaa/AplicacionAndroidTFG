@@ -62,7 +62,8 @@ fun PantallaConfiguracionScreen(
     val botonActivado by viewModel.botonActivado.collectAsState()
 
     val mostrarDialogoMoneda by viewModel.mostrarDialogoMoneda.collectAsState()
-
+    val mostrarDialogoCambioContrasena by viewModel.mostrarDialogoCambioContrasena.collectAsState()
+    val mostrarDialogoCambioContrasenaResultado by viewModel.mostrarDialogoCambioContrasenaResultado.collectAsState()
 
     LaunchedEffect(entradaActualDeNavegacion.value) {
         viewModel.cargarMonedaActualUsuario()
@@ -169,21 +170,7 @@ fun PantallaConfiguracionScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { /* TODO: Cambiar dirección de correo */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = ButtonDefaults.buttonElevation(6.dp)
-                ) {
-                    Text(
-                        text = "Cambiar dirección de correo",
-                        fontSize = 15.sp
-                    )
-                }
-
-                Button(
-                    onClick = { /* TODO: Cambiar contraseña */ },
+                    onClick = { viewModel.mostrarDialogoCambioContrasena() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -239,7 +226,60 @@ fun PantallaConfiguracionScreen(
         )
     }
 
+    if (mostrarDialogoCambioContrasena) {
+        AlertDialog(
+            onDismissRequest = { viewModel.ocultarDialogoCambioContrasena() },
+            title = { Text("¿Estás seguro?") },
+            text = {
+                Text("Se enviará un correo para restablecer tu contraseña. Asegúrate de revisar tu bandeja de entrada.")
+            },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.cambiarContrasena()
+                }) {
+                    Text("Enviar")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { viewModel.ocultarDialogoCambioContrasena() }) {
+                    Text("Cancelar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
 
+    if (mostrarDialogoCambioContrasenaResultado == "exito") {
+        AlertDialog(
+            onDismissRequest = { viewModel.ocultarDialogoResultadoCambioContrasena() },
+            title = { Text("Correo enviado") },
+            text = {
+                Text("Se ha enviado correctamente el correo para restablecer tu contraseña. Revisa tu bandeja de entrada.")
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.ocultarDialogoResultadoCambioContrasena() }) {
+                    Text("Aceptar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
+
+    if (mostrarDialogoCambioContrasenaResultado == "error") {
+        AlertDialog(
+            onDismissRequest = { viewModel.ocultarDialogoResultadoCambioContrasena() },
+            title = { Text("Error") },
+            text = {
+                Text("Ha ocurrido un error al enviar el correo de restablecimiento. Inténtalo de nuevo más tarde.")
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.ocultarDialogoResultadoCambioContrasena() }) {
+                    Text("Aceptar")
+                }
+            },
+            containerColor = colorResource(id = R.color.color7)
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)

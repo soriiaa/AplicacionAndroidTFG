@@ -507,4 +507,41 @@ object FirestoreRepository {
             }
     }
 
+    fun enviarCorreoRestablecerContrasena(
+        email: String,
+        onExito: () -> Unit,
+        onError: () -> Unit
+    ) {
+        val auth = FirebaseAuth.getInstance()
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onExito()
+                } else {
+                    onError()
+                }
+            }
+    }
+
+    fun getEmailUsuario(
+        userId: String,
+        onExito: (String) -> Unit,
+        onError: () -> Unit
+    ) {
+        db.collection("usuarios")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val email = document.getString("email")
+                    onExito(email ?: "")
+                } else {
+                    onError()
+                }
+            }
+            .addOnFailureListener {
+                onError()
+            }
+    }
+
 }
