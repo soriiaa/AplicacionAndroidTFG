@@ -181,6 +181,26 @@ object FirestoreRepository {
             }
     }
 
+    fun sumarDineroCuenta(
+        userId: String,
+        cantidadASumar: Double
+    ) {
+        val userDocRef = db.collection("usuarios").document(userId)
+
+        userDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val dineroCuentaActual = documentSnapshot.getDouble("dinero_cuenta") ?: 0.0
+                    val nuevoDineroCuenta = dineroCuentaActual + cantidadASumar
+
+                    userDocRef.update("dinero_cuenta", nuevoDineroCuenta)
+                        .addOnSuccessListener { }
+                        .addOnFailureListener { }
+                } else { }
+            }
+            .addOnFailureListener { }
+    }
+
     fun restarDineroCuenta(
         userId: String,
         cantidadARestar: Double

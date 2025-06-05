@@ -28,7 +28,7 @@ import com.example.investlearntfg.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectorDesplegable(
+fun DesplegableMonedaPredeterminado(
     opciones: List<String>,
     monedaSeleccionada: String,
     onSeleccionChanged: (String) -> Unit

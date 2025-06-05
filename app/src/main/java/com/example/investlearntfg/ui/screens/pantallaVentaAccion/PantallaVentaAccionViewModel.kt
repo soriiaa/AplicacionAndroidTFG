@@ -83,9 +83,16 @@ open class PantallaVentaAccionViewModel @Inject constructor(
                                 unidades = paquete.unidades,
                                 fotoAccion = _empresa.value!!.logo
                             )
+
+                            val precioEnMonedaAccion = it1.c
+                            val precioEnMonedaUsuario = precioEnMonedaAccion * (_tipoCambioInverso.value ?: 0.00)
+
+                            FirestoreRepository.sumarDineroCuenta(userId, precioEnMonedaUsuario * paquete.unidades)
                         }
                     }
                 }
+
+
                 FirestoreRepository.eliminarAccionEnPropiedad(userId, paqueteId)
                 ganancia += (((_precioCompania2.value?.c ?: 0.0) - paquete?.precioCompra!!) * paquete.unidades)
             }

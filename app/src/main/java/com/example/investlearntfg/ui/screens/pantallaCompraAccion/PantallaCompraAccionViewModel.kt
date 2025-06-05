@@ -65,9 +65,11 @@ class PantallaCompraAccionViewModel @Inject constructor(
 
     fun guardarCompraEnFirestore(onExito: () -> Unit, onFallo: () -> Unit) {
 
+        val precioCompraMonedaUsuario = _precioCompra.value * (_tipoCambioInverso.value ?: 0.0)
+
         FirestoreRepository.restarDineroCuenta(
             userId,
-            _precioCompra.value
+            precioCompraMonedaUsuario
         )
 
         _empresa.value?.let {

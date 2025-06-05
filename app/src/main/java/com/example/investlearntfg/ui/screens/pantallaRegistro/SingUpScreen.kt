@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.investlearntfg.R
-import com.example.investlearntfg.ui.components.SelectorDesplegable
+import com.example.investlearntfg.ui.components.DesplegableMonedaPredeterminado
 import com.example.investlearntfg.ui.components.TextFieldContrasena
 import com.example.investlearntfg.ui.components.TextFieldPredeterminado2
 import com.example.investlearntfg.ui.components.TitulosInvestLearn
@@ -146,7 +146,7 @@ fun SignUpScreen(
                     placeholder = "Confirmar Contraseña"
                 )
                 Spacer1()
-                SelectorDesplegable(
+                DesplegableMonedaPredeterminado(
                     opcionesMoneda,
                     monedaSeleccionada,
                     onSeleccionChanged = { nuevaSeleccion ->
@@ -215,7 +215,7 @@ fun SignUpScreen(
                         navController.navigate(Destinations.LOGIN_SCREEN)
                         navController.popBackStack()
                     }) {
-                        Text("Continuar")
+                        Text("Aceptar")
                     }
                 }
             },
