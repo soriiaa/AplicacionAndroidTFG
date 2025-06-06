@@ -10,6 +10,7 @@ import com.example.investlearntfg.ui.screens.pantallaCompraAccion.PantallaCompra
 import com.example.investlearntfg.ui.screens.pantallaConfiguracion.PantallaConfiguracionScreen
 import com.example.investlearntfg.ui.screens.pantallaEditarPerfil.PantallaEditarPerfilScreen
 import com.example.investlearntfg.ui.screens.pantallaInicio.PantallaInicialScreen
+import com.example.investlearntfg.ui.screens.pantallaNoticias.PantallaNoticiasScreen
 import com.example.investlearntfg.ui.screens.pantallaPerfil.PantallaPerfilScreen
 import com.example.investlearntfg.ui.screens.pantallaVentaAccion.PantallaVentaAccionScreen
 
@@ -28,6 +29,10 @@ fun MainAppNavGraph(
 
         composable(Destinations.PANTALLA_BUSCAR_SCREEN) {
             PantallaBuscarScreen(navController)
+        }
+
+        composable(Destinations.PANTALLA_NOTICIAS_SCREEN) {
+            PantallaNoticiasScreen(navController)
         }
 
         composable(Destinations.PANTALLA_PERFIL_SCREEN) {

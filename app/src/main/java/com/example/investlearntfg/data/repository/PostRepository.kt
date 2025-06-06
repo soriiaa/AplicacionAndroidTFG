@@ -7,6 +7,7 @@ import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ExchangeRateResponse
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
+import com.example.investlearntfg.data.model.Noticia
 import com.example.investlearntfg.data.model.PrecioCompania
 import com.example.investlearntfg.data.model.PrecioCompania2
 import com.example.investlearntfg.data.remote.ExchangeRateApiService
@@ -53,5 +54,9 @@ class PostRepository @Inject constructor(
         return exchangeRateApiService.convertirMoneda(from, to, 1.0, exchangeApiKey.value)
     }
 
+    suspend fun obtenerNoticiasGenerales(): List<Noticia> {
+        val noticias = finnHubApiService.obtenerNoticiasGenerales(category = "general", minId = 0, finnhubApiKey.value)
+        return noticias.take(7)
+    }
 
 }

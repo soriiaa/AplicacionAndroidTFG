@@ -8,6 +8,7 @@ object Destinations {
 
     const val PANTALLA_INICIAL_SCREEN = "PantallaInicialScreen"
     const val PANTALLA_BUSCAR_SCREEN = "PantallaBuscarScreen"
+    const val PANTALLA_NOTICIAS_SCREEN = "PantallaNoticiasScreen"
     const val PANTALLA_PERFIL_SCREEN = "PantallaPerfilScreen"
 
     const val PANTALLA_ACCION_SCREEN = "PantallaAccionScreen"

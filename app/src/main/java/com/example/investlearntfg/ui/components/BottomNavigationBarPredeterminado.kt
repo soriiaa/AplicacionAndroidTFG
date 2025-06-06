@@ -1,7 +1,9 @@
 package com.example.investlearntfg.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -58,6 +60,27 @@ fun BottomNavigationBarPredeterminado(navController: NavController) {
             selected = currentRoute == Destinations.PANTALLA_BUSCAR_SCREEN,
             onClick = {
                 navController.navigate(Destinations.PANTALLA_BUSCAR_SCREEN) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                unselectedIconColor = colorNoSeleccionado,
+                selectedTextColor = Color.White,
+                unselectedTextColor = colorNoSeleccionado,
+                indicatorColor = colorIndicador
+            )
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Newspaper, contentDescription = "Noticias") },
+            label = { Text("Noticias") },
+            selected = currentRoute == Destinations.PANTALLA_NOTICIAS_SCREEN,
+            onClick = {
+                navController.navigate(Destinations.PANTALLA_NOTICIAS_SCREEN) {
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true
                     }

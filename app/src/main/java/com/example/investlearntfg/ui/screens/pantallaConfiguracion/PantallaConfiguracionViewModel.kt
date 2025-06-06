@@ -130,8 +130,6 @@ class PantallaConfiguracionViewModel @Inject constructor(
                             )
                         }
                     )
-
-
                 }
             },
             onError = {

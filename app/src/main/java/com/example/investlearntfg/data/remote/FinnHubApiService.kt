@@ -3,6 +3,7 @@ package com.example.investlearntfg.data.remote
 import com.example.investlearntfg.data.model.CompanyProfile2Response
 import com.example.investlearntfg.data.model.DatosPerfilCompania
 import com.example.investlearntfg.data.model.ListaEmpresasBusqueda
+import com.example.investlearntfg.data.model.Noticia
 import com.example.investlearntfg.data.model.PrecioCompania
 import com.example.investlearntfg.data.model.PrecioCompania2
 import retrofit2.http.GET
@@ -46,5 +47,12 @@ interface FinnHubApiService {
         @Query("symbol") symbol: String,
         @Query("token") token: String
     ): CompanyProfile2Response
+
+    @GET("news")
+    suspend fun obtenerNoticiasGenerales(
+        @Query("category") category: String = "general",
+        @Query("minId") minId: Int = 0,
+        @Query("token") token: String
+    ): List<Noticia>
 
 }
