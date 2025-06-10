@@ -296,6 +296,20 @@ object FirestoreRepository {
         }
     }
 
+    suspend fun obtenerNombreUsuario(userId: String): String {
+        return try {
+            val doc = db.collection("usuarios").document(userId).get().await()
+            if (doc.exists()) {
+                doc.getString("nombre") as String
+            } else {
+                throw Exception("Documento no existe")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
     suspend fun getDocumentosAccionesPropiedad(userId: String): List<DocumentSnapshot> {
         return try {
             val snapshot = db

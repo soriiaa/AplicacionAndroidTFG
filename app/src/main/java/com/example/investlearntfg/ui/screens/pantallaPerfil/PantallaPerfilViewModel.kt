@@ -24,8 +24,9 @@ class PantallaPerfilViewModel @Inject constructor(
 
     private var userId = Firebase.auth.currentUser?.uid ?: ""
 
-    private val _nickname = MutableStateFlow<String>("")
-    val nickname: StateFlow<String> = _nickname
+    // Aqui guardo el nombre que se va a usar luego en la screen
+    private val _nombreUsuario = MutableStateFlow("")
+    val nombreUsuario: StateFlow<String> = _nombreUsuario
 
     // Aqui guardo la lista de las acciones en propiedad del usuario
     private val _accionesEnPropiedad = MutableStateFlow<List<AccionPropiedad>>(emptyList())
@@ -44,7 +45,7 @@ class PantallaPerfilViewModel @Inject constructor(
     val cargandoHistorialAcciones: StateFlow<Boolean> = _cargandoHistorialAcciones
 
     init {
-        cargarNickname()
+        cargarNombre()
         cargarAccionesEnPropiedad()
         cargarHistorialTransacciones()
     }
@@ -123,9 +124,9 @@ class PantallaPerfilViewModel @Inject constructor(
         }
     }
 
-    private fun cargarNickname() {
+    private fun cargarNombre() {
         viewModelScope.launch {
-            _nickname.value = FirestoreRepository.obtenerNickname(userId)
+            _nombreUsuario.value = FirestoreRepository.obtenerNombreUsuario(userId)
         }
     }
 

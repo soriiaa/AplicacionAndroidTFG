@@ -1,7 +1,6 @@
 package com.example.investlearntfg.ui.screens.pantallaPerfil
 
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
@@ -56,7 +53,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -75,6 +71,7 @@ import com.example.investlearntfg.data.model.AccionPropiedad
 import com.example.investlearntfg.data.model.EmpresaPreview
 import com.example.investlearntfg.data.model.Transaccion
 import com.example.investlearntfg.ui.components.BottomNavigationBarPredeterminado
+import com.example.investlearntfg.ui.components.LogoAplicacionPulsable
 import com.example.investlearntfg.ui.navigation.Destinations
 import com.example.investlearntfg.ui.theme.color6
 import com.google.gson.Gson
@@ -90,7 +87,7 @@ fun PantallaPerfilScreen(
     val focusManager = LocalFocusManager.current
     val entradaActualDeNavegacion = remember { navController.currentBackStackEntryFlow }.collectAsState(null)
 
-    val nickname by viewModel.nickname.collectAsState()
+    val nombreUsuario by viewModel.nombreUsuario.collectAsState()
     val accionesEnPropiedad = viewModel.accionesEnPropiedad.collectAsState()
     val historialTransacciones by viewModel.historialTransacciones.collectAsState()
 
@@ -128,28 +125,8 @@ fun PantallaPerfilScreen(
             }
 
             Box {
-                Image(
-                    painter = painterResource(id = R.drawable.foto_perfil_modo_oscuro),
-                    contentDescription = "Foto de perfil",
-                    modifier = Modifier
-                        .size(130.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-                IconButton(
-                    onClick = { /* TODO: acción para cambiar foto */ },
-                    modifier = Modifier
-                        .size(36.dp)
-                        .align(Alignment.BottomEnd)
-                        .offset(x = (-10).dp, y = 1.dp)
-                        .background(color = colorResource(id = R.color.color4), shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CameraAlt,
-                        contentDescription = "Cambiar foto de perfil",
-                        tint = Color.DarkGray,
-                        modifier = Modifier.size(20.dp)
-                    )
+                LogoAplicacionPulsable {
+
                 }
             }
 
@@ -173,12 +150,26 @@ fun PantallaPerfilScreen(
 
         Box(
             modifier = Modifier
-                .weight(0.15f)
+                .weight(0.10f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = nickname,
+                text = "Mi perfil",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(0.10f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Buenos días, $nombreUsuario",
                 fontSize = 18.sp
             )
         }
