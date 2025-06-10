@@ -49,6 +49,10 @@ class PantallaInicialViewModel @Inject constructor(
     private val _cargandoAccionesFavoritas = MutableStateFlow(false)
     val cargandoAccionesFavoritas: StateFlow<Boolean> = _cargandoAccionesFavoritas
 
+    // Con esta variable manejo el estado del dialogo de cierre de sesión
+    private val _mostrarDialogoCerrarSesion = MutableStateFlow(false)
+    val mostrarDialogoCerrarSesion: StateFlow<Boolean> = _mostrarDialogoCerrarSesion
+
     fun recargarPantalla() {
         cargarEstadisticas()
         cargarAccionesFavoritas()
@@ -187,6 +191,10 @@ class PantallaInicialViewModel @Inject constructor(
             else -> "?"
         }
         return simboloMonetario
+    }
+
+    fun setMostrarDialogoCerrarSesion(mostrar: Boolean) {
+        _mostrarDialogoCerrarSesion.value = mostrar
     }
 
 }

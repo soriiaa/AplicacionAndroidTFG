@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -81,6 +83,8 @@ fun PantallaInicialScreen(
     val cargando by viewModel.cargandoAccionesFavoritas.collectAsState()
     val listaEmpresasFavoritasPreview by viewModel.listaEmpresasFavoritasPreview.collectAsState()
 
+    val mostrarDialogoCierreSesion by viewModel.mostrarDialogoCerrarSesion.collectAsState()
+
     val fechaHoy: String = LocalDate.now().format(DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy"))
 
     LaunchedEffect(entradaActualDeNavegacion.value) {
@@ -111,8 +115,7 @@ fun PantallaInicialScreen(
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(onClick = {
-                    viewModel.cerrarSesion()
-                    onLogout()
+                    viewModel.setMostrarDialogoCerrarSesion(true)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Logout,
@@ -174,6 +177,29 @@ fun PantallaInicialScreen(
         }
 
         BottomNavigationBarPredeterminado(navController)
+    }
+
+    if (mostrarDialogoCierreSesion) {
+        AlertDialog(
+            onDismissRequest = { viewModel.setMostrarDialogoCerrarSesion(false) },
+            title = { Text("Cerrar Sesión") },
+            text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.setMostrarDialogoCerrarSesion(false)
+                    viewModel.cerrarSesion()
+                    onLogout()
+                }) {
+                    Text("Sí")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { viewModel.setMostrarDialogoCerrarSesion(false) }) {
+                    Text("No")
+                }
+            },
+            containerColor = colorResource(R.color.color7)
+        )
     }
 }
 
