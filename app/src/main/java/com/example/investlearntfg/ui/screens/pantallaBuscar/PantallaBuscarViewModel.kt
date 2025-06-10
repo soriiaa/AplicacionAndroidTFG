@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class PantallaBuscarViewModel @Inject constructor(
@@ -114,7 +115,20 @@ class PantallaBuscarViewModel @Inject constructor(
 
             try {
 
-                val empresasDestacadas = listOf("AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "BLK", "NVDA", "BBVA")
+                val listaEmpresas1 = listOf("PEP", "AMZN", "MSFT", "KO", "NVDA", "V", "JNJ")
+                val listaEmpresas2 = listOf("TSLA", "WMT", "BBVA", "META", "GOOGL", "AAPL", "BLK")
+                val listaEmpresas3 = listOf("NVDA", "JNJ", "V", "AMZN", "MSFT", "KO", "PEP")
+                val listaEmpresas4 = listOf("GOOGL", "AAPL", "TSLA", "BLK", "WMT", "BBVA", "META")
+
+                val randomNumber = Random.nextInt(1, 5)
+
+                val empresasDestacadas = when (randomNumber) {
+                    1 -> listaEmpresas1
+                    2 -> listaEmpresas2
+                    3 -> listaEmpresas3
+                    4 -> listaEmpresas4
+                    else -> listOf("PEP", "AMZN", "MSFT", "KO", "NVDA", "V", "JNJ")
+                }
 
                 val empresasPreview = empresasDestacadas.mapNotNull { simbolo ->
                     try {

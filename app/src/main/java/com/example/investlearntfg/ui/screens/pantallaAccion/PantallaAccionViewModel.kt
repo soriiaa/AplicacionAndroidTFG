@@ -64,7 +64,11 @@ class PantallaAccionViewModel @Inject constructor(
 
     suspend fun puedeVender(): Boolean {
         _empresa.value?.let {
-            return FirestoreRepository.getAccionCompradaBoolean(userId, it.ticker)
+            try {
+                return FirestoreRepository.getAccionCompradaBoolean(userId, it.ticker)
+            } catch (e: Exception) {
+                Log.d("Error", "")
+            }
         }
         return false
     }
@@ -77,12 +81,14 @@ class PantallaAccionViewModel @Inject constructor(
         }
     }
 
-    fun cargarInformacionPreviaEmpresa(savedStateHandle: SavedStateHandle) {
-        val empresaJson = savedStateHandle.get<String>("empresaJson")
-        val empresaDeserializada = empresaJson?.let {
-            Gson().fromJson(it, EmpresaPreview::class.java)
-        }
-        _empresa.value = empresaDeserializada
+    private fun cargarInformacionPreviaEmpresa(savedStateHandle: SavedStateHandle) {
+        try {
+            val empresaJson = savedStateHandle.get<String>("empresaJson")
+            val empresaDeserializada = empresaJson?.let {
+                Gson().fromJson(it, EmpresaPreview::class.java)
+            }
+            _empresa.value = empresaDeserializada
+        } catch (e: Exception) { }
     }
 
     fun alternarFavorito() {
