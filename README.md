@@ -20,7 +20,7 @@ InvestLearn gives users a realistic trading experience with real market data and
 
 ## Screenshots
 
-![InvestLearn App Overview](AplicacionCompleta.png)
+<img width="12585" height="6353" alt="AplicacionCompleta" src="https://github.com/user-attachments/assets/e85a96a7-e723-47c9-b305-52f155f980bf" />
 
 ---
 
